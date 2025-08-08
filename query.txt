@@ -1,0 +1,146 @@
+-- Departments
+CREATE TABLE Departments (
+    DepartmentID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100)
+);
+
+-- Employees
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY IDENTITY(1,1),
+    FirstName NVARCHAR(100),
+    LastName NVARCHAR(100),
+    Email NVARCHAR(150),
+    Phone NVARCHAR(50),
+    HireDate DATE,
+    DepartmentID INT,
+    Position NVARCHAR(100),
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);
+
+-- Attendance (Optional)
+CREATE TABLE Attendance (
+    AttendanceID INT PRIMARY KEY IDENTITY(1,1),
+    EmployeeID INT,
+    WorkDate DATE,
+    HoursWorked DECIMAL(5,2),
+    FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
+-- Payroll
+CREATE TABLE Salaries (
+    SalaryID INT PRIMARY KEY IDENTITY(1,1),
+    EmployeeID INT,
+    MonthYear VARCHAR(7), -- e.g. 2025-07
+    BaseSalary DECIMAL(18,2),
+    IsPaid BIT DEFAULT 0,
+    PaymentDate DATE,
+    FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
+-- Customers
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(150),
+    Email NVARCHAR(150),
+    Phone NVARCHAR(50),
+    Address NVARCHAR(255)
+);
+
+-- Orders
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT,
+    OrderDate DATE,
+    DeliveryDate DATE,
+    Status NVARCHAR(50), -- e.g. pending, shipped, delivered
+    TotalAmount DECIMAL(18,2),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- Towel Products
+CREATE TABLE Towels (
+    TowelID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100),
+    Size NVARCHAR(50), -- e.g. "30x60 cm"
+    Color NVARCHAR(50),
+    Material NVARCHAR(50),
+    Price DECIMAL(10,2),
+    InStock INT
+);
+
+-- Order Items
+CREATE TABLE OrderItems (
+    OrderItemID INT PRIMARY KEY IDENTITY(1,1),
+    OrderID INT,
+    TowelID INT,
+    Quantity INT,
+    UnitPrice DECIMAL(10,2),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+    FOREIGN KEY (TowelID) REFERENCES Towels(TowelID)
+);
+
+-- Raw Materials
+CREATE TABLE Materials (
+    MaterialID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100),
+    Unit NVARCHAR(20),
+    QuantityAvailable DECIMAL(18,2)
+);
+
+-- Production Batches
+CREATE TABLE Production (
+    ProductionID INT PRIMARY KEY IDENTITY(1,1),
+    TowelID INT,
+    StartDate DATE,
+    EndDate DATE,
+    QuantityProduced INT,
+    FOREIGN KEY (TowelID) REFERENCES Towels(TowelID)
+);
+
+-- Materials Used Per Batch
+CREATE TABLE ProductionMaterials (
+    ProductionMaterialID INT PRIMARY KEY IDENTITY(1,1),
+    ProductionID INT,
+    MaterialID INT,
+    QuantityUsed DECIMAL(18,2),
+    FOREIGN KEY (ProductionID) REFERENCES Production(ProductionID),
+    FOREIGN KEY (MaterialID) REFERENCES Materials(MaterialID)
+);
+
+-- Suppliers
+CREATE TABLE Suppliers (
+    SupplierID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(150),
+    ContactName NVARCHAR(100),
+    Email NVARCHAR(100),
+    Phone NVARCHAR(50),
+    Address NVARCHAR(255)
+);
+
+-- Purchase Orders (for raw materials)
+CREATE TABLE Purchases (
+    PurchaseID INT PRIMARY KEY IDENTITY(1,1),
+    SupplierID INT,
+    PurchaseDate DATE,
+    TotalAmount DECIMAL(18,2),
+    FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
+);
+
+-- Purchase Items
+CREATE TABLE PurchaseItems (
+    PurchaseItemID INT PRIMARY KEY IDENTITY(1,1),
+    PurchaseID INT,
+    MaterialID INT,
+    Quantity DECIMAL(18,2),
+    UnitPrice DECIMAL(10,2),
+    FOREIGN KEY (PurchaseID) REFERENCES Purchases(PurchaseID),
+    FOREIGN KEY (MaterialID) REFERENCES Materials(MaterialID)
+);
+
+-- User Activity Log (Optional)
+CREATE TABLE ActivityLogs (
+    LogID INT PRIMARY KEY IDENTITY(1,1),
+    UserName NVARCHAR(100),
+    Action NVARCHAR(255),
+    ActionDate DATETIME DEFAULT GETDATE()
+);
