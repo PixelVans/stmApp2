@@ -463,40 +463,25 @@ export const Dyestuff_4_Amt = Array(98).fill("");
 Dyestuff_4_Amt[60] = "0.4000"; 
 
 
-export const Dye_Process = [
-  "Bubanks",
-  "Enzymatic",
-  "Traditional",
-  "Dyeing_Reactive",
-  "Dyeing_VAT"
-];
 
 
-export const Titles_Table = [
-  ["Bleaching", "Step 1", "Reduction_Clearing", "Step 2", "Rinsing", "Step 7", "Step 3", "Cold_Wash", "Step 4", "Cold_Wash", "Step 5", "Finishing", "Step 6", "Softener", "End", "End", "End"],
-  ["Bleaching", "Step 1", "Reduction_Clearing", "Step 2", "Rinsing", "Step 7", "Step 3", "Cold_Wash", "Step 4", "Repeat if necessary", "Step 5", "Finishing", "Step 6", "Softener", "End", "End", "End"],
-  ["Bleaching", "Step 1", "Reduction_Clearing", "Step 2", "Rinsing", "Step 7", "Step 3", "Cold_Wash", "Step 4", "Repeat if necessary", "Step 5", "Finishing", "Step 6", "Softener", "End", "End", "End"],
-  ["Scouring", "Step 1", "Hot_Wash", "Step 2", "Prepare_To_Dye", "Step 7", "Step 3", "Dyeing", "Step 4", "First_Rinse", "Step 5", "Soaping", "Step 6", "Final_Rinse", "Finishing", "Step 8", "End"],
-  ["Scouring", "Step 1", "Prepare_To_Dye", "Step 2", "Dyeing", "", "Step 3", "Rinsing", "Step 4", "and so on..."]
-];
 
-export const Steps = [
-  1, 10,  // Step 1 and its code
-  2, 20,  // Step 2 and its code
-  3, 70,  // Step 3 and its code
-  30,     // some code?
-  4, 40,  // Step 4 and its code (this is the one we want)
-  5, 50,
-  6, 60,
-  7,
-  8, 80,
-  9
-];
-
-const Position_dyeing = {
+export const positions_dyeing = {
   Reactive: [0,0,0,0,0,0,0,0,7,5,6,8,20,21,22,23,24,25,26,27,28],
   Enzymatic: [0,0,0,0,0,0,0,0,5,7,6,8,20,21,22,23,24,25,26,27,28],
   CreamStripe: [0,0,0,0,0,0,0,0,5,7,6,8,20,21,22,23,24,25,26,27,28],
+  Chlorine: [0,0,0,0,0,0,0,0,5,7,6,8,20,21,22,23,24,25,26,27,28],
+  Vat: [0,0,0,0,0,0,0,0,5,7,6,0,20,21,22,23,24,25,26,27,28]
 };
+
+export const temperatures_dyeing = Array(98).fill("40˚C");
+temperatures_dyeing[96] = "60%";
+temperatures_dyeing[97] = "60%";
+
+export const duration_dyeing = Array(98).fill("20 Minutes");
+duration_dyeing[96] = "10 Minutes";
+duration_dyeing[97] = "10 Minutes";
+
+
 
 

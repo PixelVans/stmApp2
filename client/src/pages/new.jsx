@@ -9,20 +9,16 @@ import {
   Dyestuff_2_Amt,
   Dyestuff_3_Amt,
   Dyestuff_4_Amt,
-  Dye_Process,
-  Titles_Table,
-  Steps
+  temperatures_dyeing,
+  positions_dyeing,
+  duration_dyeing
 } from "../utils/constants";
 
 import DyeingControlPanel from "../components/DyeingControlPanel";
 import useDyeingStore from "../store/zustand";
 import { ingredients } from "../utils/ingredients_dyeing.js";
 
-const Position_dyeing = {
-  Reactive: [0,0,0,0,0,0,0,0,7,5,6,8,20,21,22,23,24,25,26,27,28],
-  Enzymatic: [0,0,0,0,0,0,0,0,5,7,6,8,20,21,22,23,24,25,26,27,28],
-  CreamStripe: [0,0,0,0,0,0,0,0,5,7,6,8,20,21,22,23,24,25,26,27,28],
-};
+
 
 const UNIT_KG = " Kgs";
 const UNIT_G = " gms";
@@ -42,26 +38,31 @@ function computeAmount(gramsPerLt, lotWeight) {
 }
 
 function getDyeingTemp(scouringSystemSelected, colourSelected, dyeingSystemSelected) {
-  if (scouringSystemSelected === 'CreamStripe') return '40˚C';
-
-  const headers = Object.keys(ingredients[0]);
-  console.log("Headers:", Object.keys(ingredients[0]));
-
+  if (scouringSystemSelected === "CreamStripe") return "40˚C";
   const rowIndex = Colour_Chart.indexOf(colourSelected);
-  if (rowIndex === -1) return '';
-
-  const colIndex = Position_dyeing[dyeingSystemSelected]?.indexOf(22);
   
-  if (colIndex === undefined || colIndex === -1) return '';
+  if (rowIndex === -1) return "";
+  const positionArray = positions_dyeing[dyeingSystemSelected];
+  if (!positionArray) return "";
+  const dyeing_temp = temperatures_dyeing[rowIndex];
+ 
+  return dyeing_temp;
+}   
 
-  // Note: Your original formula uses MATCH(22, Position...) which means you want the index of 22 in that array.
-  // Then you use that index to get the column header.
+function getDyeingTime( colourSelected, dyeingSystemSelected) {
+ const rowIndex = Colour_Chart.indexOf(colourSelected)  ;
 
-  const colKey = headers[colIndex];
-  const value = ingredients[rowIndex][colKey];
+  if (rowIndex === -1) return "";
   
-  return value || '';
-}
+  const positionArray = positions_dyeing[dyeingSystemSelected];
+  if (!positionArray) return "";
+
+ 
+  const dyeing_duration = duration_dyeing[rowIndex];
+  console.log(rowIndex)
+  return dyeing_duration;
+}                                                                                 
+
 
 const ChemicalTable = () => {
   // Pull Zustand store fields reactively
@@ -105,7 +106,8 @@ const ChemicalTable = () => {
       chemical: getNameAt(Dyestuff_1),
       gramsPerLt: formatNumber(getAmtAt(Dyestuff_1_Amt)),
       temp: getStepTemp(dyeingSystem, 4),
-      time: "20 Minutes",
+      time: getDyeingTime(selectedColour, dyeingSystem),
+
       ph: "7",
     },
     {

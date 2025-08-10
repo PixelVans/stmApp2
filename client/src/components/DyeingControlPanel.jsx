@@ -39,7 +39,20 @@ const DyeingControlPanel = () => {
   );
 
   return (
-    <div className="p-4 sm:p-4 border border-gray-200 rounded-xl shadow-md bg-white mb-6 w-full mx-auto">
+  //   <div
+  //   className="
+  //     p-4 sm:p-4 border border-gray-200 rounded-xl shadow-md bg-white mb-6 w-full
+  //     sticky top-[80px] z-30
+  //   "
+    // >
+    <div
+    className="
+      p-4 sm:p-4 border border-gray-200 rounded-xl shadow-md bg-white mb-6 w-full
+      sticky top-[80px] z-30
+    "
+  >
+  
+  
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="text-lg font-semibold text-gray-700">{today}</div>
@@ -48,8 +61,7 @@ const DyeingControlPanel = () => {
 
       {/* Full-width form grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 w-full">
-
-         <FormRow label="Winch">
+        <FormRow label="Winch">
           <select
             className={baseSelect}
             value={winch}
@@ -64,9 +76,6 @@ const DyeingControlPanel = () => {
           </select>
         </FormRow>
 
-
-
-
         <FormRow label="Dyeing System">
           <select
             className={baseSelect}
@@ -74,11 +83,7 @@ const DyeingControlPanel = () => {
             onChange={(e) => setField("dyeingSystem", e.target.value)}
           >
             <option value="Reactive">Reactive</option>
-            <option value="Reactive">Reactive</option>
             <option value="Bleaching">Bleaching</option>
-            
-
-
           </select>
         </FormRow>
 
@@ -91,8 +96,6 @@ const DyeingControlPanel = () => {
           />
         </FormRow>
 
-      
-
         <FormRow label="Client">
           <input
             type="text"
@@ -100,8 +103,9 @@ const DyeingControlPanel = () => {
             value={client}
             onChange={(e) => setField("client", e.target.value)}
           />
-        </FormRow> 
-         <FormRow label="Shade">
+        </FormRow>
+
+        <FormRow label="Shade">
           <select
             className={baseSelect}
             value={selectedColour}
@@ -123,7 +127,6 @@ const DyeingControlPanel = () => {
             onChange={(e) => setField("scouring", e.target.value)}
           >
             <option value="Reactive">Reactive</option>
-            <option value="Reactive">Reactive</option>
             <option value="Enzymatic">Enzymatic</option>
             <option value="CreamStripe">CreamStripe</option>
             <option value="Chlorine">Chlorine</option>
@@ -138,8 +141,6 @@ const DyeingControlPanel = () => {
             onChange={(e) => setField("lotWeight", e.target.value)}
           />
         </FormRow>
-
-       
 
         <FormRow label="Article">
           <input
