@@ -1,99 +1,98 @@
-  0.020
-0.020,
-    "",
-    0.440
-0.350
-0.003
-0.200
-0.600
-0.500
-0.980
-0.780
-0.780
-3.200
-1.000
-2.200
-0.960
-1.000
-2.000
-0.550
-0.400,
-    "",
-   0.350
-0.080
-    "",
-   0.400
-0.400
-0.003
-0.015
-0.003
-0.001
-    "",
-  0.003
-    "",
-   0.077
-0.048
-0.120
-0.500
-0.040
-0.240
-0.550
-0.150
-1.500
-0.155
-2.100
-0.009
-4.600
-0.005
-0.005
-0.050
-0.320
-0.050
-0.050
-0.750
-0.032
-0.032
-0.270
-0.366
-0.250
-0.250
-1.700
-0.080
-1.750
-0.800
-0.240
-0.012
-0.150
-4.500
-0.200
-2.800
-1.600
-0.080
-0.450
-0.450
-0.500
-0.100,
-    "",
-    "",
-    0.600
-0.300
-0.600
-2.000
-4.800
-0.030
-0.030
-0.030
-1.000,
-    "",
-    "0.300",
-    "",
-    "0.540",
-    "",
-    "",
-    "",
-    0.340
-0.002
-0.019,
-4.500
-0.600,
- 
+30 Minutes
+30 Minutes
+60 Minutes
+60 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+45 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+45 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+30 Minutes
+20 Minutes
+20 Minutes

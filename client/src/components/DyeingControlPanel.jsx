@@ -130,6 +130,7 @@ const DyeingControlPanel = () => {
             <option value="Enzymatic">Enzymatic</option>
             <option value="CreamStripe">CreamStripe</option>
             <option value="Chlorine">Chlorine</option>
+            
           </select>
         </FormRow>
 
@@ -192,7 +193,7 @@ const DyeingControlPanel = () => {
           >
             <option value="">-- Select --</option>
             <option value="Glauber Salt">Glauber Salt</option>
-            <option value="Common Salt">Common Salt</option>
+            <option value=" "></option>
           </select>
         </FormRow>
 
@@ -203,6 +204,7 @@ const DyeingControlPanel = () => {
             onChange={(e) => setField("saltPosition", e.target.value)}
           >
             <option value="">-- Select --</option>
+            <option value="">-</option>
             <option value="After Dyes">After Dyes</option>
             <option value="Before Dyes">Before Dyes</option>
           </select>

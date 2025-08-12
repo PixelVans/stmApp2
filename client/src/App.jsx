@@ -3,7 +3,7 @@ import MainLayout from "./layouts/Mainlayout";
 import StmHome from "./pages/StmHome";
 import SpecialSystemsPage from "./pages/SpecialSystemsPage";
 import ColourCalculatorB29 from "./pages/new";
-import NewPage from "./pages/newPage";
+
 // other pages like Employees, Reports...
 
 function App() {
