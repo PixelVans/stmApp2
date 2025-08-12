@@ -60,7 +60,7 @@ const MainLayout = ({ children }) => {
         <div className="h-16"></div>
 
         {/* Page content */}
-        <main className="p-8">{children}</main>
+        <main className="">{children}</main>
       </div>
     </div>
   );

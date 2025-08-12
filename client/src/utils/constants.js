@@ -95,8 +95,7 @@ export const Colour_Chart = [
     "Stripping",
     "Green - UPDF - New",
     "Green - UPDF",
-    "Navy Blue VAT",
-    "K.N.H Light Blue",
+    
   ];
 
 export const Dyestuff_1 = [

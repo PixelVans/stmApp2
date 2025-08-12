@@ -39,21 +39,17 @@ const DyeingControlPanel = () => {
   );
 
   return (
-  //   <div
-  //   className="
-  //     p-4 sm:p-4 border border-gray-200 rounded-xl shadow-md bg-white mb-6 w-full
-  //     sticky top-[80px] z-30
-  //   "
-    // >
     <div
     className="
-      p-4 sm:p-4 border border-gray-200 rounded-xl shadow-md bg-white mb-6 w-full
+      p-4 sm:p-6 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-6 w-full
       sticky top-[80px] z-30
     "
-  >
+    >
+ 
   
   
       {/* Header */}
+
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="text-lg font-semibold text-gray-700">{today}</div>
         <div className="text-gray-500 text-sm">Lot Year: {currentYear}</div>

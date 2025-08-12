@@ -9,7 +9,7 @@ import {
   Dyestuff_2_Amt,
   Dyestuff_3_Amt,
   Dyestuff_4_Amt,
- } from "../utils/constants";
+} from "../utils/constants";
 
 import DyeingControlPanel from "../components/DyeingControlPanel";
 import useDyeingStore from "../store/zustand";
@@ -24,26 +24,33 @@ import {
   getSaltDynamicTemp,
   getSaltDynamicDuration,
   getRemainInDwell,
-  
 } from "../components/functions/dyeingfunc";
 
-
-
 const ChemicalTable = () => {
-  const {winch,lotNo, softener, scouring, saltOption, client, 
-  article, dyeFix, selectedColour,saltPosition, liqRatio, lotWeight, dyeingSystem } = useDyeingStore();
+  const {
+    winch,
+    lotNo,
+    softener,
+    scouring,
+    saltOption,
+    client,
+    article,
+    dyeFix,
+    selectedColour,
+    saltPosition,
+    liqRatio,
+    lotWeight,
+    dyeingSystem,
+  } = useDyeingStore();
 
-const chemical = getChemicalField({
-  saltPosition,
-  saltOption,
-  scouring,
-  dyeingSystem,
-  selectedColour
-});
+  const chemical = getChemicalField({
+    saltPosition,
+    saltOption,
+    scouring,
+    dyeingSystem,
+    selectedColour,
+  });
 
-
- 
- 
   const selectedIndex = React.useMemo(() => {
     if (!selectedColour) return -1;
     return Colour_Chart.findIndex(
@@ -69,6 +76,12 @@ const chemical = getChemicalField({
     if (Number.isNaN(n)) return String(val);
     return n % 1 === 0 ? n.toFixed(0) : n.toFixed(3).replace(/\.?0+$/, "");
   };
+
+  const dwellValue = getRemainInDwell({
+    saltPosition,
+    scouringSystemSelected: scouring,
+    selectedColour,
+  });
 
   const dyeingRows = [
     {
@@ -103,53 +116,37 @@ const chemical = getChemicalField({
       time: "",
       ph: "",
     },
-    {
-      chemical: getRemainInDwell({
-        saltPosition,
-        scouringSystemSelected: scouring,
-        selectedColour,
-      }),
-      
+    { isInstructionRow: true, chemical: dwellValue ?? "" },
 
-      gramsPerLt: "",
-      amount: "",
-      temp: "",
-      time: "",
-      ph: "",
-    },
+    // Salt row with rowspan group
     {
       chemical: chemical,
-      gramsPerLt: getSaltGramsPerL({
-      chemicalName: chemical,
-      selectedColour,
-      
-    }),
+      gramsPerLt: getSaltGramsPerL({ chemicalName: chemical, selectedColour }),
       amount: computeDyeingSaltAmount({
-      chemicalName: chemical,
-      selectedColour,
-      saltPosition,
-      scouring,
-      waterLitresDyeing: 28800,
-      lotWeight,
-    }),
-      temp: getSaltDynamicTemp({
-      selectedColour,
-      scouring,
-      
-    }),
-
-      time: getSaltDynamicDuration({
-      selectedColour,
-    }),
+        chemicalName: chemical,
+        selectedColour,
+        saltPosition,
+        scouring,
+        waterLitresDyeing: 28800,
+        lotWeight,
+      }),
+      temp: getSaltDynamicTemp({ selectedColour, scouring }),
+      time: getSaltDynamicDuration({ selectedColour }),
       ph: "",
+      rowSpanGroup: "salt",
     },
     {
       chemical: "Total Shade Percentage",
-      gramsPerLt: 'hhhhh',
+      gramsPerLt:
+        Number(formatNumber(getAmtAt(Dyestuff_1_Amt))) +
+        Number(formatNumber(getAmtAt(Dyestuff_2_Amt))) +
+        Number(formatNumber(getAmtAt(Dyestuff_3_Amt))) +
+        Number(formatNumber(getAmtAt(Dyestuff_4_Amt))),
       amount: "",
       temp: "",
       time: "",
       ph: "",
+      rowSpanGroupContinuation: "salt",
     },
   ];
 
@@ -186,11 +183,13 @@ const chemical = getChemicalField({
     },
   ];
 
+  const NBSP = "\u00A0"; // non-breaking space
+
   return (
-    <div className="p-2">
+    <div>
       <DyeingControlPanel />
       {steps.map((stepData, sIdx) => (
-        <div key={sIdx} className="mb-8">
+        <div key={sIdx} className="mb-8 p-4 sm:p-6">
           <h2 className="text-lg font-bold mb-2">{stepData.step}</h2>
           {stepData.instructions && (
             <p className="italic text-sm mb-2">{stepData.instructions}</p>
@@ -207,44 +206,71 @@ const chemical = getChemicalField({
                   <th className="border border-gray-300 px-2 py-1 text-left">pH</th>
                 </tr>
               </thead>
-             <tbody>
-            {(() => {
-              let normalCounter = 0; // keeps alternating row stripes for non-dwell rows
-              return stepData.rows.map((r, i) => {
-                const isInstructionRow =
-                  (r.chemical && r.chemical.toUpperCase().includes("REMAIN IN DWELL FOR 20 MINS")) 
+              <tbody>
+                {(() => {
+                  let normalCounter = 0;
+                  return stepData.rows.map((r, i) => {
+                    const chemText = (r.chemical || "").toString().toUpperCase().trim();
 
-                if (isInstructionRow) {
-                  return (
-                    <tr key={i}>
-                      <td colSpan={6} className="border border-gray-300 p-0">
-                        {/* inner div preserves background + fixed height even when empty */}
-                        <div className="bg-yellow-200 h-12 w-full flex items-center justify-center font-bold">
-                          {r.chemical ?? "\u00A0"}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                }
+                    const isInstructionRow = !!r.isInstructionRow ||
+                      chemText.includes("REMAIN IN DWELL") ||
+                      chemText.includes("WAIT FOR") ||
+                      chemText === "E" ||
+                      chemText.includes("20 MIN");
 
-                const rowClass = normalCounter % 2 === 0 ? "bg-white" : "bg-gray-50";
-                normalCounter++;
+                    if (isInstructionRow) {
+                      return (
+                        <tr key={`${sIdx}-${i}`}>
+                          <td colSpan={6} className="border border-gray-300 p-0">
+                            <div className="bg-yellow-200 h-12 w-full flex items-center justify-center font-bold">
+                              {String(r.chemical || "").trim() !== "" ? String(r.chemical) : NBSP}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    }
 
-                return (
-                  <tr key={i} className={rowClass}>
-                    <td className="border border-gray-300 px-2 py-1">{r.chemical || "\u00A0"}</td>
-                    <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || "\u00A0"}</td>
-                    <td className="border border-gray-300 px-2 py-1">{r.amount || "\u00A0"}</td>
-                    <td className="border border-gray-300 px-2 py-1">{r.temp || "\u00A0"}</td>
-                    <td className="border border-gray-300 px-2 py-1">{r.time || "\u00A0"}</td>
-                    <td className="border border-gray-300 px-2 py-1">{r.ph || "\u00A0"}</td>
-                  </tr>
-                );
-              });
-            })()}
-          </tbody>
+                    const rowClass = normalCounter % 2 === 0 ? "bg-white" : "bg-gray-50";
 
+                    if (r.rowSpanGroupContinuation) {
+                      normalCounter++;
+                      return (
+                        <tr key={`${sIdx}-${i}`} className={rowClass}>
+                          <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
+                        </tr>
+                      );
+                    }
 
+                    if (r.rowSpanGroup) {
+                      normalCounter++;
+                      return (
+                        <tr key={`${sIdx}-${i}`} className={rowClass}>
+                          <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.temp || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.time || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.ph || NBSP}</td>
+                        </tr>
+                      );
+                    }
+
+                    normalCounter++;
+                    return (
+                      <tr key={`${sIdx}-${i}`} className={rowClass}>
+                        <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1">{r.temp || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1">{r.time || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1">{r.ph || NBSP}</td>
+                      </tr>
+                    );
+                  });
+                })()}
+              </tbody>
             </table>
           </div>
         </div>
