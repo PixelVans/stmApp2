@@ -24,6 +24,7 @@ import {
   getSaltDynamicTemp,
   getSaltDynamicDuration,
   getRemainInDwell,
+  computeStartingWaterAmount,
 } from "../components/functions/dyeingfunc";
 
 const ChemicalTable = () => {
@@ -70,12 +71,13 @@ const ChemicalTable = () => {
     return v === null || v === undefined || v === "" ? "" : v;
   };
 
-  const formatNumber = (val) => {
-    if (val === "" || val === null || val === undefined) return "";
-    const n = Number(val);
-    if (Number.isNaN(n)) return String(val);
-    return n % 1 === 0 ? n.toFixed(0) : n.toFixed(3).replace(/\.?0+$/, "");
-  };
+const formatNumber = (val) => {
+  if (val === "" || val === null || val === undefined) return "";
+  const n = Number(val);
+  if (Number.isNaN(n)) return String(val);
+  return n.toFixed(3);
+};
+
 
   const dwellValue = getRemainInDwell({
     saltPosition,
@@ -121,13 +123,17 @@ const ChemicalTable = () => {
     // Salt row with rowspan group
     {
       chemical: chemical,
-      gramsPerLt: getSaltGramsPerL({ chemicalName: chemical, selectedColour }),
+      gramsPerLt: Number(getSaltGramsPerL({ chemicalName: chemical, selectedColour })).toFixed(3),
       amount: computeDyeingSaltAmount({
         chemicalName: chemical,
         selectedColour,
         saltPosition,
         scouring,
-        waterLitresDyeing: 28800,
+        waterLitresDyeing: computeStartingWaterAmount({
+        lotWeight,
+        liqRatio,
+        winch
+      }).toFixed(3),
         lotWeight,
       }),
       temp: getSaltDynamicTemp({ selectedColour, scouring }),
@@ -137,11 +143,12 @@ const ChemicalTable = () => {
     },
     {
       chemical: "Total Shade Percentage",
-      gramsPerLt:
-        Number(formatNumber(getAmtAt(Dyestuff_1_Amt))) +
-        Number(formatNumber(getAmtAt(Dyestuff_2_Amt))) +
-        Number(formatNumber(getAmtAt(Dyestuff_3_Amt))) +
-        Number(formatNumber(getAmtAt(Dyestuff_4_Amt))),
+      gramsPerLt:(
+          Number(formatNumber(getAmtAt(Dyestuff_1_Amt))) +
+          Number(formatNumber(getAmtAt(Dyestuff_2_Amt))) +
+          Number(formatNumber(getAmtAt(Dyestuff_3_Amt))) +
+          Number(formatNumber(getAmtAt(Dyestuff_4_Amt)))
+        ).toFixed(3),
       amount: "",
       temp: "",
       time: "",
@@ -153,13 +160,54 @@ const ChemicalTable = () => {
   const steps = [
     {
       step: "Step 1 — Scouring",
-      rows: [
-        { chemical: "Starting Water", gramsPerLt: "", amount: "", temp: "60˚C", time: "30 Minutes", ph: "9 - 10" },
-        { chemical: "Ketoprep L.A", gramsPerLt: 0.5, amount: computeAmount(0.5, lotWeight), temp: "", time: "", ph: "" },
-        { chemical: "Caustic Soda", gramsPerLt: 3.2, amount: computeAmount(3.2, lotWeight), temp: "", time: "", ph: "" },
-        { chemical: "Hydrogen Peroxide", gramsPerLt: 4.0, amount: computeAmount(4.0, lotWeight), temp: "", time: "", ph: "" },
-        { chemical: "Magadi Soda Ash", gramsPerLt: 1.3, amount: computeAmount(1.3, lotWeight), temp: "", time: "", ph: "" },
-      ],
+        rows: [
+      {
+        chemical: "Starting Water",
+        gramsPerLt: "",
+        amount: `${computeStartingWaterAmount({
+        lotWeight,
+        liqRatio,
+        winch
+      })} Ltrs`,
+      
+        temp: "60˚C",
+        time: "30 Minutes",
+        ph: "9 - 10"
+      },
+      {
+        chemical: "Ketoprep L.A",
+        gramsPerLt: 0.5,
+        amount: computeAmount(0.5, lotWeight),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      {
+        chemical: "Caustic Soda",
+        gramsPerLt: 3.2,
+        amount: computeAmount(3.2, lotWeight),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      {
+        chemical: "Hydrogen Peroxide",
+        gramsPerLt: 4.0,
+        amount: computeAmount(4.0, lotWeight),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      {
+        chemical: "Magadi Soda Ash",
+        gramsPerLt: 1.3,
+        amount: computeAmount(1.3, lotWeight),
+        temp: "",
+        time: "",
+        ph: ""
+      }
+    ],
+
     },
     {
       step: "Step 2 — Hot Wash",
@@ -183,7 +231,7 @@ const ChemicalTable = () => {
     },
   ];
 
-  const NBSP = "\u00A0"; // non-breaking space
+  const NBSP = "\u00A0"; 
 
   return (
     <div>

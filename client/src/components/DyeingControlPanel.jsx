@@ -1,24 +1,30 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Colour_Chart } from "../utils/constants";
 import useDyeingStore from "../store/zustand";
 
 const DyeingControlPanel = () => {
-  const {
-    selectedColour,
-    winch,
-    dyeingSystem,
-    scouring,
-    softener,
-    saltOption,
-    saltPosition,
-    liqRatio,
-    lotWeight,
-    client,
-    article,
-    lotNo,
-    dyeFix,
-    setField,
-  } = useDyeingStore();
+
+
+
+
+
+  // Read initial values once (no subscription)
+  const initial = useDyeingStore.getState();
+
+  // Refs for all fields (uncontrolled inputs)
+  const winchRef = useRef(null);
+  const dyeingSystemRef = useRef(null);
+  const lotNoRef = useRef(null);
+  const clientRef = useRef(null);
+  const selectedColourRef = useRef(null);
+  const scouringRef = useRef(null);
+  const lotWeightRef = useRef(null);
+  const articleRef = useRef(null);
+  const softenerRef = useRef(null);
+  const liqRatioRef = useRef(null);
+  const liqRatio8Ref = useRef(null);
+  const saltOptionRef = useRef(null);
+  const saltPositionRef = useRef(null);
 
   const today = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -38,18 +44,76 @@ const DyeingControlPanel = () => {
     </div>
   );
 
+  // Push values from refs to Zustand store
+  const handleCompute = () => {
+    const { setField } = useDyeingStore.getState();
+    setField("winch", winchRef.current.value);
+    setField("dyeingSystem", dyeingSystemRef.current.value);
+    setField("lotNo", lotNoRef.current.value);
+    setField("client", clientRef.current.value);
+    setField("selectedColour", selectedColourRef.current.value);
+    setField("scouring", scouringRef.current.value);
+    setField("lotWeight", lotWeightRef.current.value);
+    setField("article", articleRef.current.value);
+    setField("softener", softenerRef.current.value);
+    setField("liqRatio", liqRatioRef.current.value);
+    setField("liqRatio8", liqRatio8Ref.current.value);
+    setField("saltOption", saltOptionRef.current.value);
+    setField("saltPosition", saltPositionRef.current.value);
+  };
+
+    useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // prevents accidental form submit
+      handleCompute();
+    }
+  };
+  document.addEventListener("keydown", handleKeyDown);
+  return () => {
+    document.removeEventListener("keydown", handleKeyDown);
+  };
+}, [handleCompute]);
+
+  // Clear both store and UI values
+  const handleReset = () => {
+    const { resetFields } = useDyeingStore.getState();
+    resetFields();
+
+    const clear = (r) => {
+      if (!r?.current) return;
+      if (r.current.tagName === "SELECT") {
+        r.current.value = "";
+      } else {
+        r.current.value = "";
+      }
+    };
+
+    [
+      winchRef,
+      dyeingSystemRef,
+      lotNoRef,
+      clientRef,
+      selectedColourRef,
+      scouringRef,
+      lotWeightRef,
+      articleRef,
+      softenerRef,
+      liqRatioRef,
+      liqRatio8Ref,
+      saltOptionRef,
+      saltPositionRef,
+    ].forEach(clear);
+  };
+
   return (
     <div
-    className="
-      p-4 sm:p-6 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-6 w-full
-      sticky top-[80px] z-30
-    "
+      className="
+        p-4 sm:p-6 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-6 w-full
+        sticky top-[80px] z-30
+      "
     >
- 
-  
-  
       {/* Header */}
-
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="text-lg font-semibold text-gray-700">{today}</div>
         <div className="text-gray-500 text-sm">Lot Year: {currentYear}</div>
@@ -60,9 +124,10 @@ const DyeingControlPanel = () => {
         <FormRow label="Winch">
           <select
             className={baseSelect}
-            value={winch}
-            onChange={(e) => setField("winch", e.target.value)}
+            ref={winchRef}
+            defaultValue={initial.winch ?? ""}
           >
+            <option value="">-- Select --</option>
             <option value="Soft Flow">Soft Flow</option>
             <option value="Main Winch">Main Winch</option>
             <option value="Sample Winch">Sample Winch</option>
@@ -75,9 +140,10 @@ const DyeingControlPanel = () => {
         <FormRow label="Dyeing System">
           <select
             className={baseSelect}
-            value={dyeingSystem}
-            onChange={(e) => setField("dyeingSystem", e.target.value)}
+            ref={dyeingSystemRef}
+            defaultValue={initial.dyeingSystem ?? ""}
           >
+            <option value="">-- Select --</option>
             <option value="Reactive">Reactive</option>
             <option value="Bleaching">Bleaching</option>
           </select>
@@ -87,8 +153,8 @@ const DyeingControlPanel = () => {
           <input
             type="text"
             className={baseInput}
-            value={lotNo}
-            onChange={(e) => setField("lotNo", e.target.value)}
+            ref={lotNoRef}
+            defaultValue={initial.lotNo ?? ""}
           />
         </FormRow>
 
@@ -96,16 +162,16 @@ const DyeingControlPanel = () => {
           <input
             type="text"
             className={baseInput}
-            value={client}
-            onChange={(e) => setField("client", e.target.value)}
+            ref={clientRef}
+            defaultValue={initial.client ?? ""}
           />
         </FormRow>
 
         <FormRow label="Shade">
           <select
             className={baseSelect}
-            value={selectedColour}
-            onChange={(e) => setField("selectedColour", e.target.value)}
+            ref={selectedColourRef}
+            defaultValue={initial.selectedColour ?? ""}
           >
             <option value="">-- Select --</option>
             {Colour_Chart.map((color, i) => (
@@ -119,14 +185,14 @@ const DyeingControlPanel = () => {
         <FormRow label="Scouring">
           <select
             className={baseSelect}
-            value={scouring}
-            onChange={(e) => setField("scouring", e.target.value)}
+            ref={scouringRef}
+            defaultValue={initial.scouring ?? ""}
           >
+            <option value="">-- Select --</option>
             <option value="Reactive">Reactive</option>
             <option value="Enzymatic">Enzymatic</option>
             <option value="CreamStripe">CreamStripe</option>
             <option value="Chlorine">Chlorine</option>
-            
           </select>
         </FormRow>
 
@@ -134,8 +200,8 @@ const DyeingControlPanel = () => {
           <input
             type="number"
             className={baseInput}
-            value={lotWeight}
-            onChange={(e) => setField("lotWeight", e.target.value)}
+            ref={lotWeightRef}
+            defaultValue={initial.lotWeight ?? ""}
           />
         </FormRow>
 
@@ -143,16 +209,16 @@ const DyeingControlPanel = () => {
           <input
             type="text"
             className={baseInput}
-            value={article}
-            onChange={(e) => setField("article", e.target.value)}
+            ref={articleRef}
+            defaultValue={initial.article ?? ""}
           />
         </FormRow>
 
         <FormRow label="Softener">
           <select
             className={baseSelect}
-            value={softener}
-            onChange={(e) => setField("softener", e.target.value)}
+            ref={softenerRef}
+            defaultValue={initial.softener ?? ""}
           >
             <option value="">-- Select --</option>
             <option value="Bubanks">Bubanks</option>
@@ -160,20 +226,20 @@ const DyeingControlPanel = () => {
           </select>
         </FormRow>
 
-        <FormRow label="Liq. Ratio">
+        <FormRow label="Adjusted Liq. Ratio">
           <input
-            type="text"
+            type="number"
             className={baseInput}
-            value={liqRatio}
-            onChange={(e) => setField("liqRatio", e.target.value)}
+            ref={liqRatioRef}
+            defaultValue={initial.liqRatio ?? ""}
           />
         </FormRow>
 
-        <FormRow label="Dye Fix">
+        <FormRow label="Liq. Ratio:8">
           <select
             className={baseSelect}
-            value={dyeFix}
-            onChange={(e) => setField("dyeFix", e.target.value)}
+            ref={liqRatio8Ref}
+            defaultValue={initial.liqRatio8 ?? ""}
           >
             <option value="">-- Select --</option>
             <option value="Dye Fix">Dye Fix</option>
@@ -184,27 +250,42 @@ const DyeingControlPanel = () => {
         <FormRow label="Salt Option">
           <select
             className={baseSelect}
-            value={saltOption}
-            onChange={(e) => setField("saltOption", e.target.value)}
+            ref={saltOptionRef}
+            defaultValue={initial.saltOption ?? ""}
           >
             <option value="">-- Select --</option>
             <option value="Glauber Salt">Glauber Salt</option>
-            <option value=" "></option>
+            <option value="Industrial Salt">Industrial Salt</option>
           </select>
         </FormRow>
 
         <FormRow label="Salt Position">
           <select
             className={baseSelect}
-            value={saltPosition}
-            onChange={(e) => setField("saltPosition", e.target.value)}
+            ref={saltPositionRef}
+            defaultValue={initial.saltPosition ?? ""}
           >
             <option value="">-- Select --</option>
-            <option value="">-</option>
             <option value="After Dyes">After Dyes</option>
             <option value="Before Dyes">Before Dyes</option>
           </select>
         </FormRow>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="mt-6 flex gap-4">
+        <button
+          onClick={handleCompute}
+          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+        >
+          Execute
+        </button>
+        <button
+          onClick={handleReset}
+          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+        >
+          Reset
+        </button>
       </div>
     </div>
   );

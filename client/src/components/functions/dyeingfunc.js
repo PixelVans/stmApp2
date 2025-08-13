@@ -33,20 +33,22 @@ const UNIT_G = " gms";
 
   
 
-
 export function computeAmount(gramsPerLt, lotWeight) {
   if (!gramsPerLt || !lotWeight) return "";
+
   const totalGrams = gramsPerLt * (lotWeight * 10);
+
   if (totalGrams >= 1000) {
     const wholeKg = Math.trunc(totalGrams / 1000);
-    const grams = Math.round(totalGrams % 1000);
+    const grams = totalGrams % 1000;
     return grams > 0
-      ? `${wholeKg}${UNIT_KG} ${grams}${UNIT_G}`
+      ? `${wholeKg}${UNIT_KG} ${grams.toFixed(3)}${UNIT_G}`
       : `${wholeKg}${UNIT_KG}`;
   } else {
-    return `${Math.round(totalGrams)}${UNIT_G}`;
+    return `${totalGrams.toFixed(3)}${UNIT_G}`;
   }
 }
+
 
 export function getDyeingTemp(scouringSystemSelected, colourSelected, dyeingSystemSelected) {
   if (scouringSystemSelected === "CreamStripe") return "40˚C";
@@ -106,15 +108,15 @@ export const getChemicalField = ({
   };
 
   try {
-    if (isBlank(saltPosition) || saltPosition === "After Dyes") {
-      if (isBlank(saltOption)) {
+    if (saltOption == "Industrial Salt" || saltPosition === "After Dyes") {
+      if (saltOption == "Industrial Salt") {
         return pickByCode(5);
       } else {
         return pickByCode(7);
       }
     } else {
       if (scouring === "CreamStripe") {
-        if (isBlank(saltOption)) {
+        if (saltOption == "Industrial Salt") {
           return pickByCode(5);
         } else {
           return pickByCode(7);
@@ -156,8 +158,8 @@ export function getSaltGramsPerL({ chemicalName, selectedColour }) {
 }
 
 
-const UNIT_KGs = "Kg";
-const UNIT_Gs = "g";
+const UNIT_KGs = "Kgs";
+const UNIT_Gs = "gms";
 
 function formatAmount(kg, g) {
   if (kg && g) {
@@ -165,7 +167,7 @@ function formatAmount(kg, g) {
   }
   if (kg) return `${kg}${UNIT_KGs}`;
   if (g) return `${g}${UNIT_Gs}`;
-  return "";
+  return "0.00 gm";
 }
 
 export function computeDyeingSaltAmount({
@@ -277,6 +279,33 @@ export function getRemainInDwell({
 }
 
 
+
+
+
+export function computeStartingWaterAmount({
+  lotWeight, // Quantity_Kgs_Dyeing
+  liqRatio, // N3
+  winch
+}) {
+  const dyeingMachineList = [
+    "Soft Flow",
+    "Main Winch",
+    "Sample Winch",
+    "Paddle Winch",
+    "Soft Flow-Minimum",
+    "VAT"
+  ];
+
+  const liquorRatioDyeing = [8, 8, 10, 15, 12, 12]; 
+
+  if (!liqRatio) {
+    const machineIndex = dyeingMachineList.indexOf(winch);
+    if (machineIndex === -1) return "";
+    return lotWeight * liquorRatioDyeing[machineIndex];
+  } else {
+    return lotWeight * liqRatio;
+  }
+}
 
 
 
