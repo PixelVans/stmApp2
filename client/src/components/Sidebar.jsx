@@ -7,6 +7,7 @@ import {
   FiLogOut,
   FiMenu,
   FiGrid,
+  FiDroplet,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
@@ -14,11 +15,11 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { name: "Dashboard", icon: <FiHome size={18} />, href: "/" },
+    { name: "Specialised Systems", icon: <FiGrid size={18} />, href: "#" },
      {
-      name: "Specialised Systems",
-      icon: <FiGrid size={18} />,
-      href: "/systems",
+      name: "Dyeing",
+      icon: < FiDroplet size={18} fill="yellow" className="text-yellow-300 "/>,
+      href: "/dyeing",
     },
     
   ];
@@ -37,7 +38,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-gray-800 to-gray-900 text-white 
+          fixed inset-y-0 left-0 z-40 w-64 bg-slate-800 text-white 
           p-6 flex flex-col justify-between transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 shadow-lg`}
       >
@@ -45,7 +46,7 @@ const Sidebar = () => {
           {/* Logo / Brand */}
           <div className="mb-10 flex items-center justify-center">
             <div className="text-2xl font-extrabold tracking-wide">
-              STM <span className="text-indigo-400">Management</span>
+              STM <span className="text-blue-400">Management</span>
             </div>
           </div>
 

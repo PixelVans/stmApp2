@@ -1,4 +1,0 @@
-Position,	Payroll Number,	First Name,	Middle Name,	Last Name,	ID NO,	NHIF NO,	NSSF No,	PIN No,	Date of Birth	WhatsApp Mobile Number	New Category	Job_Classification_new
-100	STM1020	Nancy	Wamuyu	Njoroge	9142209	1989915	372180817	A002252254I	May 12, 1967	0726 528 993	7	 Receptionist, storekeeper, phone operator 
-120	End	 	 	 								
-Position												

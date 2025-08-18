@@ -464,6 +464,35 @@ export const positions_dyeing = {
   Vat: [0,0,0,0,0,0,0,0,5,7,6,0,20,21,22,23,24,25,26,27,28]
 };
 
+export const positions_scouring = {
+  Reactive: [2, 7, 5, 4, 3, 6, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 20, 21, 22],
+  Enzymatic: [0, 2, 0, 5, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 20, 21, 22],
+  CreamStripe: [0, 5, 0, 0, 7, 6, 0, 0, 0, 0, 0, 0, 0, 2, 3, 0, 2, 1, 20, 21, 22],
+  Chlorine: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 1, 20, 21, 22],
+  Vat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 20, 21, 22]
+}
+
+
+// Positions prepare to dye
+export const positions_prepare_to_dye = {
+  Reactive: [1, 2, 3, 4, 5, 0, 0, 20, 21, 22],
+  Enzymatic: [1, 2, 3, 4, 5, 0, 0, 20, 21, 22],
+  CreamStripe: [1, 2, 3, 4, 5, 0, 0, 20, 21, 22],
+  Chlorine: [1, 2, 3, 4, 5, 0, 0, 20, 21, 22],
+  Vat: [1, 0, 0, 0, 0, 0, 0, 20, 21, 22]
+};
+
+
+
+export const positions_hotwash = {
+    Reactive: [1, 20, 21, 22],
+    Enzymatic: [1, 20, 21, 22],
+    CreamStripe: [1, 20, 21, 22],
+    Chlorine: [1, 20, 21, 22],
+    Vat: [1, 20, 21, 22]
+  };
+  
+
 export const temperatures_dyeing = Array(98).fill("40˚C");
 temperatures_dyeing[96] = "60˚C";
 temperatures_dyeing[97] = "60˚C";
@@ -496,6 +525,47 @@ export const Titles_Dyeing = [
   "pH Dyes",
   "pH Salt",
   "pH Magadi"
+];
+
+export const titles_hotwash = ["Water", "Temp Rinsing", "Duration Rinsing", "pH Rinsing"];
+
+
+export const titles_prepare_to_dye = [
+  "Water",
+  "Peroxide Killer/Peroxy ALK",
+  "Acetic or Green Acid",
+  "Sarakol / Sarabid / Levasol",
+  "Sarakol 1583",
+  "Pepzme Peroxide Killer",
+  "Sodium Hydro Chloride",
+  "Temp Prior to Dye",
+  "Duration Prior to Dye",
+  "pH Prior to Dye"
+];
+
+
+export const titles_scouring = [
+  "Felosan PCL",
+  "Ketoprep L.A",
+  "Stabiliser Contavan",
+  "Magadi Soda Ash",
+  "Caustic Soda",
+  "Hydrogen Peroxide",
+  "Saracrease HG",
+  "Sequesterol EMG",
+  "Sodium Hexa Meta Phosphate",
+  "Sodium Hydro Sulphite (Hydros)",
+  "Optical Brightener",
+  "AntiFoam",
+  "Dye Fix DF 25",
+  "Magadi Soda Ash",
+  "Caustic Soda",
+  "Chlorine",
+  "Caustic Soda",
+  "Starting Water",
+  "Temp Scouring",
+  "Duration Scouring",
+  "pH Scouring"
 ];
 
 export const industrialSaltGramsPerL = [
@@ -1107,3 +1177,10 @@ export const saltDurations = [
   "20 Minutes"
 ];
 
+export const scouringTemps = Array(96).fill("60˚C");
+
+
+export const scouringDuration = Array(96).fill("30 Minutes");
+
+export const scouringPHArray = Array(96).fill("9 - 10");
+scouringPHArray[2] = "10";

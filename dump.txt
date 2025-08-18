@@ -1,1 +1,453 @@
-th ahv v hht hsa h nbthsat hnfp  dny ajgv
+import React from "react";
+import {
+  Colour_Chart,
+  Dyestuff_1,
+  Dyestuff_2,
+  Dyestuff_3,
+  Dyestuff_4,
+  Dyestuff_1_Amt,
+  Dyestuff_2_Amt,
+  Dyestuff_3_Amt,
+  Dyestuff_4_Amt,
+} from "../utils/constants";
+
+import DyeingControlPanel from "../components/DyeingControlPanel";
+import useDyeingStore from "../store/zustand";
+import {
+  computeAmount,
+  getDyeingTemp,
+  getDyeingPh,
+  getDyeingTime,
+  getChemicalField,
+  computeDyeingSaltAmount,
+  getSaltGramsPerL,
+  getSaltDynamicTemp,
+  getSaltDynamicDuration,
+  getRemainInDwell,
+  computeStartingWaterAmount,
+  getScouringTemp,
+  getScouringTime,
+  getScouringPH,
+  
+  getScouringChemical1,
+  getScouringChemical2,
+  getScouringChemical3,
+  getScouringChemical4,
+  getScouringChemical5,
+  getScouringChemical7,
+  getScouringChemical6,
+  getScouringPL,
+  getScouringChemicalAmount,
+ 
+  getgramsPLForHotwash,
+  getHotWashTitle1,
+  getHotWashTitle2,
+  computeRoundedWater80,
+  computeHotwashAmount,
+  getHotwashTemp,
+  getHotwashDuration,
+  getHotwashPh,
+  getPrepareToDyeTitle1,
+  getPrepareToDyeTitle2,
+  getPrepareToDyeTitle3,
+  getPrepareToDyeGPL1,
+  getPrepareToDyeGPL2,
+  getPrepareToDyeGPL3,
+  getPrepareToDyeAmt,
+  getPrepareToDyeAmt1,
+  getPrepareToDyeTemp,
+  getPrepareToDyeProperty,
+} from "../components/functions/dyeingfunc";
+
+const ChemicalTable = () => {
+  const {
+    winch,
+    lotNo,
+    softener,
+    scouring,
+    saltOption,
+    client,
+    article,
+    dyeFix,
+    selectedColour,
+    saltPosition,
+    liqRatio,
+    lotWeight,
+    dyeingSystem,
+  } = useDyeingStore();
+
+  const chemical = getChemicalField({
+    saltPosition,
+    saltOption,
+    scouring,
+    dyeingSystem,
+    selectedColour,
+  });
+
+  const waterLitresDyeing = computeStartingWaterAmount({lotWeight,liqRatio,winch})
+  const gpl = getPrepareToDyeGPL1(dyeingSystem, selectedColour)
+  const selectedIndex = React.useMemo(() => {
+    if (!selectedColour) return -1;
+    return Colour_Chart.findIndex(
+      (color) =>
+        typeof color === "string" &&
+        typeof selectedColour === "string" &&
+        color.trim() === selectedColour.trim()
+    );
+  }, [selectedColour]);
+
+  const getNameAt = (arr) =>
+    selectedIndex === -1 ? "" : arr?.[selectedIndex] ?? "";
+
+  const getAmtAt = (arr) => {
+    if (selectedIndex === -1) return "";
+    const v = arr?.[selectedIndex];
+    return v === null || v === undefined || v === "" ? "" : v;
+  };
+
+const formatNumber = (val) => {
+  if (val === "" || val === null || val === undefined) return "";
+  const n = Number(val);
+  if (Number.isNaN(n)) return String(val);
+  return n.toFixed(3);
+};
+
+
+  const dwellValue = getRemainInDwell({
+    saltPosition,
+    scouringSystemSelected: scouring,
+    selectedColour,
+  });
+
+  const dyeingRows = [
+      
+    {
+      chemical: getNameAt(Dyestuff_1),
+      gramsPerLt: formatNumber(getAmtAt(Dyestuff_1_Amt)),
+      amount: computeAmount(Number(getAmtAt(Dyestuff_1_Amt)), lotWeight),
+      temp: getDyeingTemp(scouring, selectedColour, dyeingSystem),
+      time: getDyeingTime(selectedColour, dyeingSystem),
+      ph: getDyeingPh(selectedColour, dyeingSystem),
+    },
+    {
+      chemical: getNameAt(Dyestuff_2),
+      gramsPerLt: formatNumber(getAmtAt(Dyestuff_2_Amt)),
+      amount: computeAmount(Number(getAmtAt(Dyestuff_2_Amt)), lotWeight),
+      temp: "",
+      time: "",
+      ph: "",
+    },
+    {
+      chemical: getNameAt(Dyestuff_3),
+      gramsPerLt: formatNumber(getAmtAt(Dyestuff_3_Amt)),
+      amount: computeAmount(Number(getAmtAt(Dyestuff_3_Amt)), lotWeight),
+      temp: "",
+      time: "",
+      ph: "",
+    },
+    {
+      chemical: getNameAt(Dyestuff_4),
+      gramsPerLt: formatNumber(getAmtAt(Dyestuff_4_Amt)),
+      amount: computeAmount(Number(getAmtAt(Dyestuff_4_Amt)), lotWeight),
+      temp: "",
+      time: "",
+      ph: "",
+    },
+    { isInstructionRow: true, chemical: dwellValue ?? "" },
+
+    // Salt row with rowspan group
+    {
+      chemical: chemical,
+      gramsPerLt: Number(getSaltGramsPerL({ chemicalName: chemical, selectedColour })).toFixed(3),
+      amount: computeDyeingSaltAmount({
+        chemicalName: chemical,
+        selectedColour,
+        saltPosition,
+        scouring,
+        waterLitresDyeing: computeStartingWaterAmount({
+        lotWeight,
+        liqRatio,
+        winch
+      }).toFixed(3),
+        lotWeight,
+      }),
+      temp: getSaltDynamicTemp({ selectedColour, scouring }),
+      time: getSaltDynamicDuration({ selectedColour }),
+      ph: "",
+      rowSpanGroup: "salt",
+    },
+    {
+      chemical: "Total Shade Percentage",
+      gramsPerLt:(
+          Number(formatNumber(getAmtAt(Dyestuff_1_Amt))) +
+          Number(formatNumber(getAmtAt(Dyestuff_2_Amt))) +
+          Number(formatNumber(getAmtAt(Dyestuff_3_Amt))) +
+          Number(formatNumber(getAmtAt(Dyestuff_4_Amt)))
+        ).toFixed(3),
+      amount: "",
+      temp: "",
+      time: "",
+      ph: "",
+      rowSpanGroupContinuation: "salt",
+    },
+  ];
+
+  const steps = [
+    {
+      step: "Step 1 — Scouring",
+        rows: [
+      {
+        chemical: getScouringChemical1({ scouringSystem: scouring }),
+        // water liters Dyeing
+        gramsPerLt: "",
+        amount: `${computeStartingWaterAmount({lotWeight,liqRatio,winch})} Ltrs`,
+        temp: getScouringTemp({
+            selectedColour,
+            scouring
+          }),
+        time: getScouringTime({ selectedColour }),
+        ph: getScouringPH({ selectedColour, scouring })
+      },
+      {
+        chemical: getScouringChemical2({ scouringSystem: scouring }),
+        gramsPerLt: getScouringPL( scouring, selectedColour, 2 ),
+        amount: getScouringChemicalAmount(scouring, selectedColour,2,lotWeight,liqRatio,winch,),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      {
+        chemical: getScouringChemical3({ scouringSystem: scouring }),
+        gramsPerLt: getScouringPL( scouring, selectedColour, 3 ),
+        amount: getScouringChemicalAmount(scouring, selectedColour,3,lotWeight,liqRatio,winch,),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      {
+        chemical: getScouringChemical4({ scouringSystem: scouring }),
+        gramsPerLt: getScouringPL( scouring, selectedColour, 4 ),
+        amount: getScouringChemicalAmount(scouring, selectedColour,4,lotWeight,liqRatio,winch,),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      {
+        chemical: getScouringChemical5({ scouringSystem: scouring }),
+        gramsPerLt: getScouringPL( scouring, selectedColour, 5 ),
+        amount: getScouringChemicalAmount(scouring, selectedColour,5,lotWeight,liqRatio,winch,),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      {
+        chemical: getScouringChemical6({ scouringSystem: scouring }),
+        gramsPerLt: getScouringPL( scouring, selectedColour, 6 ),
+        amount: getScouringChemicalAmount(scouring, selectedColour,6,lotWeight,liqRatio,winch,),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      {
+        chemical: getScouringChemical7({ scouringSystem: scouring }),
+        gramsPerLt: getScouringPL( scouring, selectedColour, 7 ),
+        amount: getScouringChemicalAmount(scouring, selectedColour,7,lotWeight,liqRatio,winch,),
+        temp: "",
+        time: "",
+        ph: "Drain"
+      },
+    ],
+
+    },
+    {
+      step: "Step 2 — Hot Wash",
+      rows: [
+        {
+        chemical: "",
+        gramsPerLt: "",
+        amount: '',
+        temp: "",
+        time: "",
+        ph: ""
+      },
+        {
+        chemical: getHotWashTitle1(dyeingSystem),
+        gramsPerLt: "",
+        amount: `${computeRoundedWater80({ lotWeight, liqRatio, winch })} Ltrs`,
+        temp: getHotwashTemp(selectedColour, dyeingSystem),
+        time: getHotwashDuration(selectedColour, dyeingSystem),
+        ph: getHotwashPh(selectedColour, dyeingSystem)
+      },
+        {
+        chemical: getHotWashTitle2(dyeingSystem),
+        gramsPerLt: getgramsPLForHotwash(selectedColour, dyeingSystem),
+        amount: computeHotwashAmount({ selectedColour, dyeingSystem, lotWeight, liqRatio, winch }),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+      ],
+    },
+    
+    {
+      step: "Step 3 — Prepare to Dye",
+      instructions: "ONGEZA ACID KWANZA ALAFU BAADA YA DAKIKA KUMI ONGEZA PEROXIDE KILLER",
+      rows: [
+          {
+        chemical: "",
+        gramsPerLt: "",
+        amount: "",
+        temp: "",
+        time: "",
+        ph: ""
+      },
+          {
+        chemical: getPrepareToDyeTitle1(scouring),
+        gramsPerLt: getPrepareToDyeGPL1(dyeingSystem, selectedColour),
+        amount: getPrepareToDyeAmt1({gpl,   dyeingSystem,   lotWeight,  waterLitresDyeing, }),
+        temp: getPrepareToDyeTemp({scouring,  dyeingSystem,selectedColour, }),
+        time: getPrepareToDyeProperty(21, dyeingSystem,selectedColour,),
+        ph: getPrepareToDyeProperty(22, dyeingSystem,selectedColour,),
+      },
+        {
+        chemical: getPrepareToDyeTitle2(scouring, true) ,
+        gramsPerLt: Number(getPrepareToDyeGPL2(dyeingSystem, selectedColour,null,scouring)).toFixed(1),
+        amount: getPrepareToDyeAmt({
+          gpl: getPrepareToDyeGPL2(dyeingSystem, selectedColour, null, scouring),
+          dyeingSystem,
+          lotWeight,
+          waterLitresDyeing
+        }),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+        {
+        chemical: getPrepareToDyeTitle3(scouring),
+        gramsPerLt: Number(getPrepareToDyeGPL3( dyeingSystem,selectedColour, scouring)).toFixed(1),
+        amount: getPrepareToDyeAmt({
+        gpl: getPrepareToDyeGPL3(dyeingSystem, selectedColour, scouring),
+        dyeingSystem,
+        lotWeight,
+        waterLitresDyeing
+      }),
+        temp: "",
+        time: "",
+        ph: ""
+      },
+       
+      ],
+    },
+    {
+      step: "Step 4 — Dyeing",
+      instructions: "ONGEZA 50% YA RANGI — ALAFU BAADA YA DAKIKA KUMI ONGEZA 50%",
+      rows: dyeingRows,
+    },
+    
+  ];
+
+  const NBSP = "\u00A0"; 
+
+  return (
+    <div className="mt-[300px]">
+      <DyeingControlPanel />
+      {steps.map((stepData, sIdx) => (
+        <div key={sIdx} className="mb-8 p-4 sm:p-6">
+          <h2 className="text-lg font-bold mb-2">{stepData.step}</h2>
+          {stepData.instructions && (
+            <p className="italic text-sm mb-2">{stepData.instructions}</p>
+          )}
+          <div className="overflow-x-auto">
+            <table className="table-auto border-collapse border border-gray-300 w-full text-sm">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border border-gray-300 px-2 py-1 text-left">Chemical</th>
+                  <th className="border border-gray-300 px-2 py-1 text-right">Grams/lt</th>
+                  <th className="border border-gray-300 px-2 py-1 text-left">Amount</th>
+                  <th className="border border-gray-300 px-2 py-1 text-left">Temp</th>
+                  <th className="border border-gray-300 px-2 py-1 text-left">Time</th>
+                  <th className="border border-gray-300 px-2 py-1 text-left">pH</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(() => {
+                  let normalCounter = 0;
+                  return stepData.rows.map((r, i) => {
+                    const chemText = (r.chemical || "").toString().toUpperCase().trim();
+
+                    const isInstructionRow = !!r.isInstructionRow ||
+                      chemText.includes("REMAIN IN DWELL") ||
+                      chemText.includes("WAIT FOR") ||
+                      chemText === "E" ||
+                      chemText.includes("20 MIN");
+
+                    if (isInstructionRow) {
+                      return (
+                        <tr key={`${sIdx}-${i}`}>
+                          <td colSpan={6} className="border border-gray-300 p-0">
+                            <div className="bg-yellow-200 h-12 w-full flex items-center justify-center font-bold">
+                              {String(r.chemical || "").trim() !== "" ? String(r.chemical) : NBSP}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    const rowClass = normalCounter % 2 === 0 ? "bg-white" : "bg-gray-50";
+
+                    if (r.rowSpanGroupContinuation) {
+                      normalCounter++;
+                      return (
+                        <tr key={`${sIdx}-${i}`} className={rowClass}>
+                          <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
+                        </tr>
+                      );
+                    }
+
+                    if (r.rowSpanGroup) {
+                      normalCounter++;
+                      return (
+                        <tr key={`${sIdx}-${i}`} className={rowClass}>
+                          <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.temp || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.time || NBSP}</td>
+                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.ph || NBSP}</td>
+                        </tr>
+                      );
+                    }
+
+                    normalCounter++;
+                    return (
+                      <tr key={`${sIdx}-${i}`} className={rowClass}>
+                        <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1">{r.temp || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1">{r.time || NBSP}</td>
+                        <td className="border border-gray-300 px-2 py-1">{r.ph || NBSP}</td>
+                      </tr>
+                    );
+                  });
+                })()}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ChemicalTable;
+
+
+
+in this component, where we are renderinf step 4, before the text "ONGEZA 50% YA RANGI — ALAFU BAADA YA DAKIKA KUMI ONGEZA 50%",
+WE NEED a section above it with the text 'usimwage maji'
+and then below below that text the same set up of rows with 3 rows, and then the logic continues for other fields. we are just adding a section above the one 
+we currently have in step 4, strudy the component and add that section with the heading title and the table rows below it, right aster step 4 Dyeing,  and then return the 
+full updated compoinent
