@@ -4,3 +4,9 @@ export async function fetchScouringRow(colour) {
   if (!res.ok) throw new Error("Failed to fetch scouring row");
   return res.json(); 
 }
+
+export async function fetchHotwashRow(colour) {
+  const res = await fetch(`http://localhost:3000/api/hotwash/${encodeURIComponent(colour)}`);
+  if (!res.ok) throw new Error("Failed to fetch scouring row");
+  return res.json(); 
+}

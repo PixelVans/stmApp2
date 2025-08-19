@@ -18,7 +18,7 @@ const connectToDB = async () => {
     console.log('✅ Connected to SQL Server (specialised Systems copy (stmdev25)');
     return pool;
   } catch (err) {
-    console.error('❌ Database connection failed:', err);
+    console.error('Database connection failed:', err);
   }
 };
 

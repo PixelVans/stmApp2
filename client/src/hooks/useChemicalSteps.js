@@ -59,6 +59,7 @@ import {
 } from "../components/functions/dyeingfunc";
 
 import useScouringData from "./useScouringData";
+import useHotwashData from "./useHotwashData";
 
 export default function useChemicalSteps() {
   const {
@@ -72,8 +73,10 @@ export default function useChemicalSteps() {
     dyeingSystem,
   } = useDyeingStore();
 
- const { values: scouringValues, scouringTemp, scouringTime, scouringPH,hotwashGpl } = useScouringData(scouring, selectedColour,dyeingSystem);
-
+  //Fetch Data from the SQL server
+ const { values: scouringValues, scouringTemp, scouringTime, scouringPH,hotwashGpl } = useScouringData(scouring, selectedColour, dyeingSystem);
+ const { hotwashTemp, hotwashTime, hotwashPH, loading, error } = useHotwashData(selectedColour, dyeingSystem);
+ console.log("Hotwash Temperarute is", hotwashTemp)
 
   const NBSP = "\u00A0";
   const scouringChemical1 = getScouringChemical1({ scouringSystem: scouring })
@@ -187,18 +190,18 @@ export default function useChemicalSteps() {
           {
                 chemical: step4sec1Chemical1({dyeingSystem,  saltPosition}) ,
                 gramsPerLt: Number(step4sec1ChemicalGpl({mode: "prepareToDye",selectedColour,scouring })).toFixed(1),
-                amount: 'rrrr',
-                temp: "33",
-                time: "55",
-                ph: "6",
+                amount: 'r66rrr',
+                temp: "33 dgr",
+                time: "not 55",
+                ph: "not done",
               },
           {
                 chemical: step4sec1Chemical2({saltOption, scouring,}),
                 gramsPerLt: Number(step4sec1ChemicalGpl({mode: "dyeing", selectedColour, b26Title })).toFixed(1),
-                amount: 'rrr',
-                temp: "33",
-                time: "55",
-                ph: "6",
+                amount: '',
+                temp: "",
+                time: "",
+                ph: "",
               },
             ];
 
@@ -211,14 +214,14 @@ export default function useChemicalSteps() {
               chemical: scouringChemical1,
               gramsPerLt: "",
               amount: `${computeStartingWaterAmount({  lotWeight,liqRatio, winch, })} Ltrs`,
-              temp:scouringTemp,
-              time: scouringTime,
-              ph: scouringPH,
+              temp:scouringTemp ?? "fetching data...",
+              time: scouringTime ?? "fetching data...",
+              ph: scouringPH ?? "fetching...",
               
             },
             {
               chemical: scouringChemical2,
-              gramsPerLt: scouringValues[2] ?? "loading..",
+              gramsPerLt: scouringValues[2] ?? "fetching  data...",
               amount: getScouringChemicalAmount(scouring, selectedColour,2,lotWeight, liqRatio,winch),
               temp: "",
               time: "",
@@ -226,7 +229,7 @@ export default function useChemicalSteps() {
             },
             {
               chemical: scouringChemical3,
-              gramsPerLt: scouringValues[3] ?? "loading..",
+              gramsPerLt: scouringValues[3] ?? "fetching data...",
               amount: getScouringChemicalAmount(scouring,selectedColour,3,lotWeight,liqRatio, winch ),
               temp: "",
               time: "",
@@ -234,7 +237,7 @@ export default function useChemicalSteps() {
             },
             {
               chemical: scouringChemical4,
-              gramsPerLt: scouringValues[4] ?? "loading..",
+              gramsPerLt: scouringValues[4] ?? "fetching data...",
               amount: getScouringChemicalAmount(scouring, selectedColour, 4, lotWeight,liqRatio,winch ),
               temp: "",
               time: "",
@@ -242,7 +245,7 @@ export default function useChemicalSteps() {
             },
             {
               chemical: scouringChemical5,
-              gramsPerLt: scouringValues[5] ?? "loading..",
+              gramsPerLt: scouringValues[5] ?? "fetching data...",
               amount: getScouringChemicalAmount( scouring,selectedColour,5,lotWeight,liqRatio,winch),
               temp: "",
               time: "",
@@ -250,7 +253,7 @@ export default function useChemicalSteps() {
             },
             {
               chemical: scouringChemical6,
-              gramsPerLt: scouringValues[6] ?? "loading..",
+              gramsPerLt: scouringValues[6] ?? "",
               amount: getScouringChemicalAmount(scouring, selectedColour, 6, lotWeight,liqRatio,   winch),
               temp: "",
               time: "",
@@ -258,7 +261,7 @@ export default function useChemicalSteps() {
             },
             {
               chemical: scouringChemical7,
-              gramsPerLt: scouringValues[7] ?? "loading..",
+              gramsPerLt: scouringValues[7] ?? "",
               amount: getScouringChemicalAmount(scouring,selectedColour,7,lotWeight, liqRatio,  winch),
               temp: "",
               time: "",
@@ -274,9 +277,9 @@ export default function useChemicalSteps() {
               chemical: getHotWashTitle1(dyeingSystem),
               gramsPerLt: "",
               amount: `${computeRoundedWater80({  lotWeight,liqRatio,winch,  })} Ltrs`,
-              temp: getHotwashTemp(selectedColour, dyeingSystem),
-              time: getHotwashDuration(selectedColour, dyeingSystem),
-              ph: getHotwashPh(selectedColour, dyeingSystem),
+              temp: hotwashTemp ?? "fetching data...",
+              time: hotwashTime ?? "fetching data...",
+              ph: hotwashPH ?? "fetching data...",
             },
             {
               chemical: getHotWashTitle2(dyeingSystem),
