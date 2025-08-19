@@ -5,6 +5,8 @@ const express = require('express');
 const { connectToDB } = require('./config/db');
 const employeeRoutes = require('./routes/employees');
 const departments = require('./routes/departments')
+const scouring = require('./routes/scouring');
+
 const os = require('os');
 const app = express();
 const PORT = 3000;
@@ -15,6 +17,7 @@ app.use(express.json());
 
 app.use('/api/employees', employeeRoutes);
 app.use('/api/departments', departments);
+app.use('/api/scouring',scouring);
 
 app.get('/', (req, res) => {
   const hostname = os.hostname();
@@ -25,7 +28,7 @@ app.get('/', (req, res) => {
   const now = new Date().toLocaleString();
 
   res.send(`
-    <h2>✅The New STM Server is Running</h2>
+    <h2>✅STM Server is Running</h2>
     <ul>
       <li><strong>📡 LAN Access:</strong> http://${ip}:3000</li>
       <li><strong>🕒 Current Time:</strong> ${now}</li>

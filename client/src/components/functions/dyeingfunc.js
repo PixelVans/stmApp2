@@ -152,7 +152,7 @@ export const getChemicalField = ({
 
 
 export function getSaltGramsPerL({ chemicalName, selectedColour }) {
-  const colourIdx = Colour_Chart.indexOf(selectedColour);
+const colourIdx = Colour_Chart.indexOf(selectedColour);
   
  
   if (colourIdx === -1) return ""; 

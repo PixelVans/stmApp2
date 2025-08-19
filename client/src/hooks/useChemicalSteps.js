@@ -58,6 +58,8 @@ import {
   step4sec1ChemicalGpl,
 } from "../components/functions/dyeingfunc";
 
+import useScouringData from "./useScouringData";
+
 export default function useChemicalSteps() {
   const {
     winch,
@@ -70,7 +72,20 @@ export default function useChemicalSteps() {
     dyeingSystem,
   } = useDyeingStore();
 
+ const { values: scouringValues, scouringTemp, scouringTime, scouringPH,hotwashGpl } = useScouringData(scouring, selectedColour,dyeingSystem);
+
+
   const NBSP = "\u00A0";
+  const scouringChemical1 = getScouringChemical1({ scouringSystem: scouring })
+  const scouringChemical2 = getScouringChemical2({ scouringSystem: scouring })
+  const scouringChemical3 = getScouringChemical3({ scouringSystem: scouring })
+  const scouringChemical4 = getScouringChemical4({ scouringSystem: scouring })
+  const scouringChemical5 = getScouringChemical5({ scouringSystem: scouring })
+  const scouringChemical6 = getScouringChemical6({ scouringSystem: scouring })
+  const scouringChemical7 = getScouringChemical7({ scouringSystem: scouring })
+
+
+
 
   const selectedIndex = useMemo(() => {
     if (!selectedColour) return -1;
@@ -96,215 +111,155 @@ export default function useChemicalSteps() {
     return n.toFixed(3);
   };
 
-  const chemical = getChemicalField({
-    saltPosition,
-    saltOption,
-    scouring,
-    dyeingSystem,
-    selectedColour,
-  });
-
-  const waterLitresDyeing = computeStartingWaterAmount({
-    lotWeight,
-    liqRatio,
-    winch,
-  });
+  const chemical = getChemicalField({  saltPosition,saltOption, scouring,dyeingSystem,selectedColour,});
+  
+  const waterLitresDyeing = computeStartingWaterAmount({lotWeight,liqRatio,winch, });
+    
   const gpl = getPrepareToDyeGPL1(dyeingSystem, selectedColour);
-  const dwellValue = getRemainInDwell({
-    saltPosition,
-    scouringSystemSelected: scouring,
-    selectedColour,
-  });
+  const dwellValue = getRemainInDwell({saltPosition,scouringSystemSelected: scouring,selectedColour, });
   const b26Title = step4sec1Chemical2({saltOption, scouring,})
 
   const dyeingSecondStep = [
-    {
-      chemical: getNameAt(Dyestuff_1),
-      gramsPerLt: formatNumber(getAmtAt(Dyestuff_1_Amt)),
-      amount: computeAmount(Number(getAmtAt(Dyestuff_1_Amt)), lotWeight),
-      temp: getDyeingTemp(scouring, selectedColour, dyeingSystem),
-      time: getDyeingTime(selectedColour, dyeingSystem),
-      ph: getDyeingPh(selectedColour, dyeingSystem),
-    },
-    {
-      chemical: getNameAt(Dyestuff_2),
-      gramsPerLt: formatNumber(getAmtAt(Dyestuff_2_Amt)),
-      amount: computeAmount(Number(getAmtAt(Dyestuff_2_Amt)), lotWeight),
-      temp: "",
-      time: "",
-      ph: "",
-    },
-    {
-      chemical: getNameAt(Dyestuff_3),
-      gramsPerLt: formatNumber(getAmtAt(Dyestuff_3_Amt)),
-      amount: computeAmount(Number(getAmtAt(Dyestuff_3_Amt)), lotWeight),
-      temp: "",
-      time: "",
-      ph: "",
-    },
-    {
-      chemical: getNameAt(Dyestuff_4),
-      gramsPerLt: formatNumber(getAmtAt(Dyestuff_4_Amt)),
-      amount: computeAmount(Number(getAmtAt(Dyestuff_4_Amt)), lotWeight),
-      temp: "",
-      time: "",
-      ph: "",
-    },
-    { isInstructionRow: true, chemical: dwellValue ?? "" },
-    {
-      chemical: chemical,
-      gramsPerLt: Number(
-        getSaltGramsPerL({ chemicalName: chemical, selectedColour })
-      ).toFixed(3),
-      amount: computeDyeingSaltAmount({
-        chemicalName: chemical,
-        selectedColour,
-        saltPosition,
-        scouring,
-        waterLitresDyeing: waterLitresDyeing.toFixed(3),
-        lotWeight,
-      }),
-      temp: getSaltDynamicTemp({ selectedColour, scouring }),
-      time: getSaltDynamicDuration({ selectedColour }),
-      ph: "",
-      rowSpanGroup: "salt",
-    },
-    {
-      chemical: "Total Shade Percentage",
-      gramsPerLt: (
-        Number(formatNumber(getAmtAt(Dyestuff_1_Amt))) +
-        Number(formatNumber(getAmtAt(Dyestuff_2_Amt))) +
-        Number(formatNumber(getAmtAt(Dyestuff_3_Amt))) +
-        Number(formatNumber(getAmtAt(Dyestuff_4_Amt)))
-      ).toFixed(3),
-      rowSpanGroupContinuation: "salt",
-    },
+              {
+                chemical: getNameAt(Dyestuff_1),
+                gramsPerLt: formatNumber(getAmtAt(Dyestuff_1_Amt)),
+                amount: computeAmount(Number(getAmtAt(Dyestuff_1_Amt)), lotWeight),
+                temp: getDyeingTemp(scouring, selectedColour, dyeingSystem),
+                time: getDyeingTime(selectedColour, dyeingSystem),
+                ph: getDyeingPh(selectedColour, dyeingSystem),
+              },
+              {
+                chemical: getNameAt(Dyestuff_2),
+                gramsPerLt: formatNumber(getAmtAt(Dyestuff_2_Amt)),
+                amount: computeAmount(Number(getAmtAt(Dyestuff_2_Amt)), lotWeight),
+                temp: "",
+                time: "",
+                ph: "",
+              },
+              {
+                chemical: getNameAt(Dyestuff_3),
+                gramsPerLt: formatNumber(getAmtAt(Dyestuff_3_Amt)),
+                amount: computeAmount(Number(getAmtAt(Dyestuff_3_Amt)), lotWeight),
+                temp: "",
+                time: "",
+                ph: "",
+              },
+              {
+                chemical: getNameAt(Dyestuff_4),
+                gramsPerLt: formatNumber(getAmtAt(Dyestuff_4_Amt)),
+                amount: computeAmount(Number(getAmtAt(Dyestuff_4_Amt)), lotWeight),
+                temp: "",
+                time: "",
+                ph: "",
+              },
+              { isInstructionRow: true, chemical: dwellValue ?? "" },
+              {
+                chemical: chemical,
+                gramsPerLt: Number(
+                  getSaltGramsPerL({ chemicalName: chemical, selectedColour })
+                ).toFixed(3),
+                amount: computeDyeingSaltAmount({
+                  chemicalName: chemical,
+                  selectedColour,
+                  saltPosition,
+                  scouring,
+                  waterLitresDyeing: waterLitresDyeing.toFixed(3),
+                  lotWeight,
+                }),
+                temp: getSaltDynamicTemp({ selectedColour, scouring }),
+                time: getSaltDynamicDuration({ selectedColour }),
+                ph: "",
+                rowSpanGroup: "salt",
+              },
+              {
+                chemical: "Total Shade Percentage",
+                gramsPerLt: (
+                  Number(formatNumber(getAmtAt(Dyestuff_1_Amt))) +
+                  Number(formatNumber(getAmtAt(Dyestuff_2_Amt))) +
+                  Number(formatNumber(getAmtAt(Dyestuff_3_Amt))) +
+                  Number(formatNumber(getAmtAt(Dyestuff_4_Amt)))
+                ).toFixed(3),
+                rowSpanGroupContinuation: "salt",
+              },
   ];
 
   const dyeingFirstStep = [
- {
-      chemical: step4sec1Chemical1({dyeingSystem,  saltPosition}) ,
-      gramsPerLt: Number(step4sec1ChemicalGpl({mode: "prepareToDye",selectedColour,scouring })).toFixed(1),
-      amount: 'rrrr',
-      temp: "33",
-      time: "55",
-      ph: "6",
-    },
- {
-      chemical: step4sec1Chemical2({saltOption, scouring,}),
-      gramsPerLt: Number(step4sec1ChemicalGpl({mode: "dyeing", selectedColour, b26Title })).toFixed(1),
-      amount: 'rrr',
-      temp: "33",
-      time: "55",
-      ph: "6",
-    },
-  ];
+          {
+                chemical: step4sec1Chemical1({dyeingSystem,  saltPosition}) ,
+                gramsPerLt: Number(step4sec1ChemicalGpl({mode: "prepareToDye",selectedColour,scouring })).toFixed(1),
+                amount: 'rrrr',
+                temp: "33",
+                time: "55",
+                ph: "6",
+              },
+          {
+                chemical: step4sec1Chemical2({saltOption, scouring,}),
+                gramsPerLt: Number(step4sec1ChemicalGpl({mode: "dyeing", selectedColour, b26Title })).toFixed(1),
+                amount: 'rrr',
+                temp: "33",
+                time: "55",
+                ph: "6",
+              },
+            ];
+
 
   return [
      {
           step: "Step 1 — Scouring",
           rows: [
             {
-              chemical: getScouringChemical1({ scouringSystem: scouring }),
+              chemical: scouringChemical1,
               gramsPerLt: "",
-              amount: `${computeStartingWaterAmount({
-                lotWeight,
-                liqRatio,
-                winch,
-              })} Ltrs`,
-              temp: getScouringTemp({
-                selectedColour,
-                scouring,
-              }),
-              time: getScouringTime({ selectedColour }),
-              ph: getScouringPH({ selectedColour, scouring }),
+              amount: `${computeStartingWaterAmount({  lotWeight,liqRatio, winch, })} Ltrs`,
+              temp:scouringTemp,
+              time: scouringTime,
+              ph: scouringPH,
+              
             },
             {
-              chemical: getScouringChemical2({ scouringSystem: scouring }),
-              gramsPerLt: getScouringPL(scouring, selectedColour, 2),
-              amount: getScouringChemicalAmount(
-                scouring,
-                selectedColour,
-                2,
-                lotWeight,
-                liqRatio,
-                winch
-              ),
+              chemical: scouringChemical2,
+              gramsPerLt: scouringValues[2] ?? "loading..",
+              amount: getScouringChemicalAmount(scouring, selectedColour,2,lotWeight, liqRatio,winch),
               temp: "",
               time: "",
               ph: "",
             },
             {
-              chemical: getScouringChemical3({ scouringSystem: scouring }),
-              gramsPerLt: getScouringPL(scouring, selectedColour, 3),
-              amount: getScouringChemicalAmount(
-                scouring,
-                selectedColour,
-                3,
-                lotWeight,
-                liqRatio,
-                winch
-              ),
+              chemical: scouringChemical3,
+              gramsPerLt: scouringValues[3] ?? "loading..",
+              amount: getScouringChemicalAmount(scouring,selectedColour,3,lotWeight,liqRatio, winch ),
               temp: "",
               time: "",
               ph: "",
             },
             {
-              chemical: getScouringChemical4({ scouringSystem: scouring }),
-              gramsPerLt: getScouringPL(scouring, selectedColour, 4),
-              amount: getScouringChemicalAmount(
-                scouring,
-                selectedColour,
-                4,
-                lotWeight,
-                liqRatio,
-                winch
-              ),
+              chemical: scouringChemical4,
+              gramsPerLt: scouringValues[4] ?? "loading..",
+              amount: getScouringChemicalAmount(scouring, selectedColour, 4, lotWeight,liqRatio,winch ),
               temp: "",
               time: "",
               ph: "",
             },
             {
-              chemical: getScouringChemical5({ scouringSystem: scouring }),
-              gramsPerLt: getScouringPL(scouring, selectedColour, 5),
-              amount: getScouringChemicalAmount(
-                scouring,
-                selectedColour,
-                5,
-                lotWeight,
-                liqRatio,
-                winch
-              ),
+              chemical: scouringChemical5,
+              gramsPerLt: scouringValues[5] ?? "loading..",
+              amount: getScouringChemicalAmount( scouring,selectedColour,5,lotWeight,liqRatio,winch),
               temp: "",
               time: "",
               ph: "",
             },
             {
-              chemical: getScouringChemical6({ scouringSystem: scouring }),
-              gramsPerLt: getScouringPL(scouring, selectedColour, 6),
-              amount: getScouringChemicalAmount(
-                scouring,
-                selectedColour,
-                6,
-                lotWeight,
-                liqRatio,
-                winch
-              ),
+              chemical: scouringChemical6,
+              gramsPerLt: scouringValues[6] ?? "loading..",
+              amount: getScouringChemicalAmount(scouring, selectedColour, 6, lotWeight,liqRatio,   winch),
               temp: "",
               time: "",
               ph: "",
             },
             {
-              chemical: getScouringChemical7({ scouringSystem: scouring }),
-              gramsPerLt: getScouringPL(scouring, selectedColour, 7),
-              amount: getScouringChemicalAmount(
-                scouring,
-                selectedColour,
-                7,
-                lotWeight,
-                liqRatio,
-                winch
-              ),
+              chemical: scouringChemical7,
+              gramsPerLt: scouringValues[7] ?? "loading..",
+              amount: getScouringChemicalAmount(scouring,selectedColour,7,lotWeight, liqRatio,  winch),
               temp: "",
               time: "",
               ph: "Drain",
@@ -318,25 +273,15 @@ export default function useChemicalSteps() {
             {
               chemical: getHotWashTitle1(dyeingSystem),
               gramsPerLt: "",
-              amount: `${computeRoundedWater80({
-                lotWeight,
-                liqRatio,
-                winch,
-              })} Ltrs`,
+              amount: `${computeRoundedWater80({  lotWeight,liqRatio,winch,  })} Ltrs`,
               temp: getHotwashTemp(selectedColour, dyeingSystem),
               time: getHotwashDuration(selectedColour, dyeingSystem),
               ph: getHotwashPh(selectedColour, dyeingSystem),
             },
             {
               chemical: getHotWashTitle2(dyeingSystem),
-              gramsPerLt: getgramsPLForHotwash(selectedColour, dyeingSystem),
-              amount: computeHotwashAmount({
-                selectedColour,
-                dyeingSystem,
-                lotWeight,
-                liqRatio,
-                winch,
-              }),
+              gramsPerLt: hotwashGpl,
+              amount: computeHotwashAmount({ selectedColour,dyeingSystem,lotWeight, liqRatio,winch, }),
               temp: "",
               time: "",
               ph: "Drain",
@@ -352,37 +297,17 @@ export default function useChemicalSteps() {
             {
               chemical: getPrepareToDyeTitle1(scouring),
               gramsPerLt: getPrepareToDyeGPL1(dyeingSystem, selectedColour),
-              amount: getPrepareToDyeAmt1({
-                gpl,
-                dyeingSystem,
-                lotWeight,
-                waterLitresDyeing,
-              }),
-              temp: getPrepareToDyeTemp({
-                scouring,
-                dyeingSystem,
-                selectedColour,
-              }),
+              amount: getPrepareToDyeAmt1({ gpl,dyeingSystem,lotWeight,waterLitresDyeing, }),
+              temp: getPrepareToDyeTemp({scouring, dyeingSystem,  selectedColour,}),
               time: getPrepareToDyeProperty(21, dyeingSystem, selectedColour),
               ph: getPrepareToDyeProperty(22, dyeingSystem, selectedColour),
             },
             {
               chemical: getPrepareToDyeTitle2(scouring, true),
               gramsPerLt: Number(
-                getPrepareToDyeGPL2(
-                  dyeingSystem,
-                  selectedColour,
-                  null,
-                  scouring
-                )
-              ).toFixed(1),
-              amount: getPrepareToDyeAmt({
-                gpl: getPrepareToDyeGPL2(
-                  dyeingSystem,
-                  selectedColour,
-                  null,
-                  scouring
-                ),
+                getPrepareToDyeGPL2(dyeingSystem,selectedColour,null,scouring) ).toFixed(1),
+                amount: getPrepareToDyeAmt({
+                gpl: getPrepareToDyeGPL2(dyeingSystem,selectedColour,null,scouring),
                 dyeingSystem,
                 lotWeight,
                 waterLitresDyeing,
@@ -394,14 +319,10 @@ export default function useChemicalSteps() {
             {
               chemical: getPrepareToDyeTitle3(scouring),
               gramsPerLt: Number(
-                getPrepareToDyeGPL3(dyeingSystem, selectedColour, scouring)
-              ).toFixed(1),
+                getPrepareToDyeGPL3(dyeingSystem, selectedColour, scouring)).toFixed(1),
+              
               amount: getPrepareToDyeAmt({
-                gpl: getPrepareToDyeGPL3(
-                  dyeingSystem,
-                  selectedColour,
-                  scouring
-                ),
+                gpl: getPrepareToDyeGPL3(dyeingSystem,selectedColour,scouring),
                 dyeingSystem,
                 lotWeight,
                 waterLitresDyeing,
