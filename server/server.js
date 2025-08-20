@@ -7,6 +7,7 @@ const employeeRoutes = require('./routes/employees');
 const departments = require('./routes/departments')
 const scouring = require('./routes/scouring');
 const hotwash = require('./routes/hotwash')
+const prepareToDye = require('./routes/prepareToDye')
 
 const os = require('os');
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/departments', departments);
 app.use('/api/scouring',scouring);
 app.use('/api/hotwash',hotwash);
+app.use('/api/prepare-to-dye', prepareToDye);
 
 app.get('/', (req, res) => {
   const hostname = os.hostname();

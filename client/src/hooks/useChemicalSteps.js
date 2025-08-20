@@ -60,6 +60,7 @@ import {
 
 import useScouringData from "./useScouringData";
 import useHotwashData from "./useHotwashData";
+import usePrepareToDyeData from "./usePrepareToDyeData";
 
 export default function useChemicalSteps() {
   const {
@@ -73,12 +74,11 @@ export default function useChemicalSteps() {
     dyeingSystem,
   } = useDyeingStore();
 
-  //Fetch Data from the SQL server
- const { values: scouringValues, scouringTemp, scouringTime, scouringPH,hotwashGpl } = useScouringData(scouring, selectedColour, dyeingSystem);
- const { hotwashTemp, hotwashTime, hotwashPH, loading, error } = useHotwashData(selectedColour, dyeingSystem);
- console.log("Hotwash Temperarute is", hotwashTemp)
+
+ 
 
   const NBSP = "\u00A0";
+  //scouring chemicals
   const scouringChemical1 = getScouringChemical1({ scouringSystem: scouring })
   const scouringChemical2 = getScouringChemical2({ scouringSystem: scouring })
   const scouringChemical3 = getScouringChemical3({ scouringSystem: scouring })
@@ -88,31 +88,38 @@ export default function useChemicalSteps() {
   const scouringChemical7 = getScouringChemical7({ scouringSystem: scouring })
 
 
+  
+  //Fetch Data from the SQL server
+ const { values: scouringValues, scouringTemp, scouringTime, scouringPH,hotwashGpl } = useScouringData(scouring, selectedColour, dyeingSystem);
+ const { hotwashTemp, hotwashTime, hotwashPH, } = useHotwashData(selectedColour, dyeingSystem);
+ const { prepareToDyeChem1Gpl, prepareToDyeChem2Gpl,prepareToDyeChem3Gpl, prepareToDyeTime, prepareToDyePh, prepareToDyeTemp} = usePrepareToDyeData(selectedColour, dyeingSystem, scouring);
 
 
-  const selectedIndex = useMemo(() => {
-    if (!selectedColour) return -1;
-    return Colour_Chart.findIndex(
-      (color) =>
-        typeof color === "string" &&
-        typeof selectedColour === "string" &&
-        color.trim() === selectedColour.trim()
-    );
-  }, [selectedColour]);
 
-  const getNameAt = (arr) =>
-    selectedIndex === -1 ? "" : arr?.[selectedIndex] ?? "";
-  const getAmtAt = (arr) => {
-    if (selectedIndex === -1) return "";
-    const v = arr?.[selectedIndex];
-    return v ?? "";
-  };
-  const formatNumber = (val) => {
-    if (val === "" || val === null || val === undefined) return "";
-    const n = Number(val);
-    if (Number.isNaN(n)) return String(val);
-    return n.toFixed(3);
-  };
+
+      const selectedIndex = useMemo(() => {
+        if (!selectedColour) return -1;
+        return Colour_Chart.findIndex(
+          (color) =>
+            typeof color === "string" &&
+            typeof selectedColour === "string" &&
+            color.trim() === selectedColour.trim()
+        );
+      }, [selectedColour]);
+
+      const getNameAt = (arr) =>
+        selectedIndex === -1 ? "" : arr?.[selectedIndex] ?? "";
+      const getAmtAt = (arr) => {
+        if (selectedIndex === -1) return "";
+        const v = arr?.[selectedIndex];
+        return v ?? "";
+      };
+      const formatNumber = (val) => {
+        if (val === "" || val === null || val === undefined) return "";
+        const n = Number(val);
+        if (Number.isNaN(n)) return String(val);
+        return n.toFixed(3);
+      };
 
   const chemical = getChemicalField({  saltPosition,saltOption, scouring,dyeingSystem,selectedColour,});
   
@@ -299,16 +306,15 @@ export default function useChemicalSteps() {
             { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "", ph: "" },
             {
               chemical: getPrepareToDyeTitle1(scouring),
-              gramsPerLt: getPrepareToDyeGPL1(dyeingSystem, selectedColour),
+              gramsPerLt: prepareToDyeChem1Gpl ?? "fetching data...",
               amount: getPrepareToDyeAmt1({ gpl,dyeingSystem,lotWeight,waterLitresDyeing, }),
-              temp: getPrepareToDyeTemp({scouring, dyeingSystem,  selectedColour,}),
-              time: getPrepareToDyeProperty(21, dyeingSystem, selectedColour),
-              ph: getPrepareToDyeProperty(22, dyeingSystem, selectedColour),
+              temp: prepareToDyeTemp,
+              time: prepareToDyeTime,
+              ph: prepareToDyePh,
             },
             {
               chemical: getPrepareToDyeTitle2(scouring, true),
-              gramsPerLt: Number(
-                getPrepareToDyeGPL2(dyeingSystem,selectedColour,null,scouring) ).toFixed(1),
+              gramsPerLt: prepareToDyeChem2Gpl ?? "fetching data...",
                 amount: getPrepareToDyeAmt({
                 gpl: getPrepareToDyeGPL2(dyeingSystem,selectedColour,null,scouring),
                 dyeingSystem,
@@ -321,8 +327,7 @@ export default function useChemicalSteps() {
             },
             {
               chemical: getPrepareToDyeTitle3(scouring),
-              gramsPerLt: Number(
-                getPrepareToDyeGPL3(dyeingSystem, selectedColour, scouring)).toFixed(1),
+              gramsPerLt: prepareToDyeChem3Gpl ?? "fetching data...",
               
               amount: getPrepareToDyeAmt({
                 gpl: getPrepareToDyeGPL3(dyeingSystem,selectedColour,scouring),
