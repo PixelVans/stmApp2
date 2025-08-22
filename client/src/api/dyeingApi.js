@@ -16,3 +16,9 @@ export async function fetchPrepareToDyeRow(colour) {
   if (!res.ok) throw new Error("Failed to fetch prepare-to-dye row");
   return res.json(); 
 }
+
+export async function fetchDyeingRow(colour) {
+  const res = await fetch(`http://localhost:3000/api/dyeing/${encodeURIComponent(colour)}`);
+  if (!res.ok) throw new Error("Failed to fetch dyeing row");
+  return res.json(); 
+}

@@ -56,10 +56,10 @@ export function computeAmount(gramsPerLt, lotWeight) {
     const wholeKg = Math.trunc(totalGrams / 1000);
     const grams = totalGrams % 1000;
     return grams > 0
-      ? `${wholeKg}${UNIT_KG} ${grams.toFixed(0)}${UNIT_G}`
+      ? `${wholeKg}${UNIT_KG} ${grams.toFixed(0)} ${UNIT_G}`
       : `${wholeKg}${UNIT_KG}`;
   } else {
-    return `${totalGrams.toFixed(0)}${UNIT_G}`;
+    return `${totalGrams.toFixed(0)} ${UNIT_G}`;
   }
 }
 
@@ -103,7 +103,6 @@ export function getDyeingPh(colourSelected, dyeingSystemSelected) {
   return dyeing_ph
 }
 
-
 export const getChemicalField = ({
   saltPosition,
   saltOption,
@@ -111,10 +110,9 @@ export const getChemicalField = ({
   dyeingSystem,
   selectedColour
 }) => {
-  const isBlank = (val) =>
-    val === null || val === undefined || String(val).trim() === "";
+  let isBlank
+  if(saltOption == "Industrial Salt") isBlank = true
 
-  // Helper: replicate INDEX/MATCH in Excel
   const pickByCode = (code) => {
     const positions = positions_dyeing[scouring] || [];
     const idx = positions.findIndex((p) => p === code);
@@ -122,33 +120,22 @@ export const getChemicalField = ({
   };
 
   try {
-    if (saltOption == "Industrial Salt" || saltPosition === "After Dyes") {
-      if (saltOption == "Industrial Salt") {
-        return pickByCode(5);
-      } else {
-        return pickByCode(7);
-      }
+    if (saltPosition === "" || saltPosition === "After Dyes") {
+      return isBlank ? pickByCode(5) : pickByCode(7);
+    } else if (scouring === "CreamStripe") {
+      return isBlank ? pickByCode(5) : pickByCode(7);
     } else {
-      if (scouring === "CreamStripe") {
-        if (saltOption == "Industrial Salt") {
-          return pickByCode(5);
-        } else {
-          return pickByCode(7);
-        }
-      } else {
-        // Same as before: lookup by colour
-        const colourIdx = Colour_Chart.findIndex(
-          (c) => c === selectedColour
-        );
-        const dyeValue = Dyestuff_4[colourIdx];
-        return isBlank(dyeValue) ? "" : dyeValue;
-      }
+      const colourIdx = Colour_Chart.findIndex(
+        (c) => c === selectedColour
+      );
+      const dyeValue = Dyestuff_4[colourIdx];
+      return isBlank(dyeValue) ? "" : dyeValue;
     }
   } catch (err) {
-    
-    return "E";
+    return " ";
   }
 };
+
 
 
 export function getSaltGramsPerL({ chemicalName, selectedColour }) {
@@ -273,7 +260,7 @@ export function getRemainInDwell({
   selectedColour,
  }) {
   // 1. Check salt position
-  if (!saltPosition || saltPosition === "After Dyes") {
+  if (!saltPosition || saltPosition === "After Dyes" || saltPosition === "") {
     return "REMAIN IN DWELL FOR 20 MINS";
   }
 
@@ -283,11 +270,7 @@ export function getRemainInDwell({
   }
 
   // 3. Look up in Dyestuff_4
-  const rowIndex = Colour_Chart.indexOf(selectedColour);
-  if (rowIndex === -1) return "E"; // fallback like Excel error result
-
-  const value = Dyestuff_4[rowIndex];
-  if (!value) return "";
+  return "";
 
   return value;
 }
@@ -510,7 +493,7 @@ export function getScouringChemicalAmount(
   // Step 4: return with correct units
   if (totalGrams >= 1000) {
     const kgs = totalGrams / 1000;
-    return `${Number.isInteger(kgs) ? kgs.toFixed(0) : kgs.toFixed(1)}${unitKgs}`;
+    return `${Number.isInteger(kgs) ? kgs.toFixed(0) : kgs.toFixed(1)} ${unitKgs}`;
   } else if (totalGrams <= 0) {
     return "";
   }
@@ -832,13 +815,13 @@ export function getPrepareToDyeAmt({
       if (vatValue === 0) return `0 ${standards.gms}`;
 
       if (vatValue >= 1.1) {
-        const kgsPart = `${Math.trunc(vatValue)}${standards.kgs}`;
+        const kgsPart = `${Math.trunc(vatValue)} ${standards.kgs}`;
         const gmsPart = `${Math.round(
           Math.floor(vatValue * 1000) - Math.trunc(vatValue) * 1000
-        )}${standards.gms}`;
+        )} ${standards.gms}`;
         return kgsPart + gmsPart;
       } else {
-        return `${Math.round(vatValue * 1000)}${standards.gms}`;
+        return `${Math.round(vatValue * 1000)} ${standards.gms}`;
       }
     }
 
@@ -848,12 +831,12 @@ export function getPrepareToDyeAmt({
       return `${Math.ceil(waterLitresDyeing * 0.8)} ${standards.ltrs}`;
     } else {
       const nonVatValue = gpl * waterLitresDyeing;
-      if (nonVatValue === 0) return `0 ${standards.gms}`;
+      if (nonVatValue === 0) return `0  ${standards.gms}`;
 
       if (nonVatValue >= 1000) {
-        return `${(Math.round((nonVatValue / 1000) * 10) / 10)}${standards.kgs}`;
+        return `${(Math.round((nonVatValue / 1000) * 10) / 10)} ${standards.kgs}`;
       } else {
-        return `${Math.round(nonVatValue * 10) / 10}${standards.gms}`;
+        return `${Math.round(nonVatValue * 10) / 10} ${standards.gms}`;
       }
     }
   } catch {
@@ -880,13 +863,13 @@ export function getPrepareToDyeAmt1({
       const vatValue = (gpl / 100) * lotWeight;
 
       if (vatValue >= 1.1) {
-        const kgsPart = `${Math.trunc(vatValue)}${standards.kgs}`;
+        const kgsPart = `${Math.trunc(vatValue)} ${standards.kgs}`;
         const gmsPart = `${Math.round(
           Math.floor(vatValue * 1000) - Math.trunc(vatValue) * 1000
-        )}${standards.gms}`;
+        )} ${standards.gms}`;
         return kgsPart + gmsPart;
       } else {
-        return `${Math.round(vatValue * 1000)}${standards.gms}`;
+        return `${Math.round(vatValue * 1000)} ${standards.gms}`;
       }
     }
 
@@ -973,7 +956,7 @@ export function step4sec1Chemical1({
       return titlesTable[colIndex] ?? "E";
     }
   } catch {
-    return "Er";
+    return " ";
   }
 }
 
@@ -982,20 +965,24 @@ export function step4sec1Chemical1({
 
 
 
+
 export function step4sec1Chemical2({
-  saltOption, // "Industrial Salt", "After Dyes", etc.
-  scouring
+  saltOption, 
+  scouring,
+  saltPosition
 }) {
   try {
+     
     // 1. Salt position filter
-    if (!saltOption || saltOption === "After Dyes") {
-      return ""; // Excel: ""
+    if (!saltPosition || saltPosition === "After Dyes" || saltPosition === "" ) {
+      return ""; 
     }
-
+    
     // 2. CreamStripe case
     if (scouring === "CreamStripe") {
       return "";
     }
+  
     const colNumber = saltOption == "Industrial Salt" ? 5 : 7;
     
     // 4. Lookups
@@ -1012,12 +999,11 @@ export function step4sec1Chemical2({
 
 
 
-
 export function step4sec1ChemicalGpl({
-  mode,              // "prepareToDye" or "dyeing"
+  mode,              
   selectedColour,
-  scouring,          // Only needed for prepareToDye
-  b26Title           // Only needed for dyeing
+  scouring,         
+  b26Title           
 }) {
   try {
     
@@ -1067,13 +1053,13 @@ export function step4sec1ChemicalAmt({
       // Kgs branch
       const valueInKgs = total / 1000;
       return isAmt1
-        ? `${Math.round(valueInKgs * 10) / 10}${standards.kgs}` // ROUND to 1 decimal
-        : `${Math.ceil(valueInKgs)}${standards.kgs}`;           // ROUNDUP integer
+        ? `${Math.round(valueInKgs * 10) / 10}  ${standards.kgs}` // ROUND to 1 decimal
+        : `${Math.ceil(valueInKgs)} ${standards.kgs}`;           // ROUNDUP integer
     } else {
       // gms branch
       return isAmt1
-        ? `${Math.round(total * 10) / 10}${standards.gms}` // ROUND to 1 decimal
-        : `${Math.ceil(total)}${standards.gms}`;           // ROUNDUP integer
+        ? `${Math.round(total * 10) / 10} ${standards.gms}` // ROUND to 1 decimal
+        : `${Math.ceil(total)} ${standards.gms}`;           // ROUNDUP integer
     }
   } catch {
     return "";

@@ -86,8 +86,8 @@ const DyeingControlPanel = () => {
   return (
     <div
       className="
-        p-3 sm:p-4 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-4
-        fixed top-0 z-30 mt-[64px] rounded-t-none max-h-[360px] lg:px-6
+        p-3  pb-6 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-4
+        fixed top-0 z-30 mt-[64px] rounded-t-none max-h-[360px] lg:px-6 
         text-sm
       "
     >
@@ -236,6 +236,7 @@ const DyeingControlPanel = () => {
             value={saltPosition}
             onChange={(e) => setSaltPosition(e.target.value)}
           >
+            <option value=""></option>
             <option value="After Dyes">After Dyes</option>
             <option value="Before Dyes">Before Dyes</option>
           </select>

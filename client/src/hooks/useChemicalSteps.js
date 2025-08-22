@@ -61,6 +61,8 @@ import {
 import useScouringData from "./useScouringData";
 import useHotwashData from "./useHotwashData";
 import usePrepareToDyeData from "./usePrepareToDyeData";
+import useDyeingData from "./useDyeingData";
+import { getDyeingSec1ChemAmt1, getDyeingSec1ChemAmt2,  } from "../components/functions/dyeingFunctions";
 
 export default function useChemicalSteps() {
   const {
@@ -87,14 +89,27 @@ export default function useChemicalSteps() {
   const scouringChemical6 = getScouringChemical6({ scouringSystem: scouring })
   const scouringChemical7 = getScouringChemical7({ scouringSystem: scouring })
 
-
+  const saltOptionstep4 = getChemicalField({  saltPosition, saltOption, scouring, dyeingSystem, selectedColour,});
+  
+  const waterLitresDyeing = computeStartingWaterAmount({lotWeight,liqRatio,winch, });
+  const gpl = getPrepareToDyeGPL1(dyeingSystem, selectedColour);
+  const dwellValue = getRemainInDwell({saltPosition,scouringSystemSelected: scouring,selectedColour, });
+  const b26Title = step4sec1Chemical2({saltPosition, saltOption, scouring, });
+    
+   
+    
+ 
   
   //Fetch Data from the SQL server
  const { values: scouringValues, scouringTemp, scouringTime, scouringPH,hotwashGpl } = useScouringData(scouring, selectedColour, dyeingSystem);
  const { hotwashTemp, hotwashTime, hotwashPH, } = useHotwashData(selectedColour, dyeingSystem);
- const { prepareToDyeChem1Gpl, prepareToDyeChem2Gpl,prepareToDyeChem3Gpl, prepareToDyeTime, prepareToDyePh, prepareToDyeTemp} = usePrepareToDyeData(selectedColour, dyeingSystem, scouring);
-
-
+ const { prepareToDyeChem1Gpl, prepareToDyeChem2Gpl,prepareToDyeChem3Gpl, 
+  prepareToDyeTime, prepareToDyePh, prepareToDyeTemp} = usePrepareToDyeData(selectedColour, dyeingSystem, scouring);
+ 
+  const { dyeingSec1Chem1Gpl, dyeingSec1Chem2Gpl, dyeingSec1Temp, dyeingSec1Ph, dyeingSec1Duration, 
+  dyeingSec2Gpl1,dyeingSec2Gpl2,dyeingSec2Gpl3,dyeingSec2Gpl4,dyeingSec2Gpl5
+ } = useDyeingData(selectedColour,  scouring, b26Title, dyeingSystem,saltOptionstep4,saltOption);
+  
 
 
       const selectedIndex = useMemo(() => {
@@ -121,18 +136,13 @@ export default function useChemicalSteps() {
         return n.toFixed(3);
       };
 
-  const chemical = getChemicalField({  saltPosition,saltOption, scouring,dyeingSystem,selectedColour,});
-  
-  const waterLitresDyeing = computeStartingWaterAmount({lotWeight,liqRatio,winch, });
-    
-  const gpl = getPrepareToDyeGPL1(dyeingSystem, selectedColour);
-  const dwellValue = getRemainInDwell({saltPosition,scouringSystemSelected: scouring,selectedColour, });
-  const b26Title = step4sec1Chemical2({saltOption, scouring,})
+   
+
 
   const dyeingSecondStep = [
               {
                 chemical: getNameAt(Dyestuff_1),
-                gramsPerLt: formatNumber(getAmtAt(Dyestuff_1_Amt)),
+                gramsPerLt: dyeingSec2Gpl1 ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_1_Amt)), lotWeight),
                 temp: getDyeingTemp(scouring, selectedColour, dyeingSystem),
                 time: getDyeingTime(selectedColour, dyeingSystem),
@@ -140,7 +150,7 @@ export default function useChemicalSteps() {
               },
               {
                 chemical: getNameAt(Dyestuff_2),
-                gramsPerLt: formatNumber(getAmtAt(Dyestuff_2_Amt)),
+                gramsPerLt: dyeingSec2Gpl2 ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_2_Amt)), lotWeight),
                 temp: "",
                 time: "",
@@ -148,7 +158,7 @@ export default function useChemicalSteps() {
               },
               {
                 chemical: getNameAt(Dyestuff_3),
-                gramsPerLt: formatNumber(getAmtAt(Dyestuff_3_Amt)),
+                gramsPerLt: dyeingSec2Gpl3 ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_3_Amt)), lotWeight),
                 temp: "",
                 time: "",
@@ -156,7 +166,7 @@ export default function useChemicalSteps() {
               },
               {
                 chemical: getNameAt(Dyestuff_4),
-                gramsPerLt: formatNumber(getAmtAt(Dyestuff_4_Amt)),
+                gramsPerLt: dyeingSec2Gpl4 ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_4_Amt)), lotWeight),
                 temp: "",
                 time: "",
@@ -164,12 +174,11 @@ export default function useChemicalSteps() {
               },
               { isInstructionRow: true, chemical: dwellValue ?? "" },
               {
-                chemical: chemical,
-                gramsPerLt: Number(
-                  getSaltGramsPerL({ chemicalName: chemical, selectedColour })
-                ).toFixed(3),
+                //salt filed
+                chemical: saltOptionstep4,
+                gramsPerLt: dyeingSec2Gpl5 ?? "fetching data...",
                 amount: computeDyeingSaltAmount({
-                  chemicalName: chemical,
+                  chemicalName: saltOptionstep4,
                   selectedColour,
                   saltPosition,
                   scouring,
@@ -196,16 +205,16 @@ export default function useChemicalSteps() {
   const dyeingFirstStep = [
           {
                 chemical: step4sec1Chemical1({dyeingSystem,  saltPosition}) ,
-                gramsPerLt: Number(step4sec1ChemicalGpl({mode: "prepareToDye",selectedColour,scouring })).toFixed(1),
-                amount: 'r66rrr',
-                temp: "33 dgr",
-                time: "not 55",
-                ph: "not done",
+                gramsPerLt: dyeingSec1Chem1Gpl ?? "fetching data...",
+                amount: getDyeingSec1ChemAmt1(dyeingSec1Chem1Gpl ?? 0, waterLitresDyeing, "Kgs"),
+                temp: dyeingSec1Temp,
+                time: dyeingSec1Duration,
+                ph: dyeingSec1Ph,
               },
           {
-                chemical: step4sec1Chemical2({saltOption, scouring,}),
-                gramsPerLt: Number(step4sec1ChemicalGpl({mode: "dyeing", selectedColour, b26Title })).toFixed(1),
-                amount: '',
+                chemical: b26Title,
+                gramsPerLt: dyeingSec1Chem2Gpl ?? "",
+                amount: getDyeingSec1ChemAmt2(dyeingSec1Chem2Gpl ?? 0, waterLitresDyeing,  "Kgs"),
                 temp: "",
                 time: "",
                 ph: "",

@@ -22,8 +22,8 @@ export default function useHotwashData(selectedColour, dyeingSystem) {
         // fetch temperature (column 20)
         let temp = await getHotwashTempTimeorPH(selectedColour, dyeingSystem,20);
         
-    if (temp) {
-        temp = String(temp).replace("?", "°");
+        if (temp) {
+         temp = String(temp).replace("?", "°");
 
         }
          
