@@ -1,16 +1,5 @@
+=IFERROR(IF(OR(Salt_Position="",Salt_Position="After Dyes"),"",
+(IF(Scouring_System_Selected="CreamStripe","",IF(ISBLANK($J$3),
+(INDEX(INDIRECT("Titles_"&$B$23,TRUE),MATCH(5,INDIRECT("Position_"&$B$23&"_"&Scouring_System_Selected,TRUE),0))),
+(INDEX(INDIRECT("Titles_"&$B$23,TRUE),MATCH(7,INDIRECT("Position_"&$B$23&"_"&Scouring_System_Selected,TRUE),0))))))),"")
 
-and now  for step4sec1ChemicalAmt1 using the below excel formula
-=IFERROR(IF(C25*Water_Litres_Dyeing>=1000,ROUND(C25*Water_Litres_Dyeing/1000,1)&Standards!$D$174,ROUND(C25*Water_Litres_Dyeing,1)),"")
-D174 is kgs,
-and C25 is the value gotten by Number(step4sec1ChemicalGpl({mode: "prepareToDye",selectedColour,scouring })).toFixed(1),
-
-
-and then step4sec1ChemicalAmt2
-using the formula, =IFERROR(IF(C26*Water_Litres_Dyeing>=1000,ROUNDUP
-(C26*Water_Litres_Dyeing/1000,0)&Standards!$D$174,ROUNDUP(C26*Water_Litres_Dyeing,0)),"")
-where C26 is the value gotten by, Number(step4sec1ChemicalGpl({mode: "dyeing", selectedColour, b26Title })).toFixed(1),
-
-
-
-
-if you can combine the 2 exportable functions to make them work, do it and give it.

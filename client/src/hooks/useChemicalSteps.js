@@ -107,7 +107,8 @@ export default function useChemicalSteps() {
   prepareToDyeTime, prepareToDyePh, prepareToDyeTemp} = usePrepareToDyeData(selectedColour, dyeingSystem, scouring);
  
   const { dyeingSec1Chem1Gpl, dyeingSec1Chem2Gpl, dyeingSec1Temp, dyeingSec1Ph, dyeingSec1Duration, 
-  dyeingSec2Gpl1,dyeingSec2Gpl2,dyeingSec2Gpl3,dyeingSec2Gpl4,dyeingSec2Gpl5
+  dyeingSec2Gpl1,dyeingSec2Gpl2,dyeingSec2Gpl3,dyeingSec2Gpl4,dyeingSec2Gpl5, dyeingSec2Temp1, dyeingSec2Temp2,
+  dyeingSec2Time1,dyeingSec2Time2, dyeingSec2Ph
  } = useDyeingData(selectedColour,  scouring, b26Title, dyeingSystem,saltOptionstep4,saltOption);
   
 
@@ -144,9 +145,9 @@ export default function useChemicalSteps() {
                 chemical: getNameAt(Dyestuff_1),
                 gramsPerLt: dyeingSec2Gpl1 ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_1_Amt)), lotWeight),
-                temp: getDyeingTemp(scouring, selectedColour, dyeingSystem),
-                time: getDyeingTime(selectedColour, dyeingSystem),
-                ph: getDyeingPh(selectedColour, dyeingSystem),
+                temp: dyeingSec2Temp1  ?? "fetching data..",
+                time: dyeingSec2Time1 ?? "fetching data..",
+                ph: dyeingSec2Ph ?? "fetching data...",
               },
               {
                 chemical: getNameAt(Dyestuff_2),
@@ -185,8 +186,8 @@ export default function useChemicalSteps() {
                   waterLitresDyeing: waterLitresDyeing.toFixed(3),
                   lotWeight,
                 }),
-                temp: getSaltDynamicTemp({ selectedColour, scouring }),
-                time: getSaltDynamicDuration({ selectedColour }),
+                temp: dyeingSec2Temp2 ?? "fetching data..",
+                time: dyeingSec2Time2 ?? "fetching data..",
                 ph: "",
                 rowSpanGroup: "salt",
               },
