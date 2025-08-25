@@ -18,6 +18,7 @@ const useDyeingStore = create(
       article: "",
       lotNo: "",
       liqRatio8: "No Dye Fix",
+      soaping: "",
       date: new Date(),
 
       // Generic updater
@@ -39,6 +40,7 @@ const useDyeingStore = create(
           article: "",
           lotNo: "",
           liqRatio8: "No Dye Fix",
+          soaping: "",
           date: new Date(),
         }),
     }),

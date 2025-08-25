@@ -11,7 +11,7 @@ export default function ChemicalTable() {
     <div className="mt-[300px]">
       <DyeingControlPanel />
       {steps.map((step, sIdx) => (
-        <div key={sIdx} className="mb-8 p-4 sm:p-6">
+        <div key={sIdx} className=" p-4 sm:p-6">
           <h2 className="text-lg font-bold mb-2">{step.step}</h2>
 
           {step.extraSection && (

@@ -29,6 +29,10 @@ import {
   positions_hotwash,
   positions_prepare_to_dye,
   titles_prepare_to_dye,
+  Titles_First_Rinse,
+  positions_first_rinse,
+  positions_soaping,
+  Titles_Soaping,
 } from "../../utils/constants";
 
 import { IgridientsHotwash } from "../../utils/IgridientsHotwash";
@@ -1068,7 +1072,119 @@ export function step4sec1ChemicalAmt({
 
 
 
+export function getEndChemical1( scouring, position ) {
+  const positionsArray = positions_dyeing[scouring];
+  if (!positionsArray) return "";
 
+  const columnIdx = positionsArray.indexOf(position);
+  if (columnIdx === -1) return "";
+
+  return Titles_Dyeing[columnIdx] ?? "";
+}
+
+
+export function getEndChemicalAmount(gpl,  waterLitresDyeing,) 
+  {
+  const unitKgs = " Kgs";
+  const unitGrams = " g";
+
+  // Step 3: total grams
+  const totalGrams = gpl * waterLitresDyeing;
+
+  if (isNaN(totalGrams)) return "";
+
+  // Step 4: return with correct units
+  if (totalGrams >= 1000) {
+    const kgs = totalGrams / 1000;
+    return `${Number.isInteger(kgs) ? kgs.toFixed(0) : kgs.toFixed(1)} ${unitKgs}`;
+  } else if (totalGrams <= 0) {
+    return "0 gm";
+  }
+
+  return `${totalGrams.toFixed(0)}${unitGrams}`;
+}
+
+
+
+
+export function getFirstRinseChem1( scouring) {
+  const positionsArray = positions_first_rinse[scouring];
+  if (!positionsArray) return "";
+
+  const columnIdx = positionsArray.indexOf(1);
+  if (columnIdx === -1) return "";
+
+  return Titles_First_Rinse[columnIdx] ?? "";
+}
+
+
+
+export function roundupWater(waterLitresDyeing) {
+  return Math.ceil(waterLitresDyeing * 0.8);
+}
+
+
+
+
+
+export function getSoapingChem1( scouring) {
+  const positionsArray = positions_soaping[scouring];
+  if (!positionsArray) return "";
+
+  const columnIdx = positionsArray.indexOf(1);
+  if (columnIdx === -1) return "";
+
+  return Titles_Soaping[columnIdx] ?? "";
+}
+
+
+export function getFirstRinseChem2(scouringSystem, soaping) {
+  const positionsArray = positions_soaping[scouringSystem];
+  if (!positionsArray) return "";
+ 
+  // if soaping (I59) is blank → look for 2, else → look for 4
+  const matchValue = !soaping ? 2 : 4;
+  const columnIdx = positionsArray.indexOf(matchValue);
+
+  if (columnIdx === -1) return "";
+
+  return Titles_Soaping[columnIdx] ?? "";
+}
+
+
+export function getFirstRinseChem3(scouringSystem) {
+  const positionsArray = positions_soaping[scouringSystem];
+  if (!positionsArray) return "";
+  const columnIdx = positionsArray.indexOf(3);
+  if (columnIdx === -1) return "";
+
+  return Titles_Soaping[columnIdx] ?? "";
+}
+
+
+
+
+
+export function getSoapingChemAmt(gpl,  waterLitresDyeing,) 
+  {
+  const unitKgs = " Kgs";
+  const unitGrams = " g";
+
+  // Step 3: total grams
+  const totalGrams = gpl * waterLitresDyeing;
+
+  if (isNaN(totalGrams)) return "";
+
+  // Step 4: return with correct units
+  if (totalGrams >= 1000) {
+    const kgs = totalGrams / 1000;
+    return `${Number.isInteger(kgs) ? kgs.toFixed(0) : kgs.toFixed(1)} ${unitKgs}`;
+  } else if (totalGrams <= 0) {
+    return "0 gm";
+  }
+
+  return `${totalGrams.toFixed(0)}${unitGrams}`;
+}
 
 
 

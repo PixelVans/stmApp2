@@ -35,6 +35,7 @@ const DyeingControlPanel = () => {
   const [liqRatio8, setLiqRatio8] = useState(initial.current.liqRatio8 || "Dye Fix");
   const [saltOption, setSaltOption] = useState(initial.current.saltOption || "Glauber Salt");
   const [saltPosition, setSaltPosition] = useState(initial.current.saltPosition || "After Dyes");
+  const [soaping, setSoaping] = useState(initial.current.soaping || "");
 
   const today = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -62,7 +63,7 @@ const DyeingControlPanel = () => {
     setField("liqRatio8", liqRatio8);
     setField("saltOption", saltOption);
     setField("saltPosition", saltPosition);
-    // No pulling back from store here — keep focus intact
+    setField("soaping", soaping);
   };
 
   const handleReset = () => {
@@ -81,6 +82,7 @@ const DyeingControlPanel = () => {
     setLiqRatio8(defaults.liqRatio8 || "Dye Fix");
     setSaltOption(defaults.saltOption || "Glauber Salt");
     setSaltPosition(defaults.saltPosition || "After Dyes");
+    setSoaping(defaults.soaping || "After Dyes");
   };
 
   return (
@@ -239,6 +241,17 @@ const DyeingControlPanel = () => {
             <option value=""></option>
             <option value="After Dyes">After Dyes</option>
             <option value="Before Dyes">Before Dyes</option>
+          </select>
+        </FormRow>
+
+        <FormRow label="Soaping">
+          <select
+            className={baseSelect}
+            value={soaping}
+            onChange={(e) => setSoaping(e.target.value)}
+          >
+            <option value=""></option>
+            <option value="Acetic Acid">Acetic Acid</option>
           </select>
         </FormRow>
       </div>

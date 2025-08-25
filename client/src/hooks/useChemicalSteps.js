@@ -56,6 +56,14 @@ import {
   step4sec1Chemical1,
   step4sec1Chemical2,
   step4sec1ChemicalGpl,
+  getEndChemical1,
+  getEndChemicalAmount,
+  getFirstRinseChem1,
+  roundupWater,
+  getSoapingChem1,
+  getFirstRinseChem2,
+  getFirstRinseChem3,
+  getSoapingChemAmt,
 } from "../components/functions/dyeingfunc";
 
 import useScouringData from "./useScouringData";
@@ -63,6 +71,9 @@ import useHotwashData from "./useHotwashData";
 import usePrepareToDyeData from "./usePrepareToDyeData";
 import useDyeingData from "./useDyeingData";
 import { getDyeingSec1ChemAmt1, getDyeingSec1ChemAmt2,  } from "../components/functions/dyeingFunctions";
+import useEndData from "./useEndData";
+import useFirstRinseData from "./useFirstRinseData";
+import useSoapingData from "./useSoapingData";
 
 export default function useChemicalSteps() {
   const {
@@ -74,6 +85,7 @@ export default function useChemicalSteps() {
     liqRatio,
     lotWeight,
     dyeingSystem,
+    soaping,
   } = useDyeingStore();
 
 
@@ -100,20 +112,35 @@ export default function useChemicalSteps() {
     
  
   
-  //Fetch Data from the SQL server
+//Fetch Data from the SQL server
  const { values: scouringValues, scouringTemp, scouringTime, scouringPH,hotwashGpl } = useScouringData(scouring, selectedColour, dyeingSystem);
+
+//  fetch hotrwash data
  const { hotwashTemp, hotwashTime, hotwashPH, } = useHotwashData(selectedColour, dyeingSystem);
+
+//  fetch prepare to dye data
  const { prepareToDyeChem1Gpl, prepareToDyeChem2Gpl,prepareToDyeChem3Gpl, 
   prepareToDyeTime, prepareToDyePh, prepareToDyeTemp} = usePrepareToDyeData(selectedColour, dyeingSystem, scouring);
  
+//  fetch dyeing data
   const { dyeingSec1Chem1Gpl, dyeingSec1Chem2Gpl, dyeingSec1Temp, dyeingSec1Ph, dyeingSec1Duration, 
   dyeingSec2Gpl1,dyeingSec2Gpl2,dyeingSec2Gpl3,dyeingSec2Gpl4,dyeingSec2Gpl5, dyeingSec2Temp1, dyeingSec2Temp2,
   dyeingSec2Time1,dyeingSec2Time2, dyeingSec2Ph
  } = useDyeingData(selectedColour,  scouring, b26Title, dyeingSystem,saltOptionstep4,saltOption);
-  
+
+//  end step- dyeing
+  const { endGpl1, endGpl2, endTemp, endDuration, endPh } = useEndData(scouring, selectedColour, dyeingSystem)
+
+  //fetch first rinse dta
+  const { firstRinseTemp, firstRinsePh, firstRinseDuration} = useFirstRinseData(scouring, selectedColour, dyeingSystem)
+
+ //fetch soaping dta
+  const { soapingGpl1, soapingGpl2,} = useSoapingData(scouring, selectedColour, dyeingSystem) 
 
 
-      const selectedIndex = useMemo(() => {
+
+
+  const selectedIndex = useMemo(() => {
         if (!selectedColour) return -1;
         return Colour_Chart.findIndex(
           (color) =>
@@ -186,19 +213,15 @@ export default function useChemicalSteps() {
                   waterLitresDyeing: waterLitresDyeing.toFixed(3),
                   lotWeight,
                 }),
-                temp: dyeingSec2Temp2 ?? "fetching data..",
-                time: dyeingSec2Time2 ?? "fetching data..",
+                
                 ph: "",
                 rowSpanGroup: "salt",
               },
               {
                 chemical: "Total Shade Percentage",
-                gramsPerLt: (
-                  Number(formatNumber(getAmtAt(Dyestuff_1_Amt))) +
-                  Number(formatNumber(getAmtAt(Dyestuff_2_Amt))) +
-                  Number(formatNumber(getAmtAt(Dyestuff_3_Amt))) +
-                  Number(formatNumber(getAmtAt(Dyestuff_4_Amt)))
-                ).toFixed(3),
+                temp: dyeingSec2Temp2 ?? "fetching data..",
+                time: dyeingSec2Time2 ?? "fetching data..",
+                gramsPerLt: ( Number(dyeingSec2Gpl1) + Number(dyeingSec2Gpl2) + Number(dyeingSec2Gpl3) +Number(dyeingSec2Gpl4)).toFixed(3),
                 rowSpanGroupContinuation: "salt",
               },
   ];
@@ -225,7 +248,7 @@ export default function useChemicalSteps() {
 
   return [
      {
-          step: "Step 1 — Scouring",
+          step: "Step 1 -  Scouring",
           rows: [
             {
               chemical: scouringChemical1,
@@ -287,7 +310,7 @@ export default function useChemicalSteps() {
           ],
         },
         {
-          step: "Step 2 — Hot Wash",
+          step: "Step 2 -  Hot Wash",
           rows: [
             { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "", ph: "" },
             {
@@ -309,7 +332,7 @@ export default function useChemicalSteps() {
           ],
         },
         {
-          step: "Step 3 — Prepare to Dye",
+          step: "Step 3 -  Prepare to Dye",
           instructions:
             "ONGEZA ACID KWANZA ALAFU BAADA YA DAKIKA KUMI ONGEZA PEROXIDE KILLER",
           rows: [
@@ -353,11 +376,181 @@ export default function useChemicalSteps() {
         },
         {					
     
-          step: "Step 4 — Dyeing",
+          step: "Step 4 -  Dyeing",
           extraSection: { title: "USIMWAGE MAJI, ONGEZA 50% CHUMVI ALFAU BAADA YA 5 MIN WEKA BALANCE", rows: dyeingFirstStep },
           instructions:
             "ONGEZA 50% YA RANGI — ALAFU BAADA YA DAKIKA KUMI ONGEZA 50%",
           rows: dyeingSecondStep,
         },
+
+        {
+          step: "END",
+          instructions:
+            "ONGEZA 30% YA MAGADI NA CAUSTIC ALAFU BAADA YA DAKIKA ISHIRINI ONGEZA 70%",
+          rows: [
+            
+            {
+              chemical: getEndChemical1( scouring, 6 ),
+              gramsPerLt: endGpl1 ?? "fetching data...",
+              amount: getEndChemicalAmount(endGpl1,  waterLitresDyeing,) ,
+              temp: endTemp ?? "fetching data...",
+              time: endDuration ?? "fetching data...",
+              ph: endPh ?? "fetching data...",
+            },
+            {
+              chemical: getEndChemical1( scouring, 8 ),
+              gramsPerLt: endGpl2 ?? "fetching data...",
+              amount: getEndChemicalAmount(endGpl2,  waterLitresDyeing,) ,
+              temp: "",
+              time: "",
+              ph: "",
+            },
+           
+          ],
+        },
+        {
+          step: "Step 5 -  First Rinse",
+          instructions:
+            "",
+          rows: [
+            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "", ph: "" },
+            {
+              chemical: getFirstRinseChem1( scouring),
+              gramsPerLt: "",
+              amount: roundupWater(waterLitresDyeing) + " Ltrs",
+              temp: firstRinseTemp ?? "fetching data...",
+              time: firstRinseDuration ?? "fetching data...",
+              ph: firstRinsePh ?? "fetching data...",
+            },
+            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "", ph: "Drain" },
+           
+          ],
+        },
+        {
+          step: "Step 6 - Soaping",
+          instructions:
+            "ONGEZA ACID ALAFU WAKATI pH IKO CHINI YA NANE, ONGEZA FELOSAN THEN 70°C",
+          rows: [
+            
+            {
+              chemical: getSoapingChem1( scouring),
+              gramsPerLt:  "",
+              amount: roundupWater(waterLitresDyeing) + " Ltrs",
+              temp: "TO-DO",
+              time: "TO-DO",
+              ph: "TO-DO",
+            },
+            
+            {
+              chemical: getFirstRinseChem2(scouring, soaping),
+              gramsPerLt: soapingGpl1 ?? "fetching data...",
+              amount: getSoapingChemAmt(soapingGpl1,  waterLitresDyeing,) ,
+              temp: "",
+              time: "",
+              ph: "",
+            },
+            
+            {
+              chemical: getFirstRinseChem3(scouring),
+              gramsPerLt: soapingGpl2 ?? "fetching data...",
+              amount: getSoapingChemAmt(soapingGpl2,  waterLitresDyeing,) ,
+              temp: "",
+              time: "",
+              ph: "Drain",
+            },
+            
+           
+          ],
+        },
+        {
+          step: "Step 7 - Final_Rinse",
+          instructions:
+            "",
+          rows: [
+            
+            {
+              chemical: "TO-DO",
+              gramsPerLt: "TO-DO",
+              amount: "TO-DO",
+              temp: "TO-DO",
+              time: "TO-DO",
+              ph: "TO-DO",
+            },
+            
+            {
+              chemical: "TO-DO",
+              gramsPerLt: "TO-DO",
+              amount: "TO-DO",
+              temp: "",
+              time: "",
+              ph: "",
+            },
+            
+            {
+              chemical: "TO-DO",
+              gramsPerLt: "TO-DO",
+              amount: "TO-DO",
+              temp: "",
+              time: "",
+              ph: "Drain",
+            },
+            
+           
+          ],
+        },
+        {
+          step: "Step 8 - Finishing",
+          instructions:
+            "HAKIKISHA pH KABLA KUWEKA SOFTENER (Repeat if necessary)",
+          rows: [
+            
+            {
+              chemical: "TO-DO",
+              gramsPerLt: "TO-DO",
+              amount: "TO-DO",
+              temp: "TO-DO",
+              time: "TO-DO",
+              ph: "TO-DO",
+            },
+            
+            {
+              chemical: "TO-DO",
+              gramsPerLt: "TO-DO",
+              amount: "TO-DO",
+              temp: "",
+              time: "",
+              ph: "",
+            },
+            
+            {
+              chemical: "TO-DO",
+              gramsPerLt: "TO-DO",
+              amount: "TO-DO",
+              temp: "",
+              time: "",
+              ph: "",
+            },
+            {
+              chemical: "",
+              gramsPerLt: "",
+              amount: "",
+              temp: "",
+              time: "",
+              ph: "Drain",
+            },
+            {
+              chemical: "Total Water Litres Used",
+              gramsPerLt: "",
+              amount: "",
+              temp: "",
+              time: "",
+              ph: "",
+            },
+            
+           
+          ],
+        },
+
+        
   ];
 }

@@ -22,3 +22,15 @@ export async function fetchDyeingRow(colour) {
   if (!res.ok) throw new Error("Failed to fetch dyeing row");
   return res.json(); 
 }
+
+export async function fetchFirstRinseRow(colour) {
+  const res = await fetch(`http://localhost:3000/api/first-rinse/${encodeURIComponent(colour)}`);
+  if (!res.ok) throw new Error("Failed to fetch first-rinse row");
+  return res.json(); 
+}
+
+export async function fetchSoapingRow(colour) {
+  const res = await fetch(`http://localhost:3000/api/soaping/${encodeURIComponent(colour)}`);
+  if (!res.ok) throw new Error("Failed to fetch the soaping row");
+  return res.json(); 
+}

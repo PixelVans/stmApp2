@@ -1,5 +1,28 @@
-=IFERROR(IF(OR(Salt_Position="",Salt_Position="After Dyes"),"",
-(IF(Scouring_System_Selected="CreamStripe","",IF(ISBLANK($J$3),
-(INDEX(INDIRECT("Titles_"&$B$23,TRUE),MATCH(5,INDIRECT("Position_"&$B$23&"_"&Scouring_System_Selected,TRUE),0))),
-(INDEX(INDIRECT("Titles_"&$B$23,TRUE),MATCH(7,INDIRECT("Position_"&$B$23&"_"&Scouring_System_Selected,TRUE),0))))))),"")
+=IFERROR(IF(ISBLANK($I$59),INDEX(INDIRECT("Titles_"&$B$56,TRUE),
+MATCH(2,INDIRECT("Position_"&$B$56&"_"&Scouring_System_Selected,TRUE),0)),INDEX(INDIRECT("Titles_"&$B$56,TRUE),
+MATCH(4,INDIRECT("Position_"&$B$56&"_"&Scouring_System_Selected,TRUE),0))),"")
 
+im tring to make a js formula out of the excel formula above
+i59 is soaping
+
+
+
+export function getFirstRinseChem2( scouring, soaping) {
+const positionsArray = positions_soaping[scouring];
+  if (!positionsArray) return "";
+
+  let columnIdx = positionsArray.indexOf(1);
+    if (columnIdx === -1) return "";
+
+    if (soaping == "" || soaping == null || soaping == undefined){
+      columnIdx = positionsArray.indexOf(2);
+  
+    }else{
+       columnIdx = positionsArray.indexOf(4);
+    }
+  
+   return Titles_Soaping[columnIdx] ?? "";
+}
+
+
+did i do it well there?

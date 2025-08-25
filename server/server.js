@@ -9,6 +9,8 @@ const scouring = require('./routes/scouring');
 const hotwash = require('./routes/hotwash')
 const prepareToDye = require('./routes/prepareToDye')
 const dyeing = require('./routes/dyeing')
+const firstRinse = require('./routes/firstRinse')
+const soaping = require('./routes/soaping')
 
 const os = require('os');
 const app = express();
@@ -24,6 +26,8 @@ app.use('/api/scouring',scouring);
 app.use('/api/hotwash',hotwash);
 app.use('/api/dyeing',dyeing);
 app.use('/api/prepare-to-dye', prepareToDye);
+app.use('/api/first-rinse', firstRinse);
+app.use('/api/soaping', soaping);
 
 app.get('/', (req, res) => {
   const hostname = os.hostname();
@@ -34,7 +38,7 @@ app.get('/', (req, res) => {
   const now = new Date().toLocaleString();
 
   res.send(`
-    <h2>✅STM Server is Running</h2>
+    <h2>STM Server Running</h2>
     <ul>
       <li><strong>📡 LAN Access:</strong> http://${ip}:3000</li>
       <li><strong>🕒 Current Time:</strong> ${now}</li>

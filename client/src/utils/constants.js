@@ -491,6 +491,38 @@ export const positions_hotwash = {
     Chlorine: [1, 20, 21, 22],
     Vat: [1, 20, 21, 22]
   };
+
+export const positions_first_rinse = {
+    Reactive: [1,	0,	20,	21,	22,],
+    Enzymatic: [1,	0,	20,	21,	22,],
+    CreamStripe: [1,	0,	20,	21,	22,],
+    Chlorine: [1,	0,	20,	21,	22,],
+    Vat: [1,	2,	20,	21,	22]
+};
+
+export const positions_soaping_todo = {
+    Reactive: [2,	7,	5,	4,	3,	6,	8,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0	,1,	20,	21,	22],
+    Enzymatic: [0,	2,	0,	5,	3,	4,	0,	0,	0,	0,	0,	0,	0	,0,	0,	0,	0,	1,	20,	21,	22],
+    CreamStripe: [0,	5,	0,	0,	7,	6,	0,	0,	0,	0,	0,	0,	0,	2,	3,	0,	2,	1,	20,	21,	22],
+    Chlorine: [0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	2,	3,	1,	20,	21,	22],
+    Vat: [0,	0,	0,	0,	0,	0,	0,	0,	0,	0	,0	,0,	0	,0,	0,	2,	0	,1,	20	,21,	22]
+};
+
+export const positions_soaping = {
+    Reactive: [2,	3,	1,	20,	21,	22],
+    Enzymatic: [2,	3,	1,	20,	21,	22],
+    CreamStripe: [2,	3,	1,	20,	21,	22],
+    Chlorine: [2,	3,	1,	20,	21,	22],
+    Vat: [2,	3,	1,	20,	21,	22]
+};
+
+
+
+
+
+
+
+
   
 
 export const temperatures_dyeing = Array(98).fill("40˚C");
@@ -528,6 +560,9 @@ export const Titles_Dyeing = [
 ];
 
 export const titles_hotwash = ["Water", "Temp Rinsing", "Duration Rinsing", "pH Rinsing"];
+export const Titles_First_Rinse = ["Water",	"Resist Salt",	"Temp Rinsing",	"Duration Rinsing",	"pH Rinsing"];
+export const Titles_Soaping = ["Acetic or Green Acid",	"Felosan PCL",	"Water",	"Temp Soaping",	"Duration Soaping",	"pH Soaping"
+];
 
 
 export const titles_prepare_to_dye = [
