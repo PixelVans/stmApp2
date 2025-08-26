@@ -33,6 +33,10 @@ import {
   positions_first_rinse,
   positions_soaping,
   Titles_Soaping,
+  positions_final_rinse,
+  Titles_Final_Rinse,
+  Titles_Finishing,
+  positions_finishing,
 } from "../../utils/constants";
 
 import { IgridientsHotwash } from "../../utils/IgridientsHotwash";
@@ -1188,4 +1192,102 @@ export function getSoapingChemAmt(gpl,  waterLitresDyeing,)
 
 
 
+export function getFinalRinseChem1(scouringSystem) {
+  const positionsArray = positions_final_rinse[scouringSystem];
+  if (!positionsArray) return "";
+  const columnIdx = positionsArray.indexOf(1);
+  if (columnIdx === -1) return "";
+
+  return Titles_Final_Rinse[columnIdx] ?? "";
+}
+
+export function getFinishingChem1(scouringSystem) {
+  const positionsArray = positions_finishing[scouringSystem];
+  if (!positionsArray) return "";
+  const columnIdx = positionsArray.indexOf(1);
+  if (columnIdx === -1) return "";
+
+  return Titles_Finishing[columnIdx] ?? "";
+}
+
+
+export function getFinishingChem2(scouringSystem, softener) {
+  const positionsArray = positions_finishing[scouringSystem];
+  if (!positionsArray) return "";
+
+  
+  const matchValue = softener === "Brenntag" ? 2 : 3;
+  const columnIdx = positionsArray.indexOf(matchValue);
+
+  if (columnIdx === -1) return "";
+
+  return Titles_Finishing[columnIdx] ?? "";
+}
+
+
+export function getFinishingChem3(scouringSystem, dyeFixSelection) {
+  const positionsArray = positions_finishing[scouringSystem];
+  if (!positionsArray) return "";
+
+  if (dyeFixSelection !== "Dye Fix") return "";
+
+  const columnIdx = positionsArray.indexOf(4);
+  if (columnIdx === -1) return "";
+
+  return Titles_Finishing[columnIdx] ?? "";
+}
+
+
+
+
+export function getFinishingChemAmt(gpl,  waterLitresDyeing,) 
+  {
+  const unitKgs = " Kgs";
+  const unitGrams = " g";
+
+  // Step 3: total grams
+  const totalGrams = gpl * waterLitresDyeing;
+
+  if (isNaN(totalGrams)) return "";
+
+  // Step 4: return with correct units
+  if (totalGrams >= 1000) {
+    const kgs = totalGrams / 1000;
+    return `${Number.isInteger(kgs) ? kgs.toFixed(0) : kgs.toFixed(1)} ${unitKgs}`;
+  } else if (totalGrams <= 0) {
+    return "0 gm";
+  }
+
+  return `${totalGrams.toFixed(0)}${unitGrams}`;
+}
+
+
+
+// pure numeric version for calculations
+export function getPrepareToDyeAmt1Value({ gpl, dyeingSystem, lotWeight, waterLitresDyeing }) {
+  if (gpl === null || gpl === undefined || isNaN(gpl)) return NaN;
+
+  if (dyeingSystem === "VAT") {
+    return (gpl / 100) * lotWeight; // number only
+  }
+
+  return Math.ceil(waterLitresDyeing * 0.8); // number only
+}
+
+function formatLitres(val) {
+  return `${val.toLocaleString()} Ltrs`;
+}
+
+export function totalWaterUsed({ waterLitresDyeing, gpl, dyeingSystem, lotWeight, liqRatio, winch }) {
+  const total =
+    roundupWater(waterLitresDyeing) +
+    roundupWater(waterLitresDyeing) +
+    roundupWater(waterLitresDyeing) +
+    roundupWater(waterLitresDyeing) +
+    getPrepareToDyeAmt1Value({ gpl, dyeingSystem, lotWeight, waterLitresDyeing }) +
+    computeRoundedWater80({ lotWeight, liqRatio, winch }) +
+    waterLitresDyeing;
+
+  return formatLitres(total);
+}
 

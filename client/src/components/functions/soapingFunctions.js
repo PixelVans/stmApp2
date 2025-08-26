@@ -36,14 +36,39 @@ export async function getSoapingTemp(scouring, selectedColour, index, dyeingSyst
   const colNum = positionsArray.indexOf(index) + 1;
     if (!colNum) return ""; 
 
-    const row = await fetchDyeingRow(selectedColour);
+    const row = await fetchSoapingRow(selectedColour);
     if (!row) return "dbErr";
     const rowValues = Object.values(row);
     const value = rowValues[colNum] ?? "dbErr";
     return value ??'dbErr'
     
   } catch (err) {
-    console.error("Failed to fetch end Temp:", err);
+    console.error("Failed to Soaping Temp:", err);
+    return "dbErr";
+  }
+}
+
+
+
+
+
+export async function getSoapingTimePh(selectedColour, index, dyeingSystem ) {
+
+  try {
+    const positionsArray = positions_soaping[dyeingSystem];
+    if (!positionsArray) return "";
+
+  const colNum = positionsArray.indexOf(index) + 1;
+    if (!colNum) return ""; 
+
+    const row = await fetchSoapingRow(selectedColour);
+    if (!row) return "dbErr";
+    const rowValues = Object.values(row);
+    const value = rowValues[colNum] ?? "dbErr";
+    return value ??'dbErr'
+    
+  } catch (err) {
+    console.error("Failed to fetch Soaping amount:", err);
     return "dbErr";
   }
 }

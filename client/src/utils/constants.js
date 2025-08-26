@@ -508,6 +508,9 @@ export const positions_soaping_todo = {
     Vat: [0,	0,	0,	0,	0,	0,	0,	0,	0,	0	,0	,0,	0	,0,	0,	2,	0	,1,	20	,21,	22]
 };
 
+
+
+
 export const positions_soaping = {
     Reactive: [2,	3,	1,	20,	21,	22],
     Enzymatic: [2,	3,	1,	20,	21,	22],
@@ -515,6 +518,28 @@ export const positions_soaping = {
     Chlorine: [2,	3,	1,	20,	21,	22],
     Vat: [2,	3,	1,	20,	21,	22]
 };
+
+export const positions_final_rinse = {
+    Reactive: [1,	20,	21,	22],
+    Enzymatic: [1,	20,	21,	22],
+    CreamStripe: [1,	20,	21,	22],
+    Chlorine: [1,	20,	21,	22],
+    Vat: [1,	20,,	21,	22]
+};
+
+export const positions_finishing = {
+    Reactive: [1,	8,	4,	2,	5,	3,	6,	7,	9,	20,	21,	22,	23,	24,	25,	20,	21,	22],
+    Enzymatic: [1,	8,	4,	2,	5,	3,	6,	7,	9,	20,	21,	22,	23,	24,	25,	20,	21,	22],
+    CreamStripe: [1,	8,	4,	2,	5,	3,	6,	7,	9,	20,	21,	22,	23,	24,	25,	20,	21,	22],
+    Chlorine: [1,	8,	4,	2,	5,	3,	6,	7,	9,	20,	21,	22,	23,	24,	25,	20,	21,	22],
+    Vat: [1,	4,	2,	1,	0,	0,	0,	0,	0,	20,	21,	22,	23,	24,	25,	20,	21,	22]
+};
+
+
+
+
+
+
 
 
 
@@ -561,8 +586,15 @@ export const Titles_Dyeing = [
 
 export const titles_hotwash = ["Water", "Temp Rinsing", "Duration Rinsing", "pH Rinsing"];
 export const Titles_First_Rinse = ["Water",	"Resist Salt",	"Temp Rinsing",	"Duration Rinsing",	"pH Rinsing"];
-export const Titles_Soaping = ["Acetic or Green Acid",	"Felosan PCL",	"Water",	"Temp Soaping",	"Duration Soaping",	"pH Soaping"
+export const Titles_Soaping = ["Acetic or Green Acid",	"Felosan PCL",	"Water",	"Temp Soaping",	"Duration Soaping",	"pH Soaping"];
+export const Titles_Final_Rinse = ["Water",	"Temp Hot Rinse",	"Duration Hot Rinse",	"pH Rinse"];
+export const Titles_Finishing = ["Water",	"Acetic or Green Acid",	"Dye Fix DF 25", "Softener Resil DPT",	"Ultraphil HCT",	"Softener Sarex",	
+  "Softener FabFinish",	"Tubingal SKI",	
+  "AntiFoam",	"Temp Finishing",	"Duration Finishing",	"pH Finishing",	"Temp Dye Fix & Acid",	"Duration Dye Fix & Acid",	
+  "pH Dye Fix & Acid",	"Temp Softener",	"Duration Softener",	"pH Softener",
 ];
+
+
 
 
 export const titles_prepare_to_dye = [

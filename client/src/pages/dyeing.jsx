@@ -10,30 +10,40 @@ export default function ChemicalTable() {
   return (
     <div className="mt-[300px]">
       <DyeingControlPanel />
-      {steps.map((step, sIdx) => (
-        <div key={sIdx} className=" p-4 sm:p-6">
-          <h2 className="text-lg font-bold mb-2">{step.step}</h2>
+    {steps.map((step, sIdx) => (
+  <div key={sIdx} className="p-4 sm:p-6">
+    {/* 👇 Show image right before END */}
+    {step.step === "END" && (
+      <img
+        src="/images/Picture1.png"
+        alt="Process illustration"
+        className="mb-4 w-full mx-auto"
+      />
+    )}
 
-          {step.extraSection && (
-            <>
-              <h3 className=" italic text-sm mb-2 text-blue-600">
-                {step.extraSection.title}
-              </h3>
-              <div className="overflow-x-auto mb-4">
-                <ChemicalStepTable rows={step.extraSection.rows} />
-              </div>
-            </>
-          )}
+    <h2 className="text-lg font-bold mb-2">{step.step}</h2>
 
-          {step.instructions && (
-            <p className="italic text-sm mb-2 text-blue-600">{step.instructions}</p>
-          )}
-
-          <div className="overflow-x-auto">
-            <ChemicalStepTable rows={step.rows} />
-          </div>
+    {step.extraSection && (
+      <>
+        <h3 className="italic text-sm mb-2 text-blue-600">
+          {step.extraSection.title}
+        </h3>
+        <div className="overflow-x-auto mb-4">
+          <ChemicalStepTable rows={step.extraSection.rows} />
         </div>
-      ))}
+      </>
+    )}
+
+    {step.instructions && (
+      <p className="italic text-sm mb-2 text-blue-600">{step.instructions}</p>
+      )}
+
+      <div className="overflow-x-auto">
+        <ChemicalStepTable rows={step.rows} />
+      </div>
+    </div>
+  ))}
+
     </div>
   );
 }

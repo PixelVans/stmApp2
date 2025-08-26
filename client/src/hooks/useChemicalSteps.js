@@ -64,6 +64,12 @@ import {
   getFirstRinseChem2,
   getFirstRinseChem3,
   getSoapingChemAmt,
+  getFinalRinseChem1,
+  getFinishingChem1,
+  getFinishingChem2,
+  getFinishingChem3,
+  getFinishingChemAmt,
+  totalWaterUsed,
 } from "../components/functions/dyeingfunc";
 
 import useScouringData from "./useScouringData";
@@ -74,6 +80,8 @@ import { getDyeingSec1ChemAmt1, getDyeingSec1ChemAmt2,  } from "../components/fu
 import useEndData from "./useEndData";
 import useFirstRinseData from "./useFirstRinseData";
 import useSoapingData from "./useSoapingData";
+import useFinalRinseData from "./useFinalRinseSteps";
+import useFinishingData from "./useFinishingSteps";
 
 export default function useChemicalSteps() {
   const {
@@ -86,8 +94,28 @@ export default function useChemicalSteps() {
     lotWeight,
     dyeingSystem,
     soaping,
+    softener,
+    liqRatio8
   } = useDyeingStore();
 
+
+
+  function prepareRows(rows) {
+  const drainRows = rows.filter(r => r.ph === "Drain");
+  const normalRows = rows.filter(r => r.ph !== "Drain" && r.ph !== "");
+
+  if (normalRows.length === 0) return rows;
+
+  // give rowSpan to first normal row
+  normalRows[0]._phRowSpan = normalRows.length; 
+
+  // clear ph from the rest
+  for (let i = 1; i < normalRows.length; i++) {
+    normalRows[i].ph = "";
+  }
+
+  return [...normalRows, ...drainRows];
+}
 
  
 
@@ -135,7 +163,25 @@ export default function useChemicalSteps() {
   const { firstRinseTemp, firstRinsePh, firstRinseDuration} = useFirstRinseData(scouring, selectedColour, dyeingSystem)
 
  //fetch soaping dta
-  const { soapingGpl1, soapingGpl2,} = useSoapingData(scouring, selectedColour, dyeingSystem) 
+  const { soapingGpl1, soapingGpl2,soapingTemp,soapingDuration ,soapingPh } = useSoapingData(scouring, selectedColour, dyeingSystem) 
+
+ //fetch final Rinse dta
+  const { finalRinseTemp,finalRinseDuration ,finalRinsePh } = useFinalRinseData(scouring, selectedColour,)
+
+ //fetch finishing Rinse dta
+  const {   finishingGpl1,   finishingGpl2,  finishingTemp, finishingDuration, finishingPh  } = useFinishingData(scouring, selectedColour, softener, liqRatio8,)  
+
+  
+  const totalWaterLtrsUsed = totalWaterUsed({waterLitresDyeing, gpl, dyeingSystem,lotWeight,liqRatio,  winch});
+  
+ 
+ 
+  
+  
+
+
+   
+
 
 
 
@@ -436,9 +482,9 @@ export default function useChemicalSteps() {
               chemical: getSoapingChem1( scouring),
               gramsPerLt:  "",
               amount: roundupWater(waterLitresDyeing) + " Ltrs",
-              temp: "TO-DO",
-              time: "TO-DO",
-              ph: "TO-DO",
+              temp: soapingTemp ?? "fetching data...",
+              time: soapingDuration ?? "fetching data...",
+              ph: soapingPh ?? "fetching data...",
             },
             
             {
@@ -469,31 +515,24 @@ export default function useChemicalSteps() {
           rows: [
             
             {
-              chemical: "TO-DO",
-              gramsPerLt: "TO-DO",
-              amount: "TO-DO",
-              temp: "TO-DO",
-              time: "TO-DO",
-              ph: "TO-DO",
+              chemical: getFinalRinseChem1(scouring),
+              gramsPerLt: "",
+              amount:  roundupWater(waterLitresDyeing) + " Ltrs",
+              temp: finalRinseTemp ?? "fetching data...",
+              time: finalRinseDuration ?? "fetching data...",
+              ph: finalRinsePh ?? "fetching data...",
             },
             
             {
-              chemical: "TO-DO",
-              gramsPerLt: "TO-DO",
-              amount: "TO-DO",
-              temp: "",
-              time: "",
-              ph: "",
-            },
-            
-            {
-              chemical: "TO-DO",
-              gramsPerLt: "TO-DO",
-              amount: "TO-DO",
+              chemical: "",
+              gramsPerLt: "",
+              amount: "",
               temp: "",
               time: "",
               ph: "Drain",
             },
+            
+           
             
            
           ],
@@ -505,27 +544,27 @@ export default function useChemicalSteps() {
           rows: [
             
             {
-              chemical: "TO-DO",
-              gramsPerLt: "TO-DO",
-              amount: "TO-DO",
-              temp: "TO-DO",
-              time: "TO-DO",
-              ph: "TO-DO",
+              chemical: getFinishingChem1(scouring),
+              gramsPerLt:  "",
+              amount: roundupWater(waterLitresDyeing) + " Ltrs",
+              temp: finishingTemp ?? "fetching data...",
+              time: finishingDuration ?? "fetching data...",
+              ph: finishingPh ?? "fetching data...",
             },
             
             {
-              chemical: "TO-DO",
-              gramsPerLt: "TO-DO",
-              amount: "TO-DO",
+              chemical: getFinishingChem2(scouring, softener),
+              gramsPerLt: finishingGpl1 ?? "fetching data...",
+              amount: getFinishingChemAmt(finishingGpl1,  waterLitresDyeing,) ,
               temp: "",
               time: "",
               ph: "",
             },
             
             {
-              chemical: "TO-DO",
-              gramsPerLt: "TO-DO",
-              amount: "TO-DO",
+              chemical: getFinishingChem3(scouring, liqRatio8),
+              gramsPerLt: finishingGpl2 ?? "fetching data...",
+              amount: getFinishingChemAmt(finishingGpl2,  waterLitresDyeing,) ,
               temp: "",
               time: "",
               ph: "",
@@ -541,7 +580,7 @@ export default function useChemicalSteps() {
             {
               chemical: "Total Water Litres Used",
               gramsPerLt: "",
-              amount: "",
+              amount: totalWaterLtrsUsed,
               temp: "",
               time: "",
               ph: "",

@@ -11,6 +11,8 @@ const prepareToDye = require('./routes/prepareToDye')
 const dyeing = require('./routes/dyeing')
 const firstRinse = require('./routes/firstRinse')
 const soaping = require('./routes/soaping')
+const finalRinse = require('./routes/finalRinse')
+const finishing = require('./routes/finishing')
 
 const os = require('os');
 const app = express();
@@ -28,6 +30,8 @@ app.use('/api/dyeing',dyeing);
 app.use('/api/prepare-to-dye', prepareToDye);
 app.use('/api/first-rinse', firstRinse);
 app.use('/api/soaping', soaping);
+app.use('/api/final-rinse', finalRinse);
+app.use('/api/finishing', finishing);
 
 app.get('/', (req, res) => {
   const hostname = os.hostname();

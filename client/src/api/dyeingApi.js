@@ -34,3 +34,15 @@ export async function fetchSoapingRow(colour) {
   if (!res.ok) throw new Error("Failed to fetch the soaping row");
   return res.json(); 
 }
+
+export async function fetchFinalRinseRow(colour) {
+  const res = await fetch(`http://localhost:3000/api/final-rinse/${encodeURIComponent(colour)}`);
+  if (!res.ok) throw new Error("Failed to fetch the final-rinse row");
+  return res.json(); 
+}
+
+export async function fetchFinishingRow(colour) {
+  const res = await fetch(`http://localhost:3000/api/finishing/${encodeURIComponent(colour)}`);
+  if (!res.ok) throw new Error("Failed to fetch the finishing row");
+  return res.json(); 
+}

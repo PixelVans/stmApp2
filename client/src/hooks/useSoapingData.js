@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 
 
 import {  getEndTemp, getEndTimePh } from "../components/functions/endFunctions";
-import { getSoapingChemGPL } from "../components/functions/soapingFunctions";
+import { getSoapingChemGPL, getSoapingTemp, getSoapingTimePh } from "../components/functions/soapingFunctions";
 
 export default function useSoapingData(scouring, selectedColour, dyeingSystem) {
   
-  const [endTemp, setendTemp] = useState(null);
-  const [endDuration, setendDuration] = useState(null);
-  const [endPh, setendPh] = useState(null);
+  const [soapingTemp, setsoapingTemp] = useState(null);
+  const [soapingDuration, setsoapingDuration] = useState(null);
+  const [soapingPh, setsoapingPh] = useState(null);
   const [soapingGpl1, setsoapingGpl1] = useState(null);
   const [soapingGpl2, setsoapingGpl2] = useState(null);
  const [error, setError] = useState(null);
@@ -29,34 +29,34 @@ export default function useSoapingData(scouring, selectedColour, dyeingSystem) {
         const soapingGpl1 = await getSoapingChemGPL(dyeingSystem, selectedColour, 2);
         const soapingGpl2 = await getSoapingChemGPL(dyeingSystem, selectedColour, 3);
 
-        let endTemp = await getEndTemp(scouring, selectedColour, 21, dyeingSystem );
+        let soapingTemp = await getSoapingTemp(scouring, selectedColour, 20, dyeingSystem );
         // fetch time (column 21)
-        if (endTemp ) {
-         endTemp = String(endTemp).replace("?", "°");
+        if (soapingTemp ) {
+         soapingTemp = String(soapingTemp).replace("?", "°");
          }
          
-        const endDuration =  getEndTimePh(selectedColour, 25, dyeingSystem )
-        const endPh =  getEndTimePh(selectedColour, 28, dyeingSystem )
+        const soapingDuration =  getSoapingTimePh(selectedColour, 21, dyeingSystem )
+        const soapingPh =  getSoapingTimePh(selectedColour, 22, dyeingSystem )
         // fetch pH (column 22)
         
 
      if (mounted) {
           setsoapingGpl1(soapingGpl1);
           setsoapingGpl2(soapingGpl2);
-          setendTemp(endTemp);
-          setendDuration(endDuration);
-          setendPh(endPh);
+          setsoapingTemp(soapingTemp);
+          setsoapingDuration(soapingDuration);
+          setsoapingPh(soapingPh);
           
         }
       } catch (err) {
-        console.error("Failed loading end data", err);
+        console.error("Failed loading soaping data", err);
         if (mounted) {
           
           setsoapingGpl1("dbErr");
           setsoapingGpl2("dbErr");
-          setendTemp("dbErr");
-          setendDuration("dbErr");
-          setendPh("dbErr");
+          setsoapingTemp("dbErr");
+          setsoapingDuration("dbErr");
+          setsoapingPh("dbErr");
           
         }
       }
@@ -68,5 +68,5 @@ export default function useSoapingData(scouring, selectedColour, dyeingSystem) {
     };
   }, [dyeingSystem, selectedColour,scouring,]);
 
-  return {  soapingGpl1, soapingGpl2,  };
+  return {  soapingGpl1, soapingGpl2,soapingTemp,soapingDuration ,soapingPh };
 }
