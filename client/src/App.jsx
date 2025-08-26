@@ -1,20 +1,30 @@
+import { useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainLayout from "./layouts/Mainlayout";
+import MainLayout from "./layouts/MainLayout";
 import StmHome from "./pages/StmHome";
-
-import ColourCalculatorB29 from "./pages/dyeing";
-
-// other pages like Employees, Reports...
+import ChemicalTable from "./pages/dyeing";
+import DyeingControlPanel from "./components/DyeingControlPanel";
 
 function App() {
+  const printRef = useRef();
+
   return (
     <Router>
       <MainLayout>
         <Routes>
           <Route path="/" element={<StmHome />} />
-         <Route path="/dyeing" element={<ColourCalculatorB29 />} />
-          {/* <Route path="/reports" element={<Reports />} /> */}
+          <Route
+            path="/dyeing"
+            element={
+              <>
+                {/* Pass the ref down 👇 */}
+                
+                <ChemicalTable ref={printRef} />
+              </>
+            }
+          />
         </Routes>
+        
       </MainLayout>
     </Router>
   );

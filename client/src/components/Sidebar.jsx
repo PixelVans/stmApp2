@@ -6,6 +6,7 @@ import {
   FiSettings,
   FiLogOut,
   FiMenu,
+  FiX,
   FiGrid,
   FiDroplet,
 } from "react-icons/fi";
@@ -16,12 +17,7 @@ const Sidebar = () => {
 
   const navItems = [
     { name: "Specialised Systems", icon: <FiGrid size={18} />, href: "#" },
-     {
-      name: "Dyeing",
-      icon: < FiDroplet size={18} fill="yellow" className="text-yellow-300 "/>,
-      href: "/dyeing",
-    },
-    
+    { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
   ];
 
   return (
@@ -29,10 +25,10 @@ const Sidebar = () => {
       {/* Mobile toggle */}
       <button
         aria-label="Toggle sidebar"
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-transparent text-white shadow-none"
         onClick={() => setIsOpen((o) => !o)}
       >
-        <FiMenu size={22} />
+        {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
       </button>
 
       {/* Sidebar */}
@@ -45,7 +41,7 @@ const Sidebar = () => {
         <div>
           {/* Logo / Brand */}
           <div className="mb-10 flex items-center justify-center">
-            <div className="text-2xl font-extrabold tracking-wide">
+            <div className="text-2xl mt-12 md:mt-0 font-extrabold tracking-wide">
               STM <span className="text-blue-400">Management</span>
             </div>
           </div>
@@ -84,8 +80,6 @@ const Sidebar = () => {
           onClick={() => setIsOpen(false)}
         ></div>
       )}
-
-      
     </div>
   );
 };
