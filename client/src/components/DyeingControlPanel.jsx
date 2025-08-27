@@ -122,20 +122,20 @@ const handlePrint = useReactToPrint({
         >
           {/* Collapsible content */}
           <div
-            className="
+            className="sm:ml-[160px] lg:ml-64 lg:mr-3
               p-3 pb-6 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-4
-              fixed top-0 z-30 mt-[64px] rounded-t-none  lg:px-6 
-              text-sm w-full 
+              lg:fixed top-0 z-30 mt-[8px] lg:mt-[64px] rounded-t-none  lg:px-6 
+              text-sm mx-auto 
             "
           >
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
+            <div className="flex flex-row justify-between items-center mb-4">
               <div className="text-base font-bold text-gray-900">{today}</div>
               <div className="text-gray-500 text-sm">Lot Year: {currentYear}</div>
             </div>
 
             {/* Full-width form grid */}
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 w-full">
+            <div className="grid gap-3 grid-cols-2  lg:grid-cols-4 w-full">
               <FormRow label="Winch">
                 <select className={baseSelect} value={winch} onChange={(e) => setWinch(e.target.value)}>
                   <option value="Soft Flow">Soft Flow</option>

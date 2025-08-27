@@ -15,7 +15,7 @@ const config = {
 const connectToDB = async () => {
   try {
     const pool = await sql.connect(config);
-    console.log('✅ Connected to SQL Server (specialised Systems copy (stmdev25)');
+    // console.log('✅ Connected to SQL Server (specialised Systems copy (stmdev25)');
     return pool;
   } catch (err) {
     console.error('Database connection failed:', err);

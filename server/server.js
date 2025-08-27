@@ -67,6 +67,6 @@ app.get(/^\/(?!api).*/, (req, res) => {
 
 // Start server and connect to DB
 app.listen(PORT, '0.0.0.0', async () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`✅  Server running at http://localhost:${PORT}`);
   await connectToDB();
 });

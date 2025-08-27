@@ -1,6 +1,8 @@
+
+
 import { useState } from "react";
-import { FiMenu, FiSearch, FiBell, FiUser } from "react-icons/fi";
-import { useLocation } from "react-router-dom"; // 👈 import this
+import { FiSearch, FiBell, FiUser, FiMenu } from "react-icons/fi";
+import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import DyeingControlPanel from "../components/DyeingControlPanel";
 
@@ -9,35 +11,40 @@ const MainLayout = ({ children, printRef }) => {
   const [controlPanelOpen, setControlPanelOpen] = useState(true);
 
   const location = useLocation();
-  const isDyeingPage = location.pathname === "/dyeing"; 
+  const isDyeingPage = location.pathname === "/dyeing";
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
-      {/* Overlay */}
+      {/* Overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 md:hidden z-30"
+          className="fixed flex-1 lg:ml-1/6 inset-0 bg-black/40 lg:hidden z-30"
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
 
       {/* Main content area */}
-      <div className="flex-1  bg-gray-50 md:ml-64">
-
-        
-      {/* Navbar */}
-        <header className="fixed  top-0 left-0 right-0 z-20  flex items-center justify-between  h-16 bg-white border-b shadow-sm">
+      <div className="flex-1 flex flex-col lg:ml-1/6 transition-all duration-300">
+        {/* Navbar */}
+        <header className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between h-16 bg-white  shadow-sm px-2 md:px-6">
           <div className="flex items-center gap-4">
-            
-            <div className="text-xl mt-9 font-semibold mb-9"><span className="hidden md:block">STM Management</span> </div>
+            <button
+              className="lg:hidden p- rounded"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <FiMenu className="ml-2" size={20}/>
+            </button>
+            <div className="text-xl  hidden font-semibold truncate">
+              STM Management
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             {/* Search */}
-            <div className="relative hidden sm:block">
+            <div className="hidden sm:flex relative">
               <input
                 type="text"
                 placeholder="Search..."
@@ -48,40 +55,40 @@ const MainLayout = ({ children, printRef }) => {
               </div>
             </div>
 
-            <button aria-label="Notifications" className="p-2 rounded hover:bg-gray-100">
+            <button className="p-2 rounded hover:bg-gray-100">
               <FiBell size={20} />
             </button>
 
-            {/*Only show toggle on /dyeing */}
             {isDyeingPage && (
               <button
                 onClick={() => setControlPanelOpen((prev) => !prev)}
-                className="shrink-0 ml-4 p-2 rounded-lg bg-blue-400 text-white hover:bg-blue-500 transition"
+                className="shrink-0 ml-2 p-2 rounded-lg bg-blue-400 text-white hover:bg-blue-500 transition text-xs sm:text-sm"
               >
                 {controlPanelOpen ? "Hide Panel" : "Show Panel"}
               </button>
             )}
 
-            <button aria-label="Profile" className="p-2 rounded hover:bg-gray-100 flex items-center gap-2">
+            <button className="p-2 rounded hover:bg-gray-100 flex items-center gap-2">
               <FiUser size={20} />
               <span className="hidden sm:inline text-sm">Admin</span>
             </button>
           </div>
         </header>
 
-
-
         {/* Spacer */}
         <div className="h-16"></div>
 
-        
-        <main className={isDyeingPage && controlPanelOpen ? "mt-[300px]" : "mt-0"}>
-         
-          {isDyeingPage && (
+        {/* Main content */}
+       <main
+        className={`flex-1 px-2 sm:px-6 lg:px-8 max-w-full overflow-x-hidden ${
+          isDyeingPage && controlPanelOpen ? "lg:mt-[250px]" : "mt-0"
+        }`}
+      >
+          {isDyeingPage && controlPanelOpen && (
             <DyeingControlPanel
               open={controlPanelOpen}
               setOpen={setControlPanelOpen}
-              printRef={printRef}  
+              printRef={printRef}
             />
           )}
           {children}
