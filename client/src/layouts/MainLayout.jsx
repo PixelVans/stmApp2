@@ -31,13 +31,7 @@ const MainLayout = ({ children, printRef }) => {
       {/* Navbar */}
         <header className="fixed  top-0 left-0 right-0 z-20  flex items-center justify-between  h-16 bg-white border-b shadow-sm">
           <div className="flex items-center gap-4">
-            <button
-              aria-label="Toggle sidebar"
-              onClick={() => setSidebarOpen((o) => !o)}
-              className="md:hidden ml-3  "
-            >
-              <FiMenu size={20} />
-            </button>
+            
             <div className="text-xl mt-9 font-semibold mb-9"><span className="hidden md:block">STM Management</span> </div>
           </div>
 

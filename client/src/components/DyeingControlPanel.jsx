@@ -304,7 +304,7 @@ const handlePrint = useReactToPrint({
 
                <button
           onClick={handlePrint}
-          className="px-3 py-1.5 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+          className="px-3 hidden py-1.5 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
         >
           Download PDF
         </button>

@@ -25,7 +25,7 @@ const Sidebar = () => {
       {/* Mobile toggle */}
       <button
         aria-label="Toggle sidebar"
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-transparent text-white shadow-none"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-transparent text-slate-500 shadow-none"
         onClick={() => setIsOpen((o) => !o)}
       >
         {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
