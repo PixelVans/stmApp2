@@ -1251,3 +1251,28 @@ export const scouringDuration = Array(96).fill("30 Minutes");
 
 export const scouringPHArray = Array(96).fill("9 - 10");
 scouringPHArray[2] = "10";
+
+
+
+
+  
+export const getTailwindColor = (shadeName) => {
+  const lower = shadeName.toLowerCase();
+
+  if (lower.includes("red")) return "text-red-600";
+  if (lower.includes("green")) return "text-green-600";
+  if (lower.includes("blue")) return "text-blue-600";
+  if (lower.includes("cyan") || lower.includes("turquoise") || lower.includes("teal")) return "text-cyan-600";
+  if (lower.includes("yellow") || lower.includes("gold")) return "text-yellow-500";
+  if (lower.includes("orange") || lower.includes("peach")) return "text-orange-500";
+  if (lower.includes("pink")) return "text-pink-500";
+  if (lower.includes("purple") || lower.includes("violet")) return "text-purple-600";
+  if (lower.includes("maroon")) return "text-red-900";
+  if (lower.includes("brown") || lower.includes("coffee")) return "text-amber-800";
+  if (lower.includes("gray") || lower.includes("grey")) return "text-gray-500";
+  if (lower.includes("cream") || lower.includes("beige")) return "text-amber-400";
+  if (lower.includes("black")) return "text-black";
+  if (lower.includes("white")) return "text-white";
+
+  return "text-gray-700"; 
+};

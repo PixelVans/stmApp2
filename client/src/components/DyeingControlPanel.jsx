@@ -122,7 +122,7 @@ const handlePrint = useReactToPrint({
         >
           {/* Collapsible content */}
           <div
-            className="sm:ml-[160px] lg:ml-64 lg:mr-3
+            className=" lg:ml-64 lg:mr-3
               p-3 pb-6 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-4
               lg:fixed top-0 z-30 mt-[8px] lg:mt-[64px] rounded-t-none  lg:px-6 
               text-sm mx-auto 

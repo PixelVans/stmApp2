@@ -1,0 +1,8 @@
+=IFERROR(IF(ROUND($C$66*Water_Litres_Dyeing,1)>=1000,ROUND($C$66*Water_Litres_Dyeing/1000,1)
+&Standards!$D$174,ROUND($C$66*Water_Litres_Dyeing,1)&Standards!$D$175),"E")
+
+
+=IFERROR(IF(Dye_Fix_Selection="Dye Fix",IF(ROUND($C$25*Water_Litres_Dyeing,1)>=1000,ROUND($C$25*Water_Litres_Dyeing/1000,1)
+&Standards!$D$174,ROUND($C$25*Water_Litres_Dyeing,1)&Standards!$D$175),Zero),"E")
+
+we also need to cime up with functions for these 2 excel formulas, 
