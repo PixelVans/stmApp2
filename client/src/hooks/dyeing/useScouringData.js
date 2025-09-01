@@ -4,7 +4,7 @@ import {
   getScouringChemGPL, 
   getScouringTemperature, 
   getScouringTimeorPH 
-} from "../components/functions/dyeingFunctions";
+} from "../../components/functions/dyeingFunctions";
 
 export default function useScouringData(scouring, selectedColour,dyeingSystem) {
   const [values, setValues] = useState({});

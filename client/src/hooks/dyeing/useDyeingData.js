@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { getDyeingSec1ChemGpl, getDyeingSec1ChemGpl1, getDyeingSec1ChemGpl2, getDyeingSec1Value, getDyeingSec2Temp, getDyeingSec2TimePh, getDyestuffGpl } from "../components/functions/dyeingFunctions";
+import { getDyeingSec1ChemGpl, getDyeingSec1ChemGpl1, getDyeingSec1ChemGpl2, 
+  getDyeingSec1Value, getDyeingSec2Temp, getDyeingSec2TimePh, getDyestuffGpl } from "../../components/functions/dyeingFunctions";
 
 export default function useDyeingData(selectedColour,  scouring, b26Title, dyeingSystem, saltOptionstep4 , saltOption) {
   

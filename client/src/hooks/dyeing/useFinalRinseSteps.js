@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getFinalRinseTempTimePh } from "../components/functions/finalRinseFunctions";
+import { getFinalRinseTempTimePh } from "../../components/functions/finalRinseFunctions";
 
 export default function useFinalRinseData(scouring, selectedColour,) {
   

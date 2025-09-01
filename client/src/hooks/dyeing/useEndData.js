@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 
-import { getEndChemGPL, getEndTemp, getEndTimePh } from "../components/functions/endFunctions";
+import { getEndChemGPL, getEndTemp, getEndTimePh } from "../../components/functions/endFunctions";
 
 export default function useEndData(scouring, selectedColour, dyeingSystem) {
   

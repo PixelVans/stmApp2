@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getHotwashTempTimeorPH } from "../components/functions/hotwashFunctions";
+import { getHotwashTempTimeorPH } from "../../components/functions/hotwashFunctions";
 
 export default function useHotwashData(selectedColour, dyeingSystem) {
   

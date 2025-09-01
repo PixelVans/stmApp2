@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getFirstrinseTempTimePh } from "../components/functions/firstRinseFunctions";
+import { getFirstrinseTempTimePh } from "../../components/functions/firstRinseFunctions";
 
 export default function useFirstRinseData(scouring, selectedColour, dyeingSystem) {
   

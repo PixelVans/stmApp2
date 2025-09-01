@@ -1,31 +1,24 @@
-import { useRef } from "react";
+// App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import StmHome from "./pages/StmHome";
-import ChemicalTable from "./pages/dyeing";
+import ChemicalTablePage from "./pages/ChemicalTablePage"; // print-only page
+import ChemicalTable from "./pages/dyeing"; // normal page with layout
 import DyeingControlPanel from "./components/DyeingControlPanel";
 
 function App() {
-  const printRef = useRef();
-
   return (
     <Router>
-      <MainLayout>
-        <Routes>
+      <Routes>
+        {/* Routes that use MainLayout */}
+        <Route element={<MainLayout />}>
           <Route path="/" element={<StmHome />} />
-          <Route
-            path="/dyeing"
-            element={
-              <>
-                {/* Pass the ref down 👇 */}
-                
-                <ChemicalTable ref={printRef} />
-              </>
-            }
-          />
-        </Routes>
-        
-      </MainLayout>
+          <Route path="/dyeing" element={<ChemicalTable />} />
+        </Route>
+
+        {/* Standalone route without layout */}
+        <Route path="/dyeing/print" element={<ChemicalTablePage />} />
+      </Routes>
     </Router>
   );
 }

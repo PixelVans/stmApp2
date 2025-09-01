@@ -1255,7 +1255,7 @@ export function getFinishingChemAmt(gpl,  waterLitresDyeing,)
     const kgs = totalGrams / 1000;
     return `${Number.isInteger(kgs) ? kgs.toFixed(0) : kgs.toFixed(1)} ${unitKgs}`;
   } else if (totalGrams <= 0) {
-    return "0 gm";
+    return "";
   }
 
   return `${totalGrams.toFixed(0)}${unitGrams}`;

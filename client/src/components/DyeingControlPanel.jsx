@@ -2,11 +2,11 @@ import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Colour_Chart } from "../utils/constants";
 import useDyeingStore from "../store/zustand";
-import { useHref } from "react-router-dom";
+import { Link, useHref } from "react-router-dom";
 
 import { useReactToPrint } from "react-to-print";
 
-// Keep FormRow OUTSIDE to avoid remounts that kill focus
+
 const FormRow = React.memo(function FormRow({ label, children }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center">
@@ -26,7 +26,7 @@ const handlePrint = useReactToPrint({
   content: () => {
     if (!printRef.current) {
       console.warn("Nothing to print yet!");
-      return document.createElement("div"); // empty fallback
+      return document.createElement("div"); 
     }
     return printRef.current;
   },
@@ -38,13 +38,13 @@ const handlePrint = useReactToPrint({
 });
 
 
-  // Read actions once; do NOT subscribe component to store changes while typing
+ 
   const { setField, resetFields } = useDyeingStore.getState();
 
-  // Snapshot defaults once
+  
   const initial = useRef(useDyeingStore.getState());
 
-  // Local-only state for ALL fields (inputs + selects)
+  
   const [winch, setWinch] = useState(initial.current.winch || "Soft Flow");
   const [dyeingSystem, setDyeingSystem] = useState(initial.current.dyeingSystem || "Reactive");
   const [lotNo, setLotNo] = useState(initial.current.lotNo || "");
@@ -302,12 +302,13 @@ const handlePrint = useReactToPrint({
                 Reset
               </button>
 
-               <button
-          onClick={handlePrint}
-          className="px-3 hidden py-1.5 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
-        >
-          Download PDF
-        </button>
+              <Link
+                to="/dyeing/print"
+              
+                className="px-3  py-1.5 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+              >
+                Download PDF
+              </Link>
             </div>
           </div>
         </motion.div>

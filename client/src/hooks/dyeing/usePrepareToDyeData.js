@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getPrepareToDyeChem1GPL, getPrepareToDyeChem2GPL, getPrepareToDyeChem3GPL, getPrepareToDyePhorTime, getPrepareToDyeTemperature } from "../components/functions/prepareToDyeFunctions";
+import { getPrepareToDyeChem1GPL, getPrepareToDyeChem2GPL, getPrepareToDyeChem3GPL, 
+  getPrepareToDyePhorTime, getPrepareToDyeTemperature } from "../../components/functions/prepareToDyeFunctions";
 
 export default function usePrepareToDyeData(selectedColour, dyeingSystem, scouring, ) {
   

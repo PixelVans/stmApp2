@@ -18,26 +18,8 @@ export default function ChemicalSummaryTable({ rows }) {
       </thead>
       <tbody>
         {rows.map((r, i) => {
-          const chemText = (r.chemical || "").toString().toUpperCase().trim();
-          const isInstructionRow =
-            !!r.isInstructionRow ||
-            chemText.includes("REMAIN IN DWELL") ||
-            chemText.includes("WAIT FOR") ||
-            chemText === "E" ||
-            chemText.includes("20 MIN");
-
-          if (isInstructionRow) {
-            return (
-              <tr key={i}>
-                {/* make sure colSpan matches the total # of columns */}
-                <td colSpan={7} className="border p-0">
-                  <div className="bg-yellow-200 h-12 w-full flex items-center justify-center font-bold">
-                    {r.chemical || NBSP}
-                  </div>
-                </td>
-              </tr>
-            );
-          }
+          
+          
 
           return (
             <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>

@@ -1,12 +1,10 @@
-
-
 import { useState } from "react";
 import { FiSearch, FiBell, FiUser, FiMenu } from "react-icons/fi";
-import { useLocation } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom"; // 👈 import Outlet
 import Sidebar from "../components/Sidebar";
 import DyeingControlPanel from "../components/DyeingControlPanel";
 
-const MainLayout = ({ children, printRef }) => {
+const MainLayout = ({ printRef }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [controlPanelOpen, setControlPanelOpen] = useState(true);
 
@@ -17,7 +15,6 @@ const MainLayout = ({ children, printRef }) => {
     <div className="flex min-h-screen">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-      
 
       {/* Overlay for mobile */}
       {sidebarOpen && (
@@ -28,17 +25,17 @@ const MainLayout = ({ children, printRef }) => {
       )}
 
       {/* Main content area */}
-      <div className="flex-1 flex  flex-col lg:ml-1/6 transition-all duration-300">
+      <div className="flex-1 flex flex-col lg:ml-1/6 transition-all duration-300">
         {/* Navbar */}
-        <header className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between h-16 bg-white  shadow-sm px-2 md:px-6">
+        <header className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between h-16 bg-white shadow-sm px-2 md:px-6">
           <div className="flex items-center gap-4">
             <button
               className="lg:hidden p- rounded"
               onClick={() => setSidebarOpen(true)}
             >
-              <FiMenu className="ml-2" size={20}/>
+              <FiMenu className="ml-2" size={20} />
             </button>
-            <div className="text-xl  hidden font-semibold truncate">
+            <div className="text-xl hidden font-semibold truncate">
               STM Management
             </div>
           </div>
@@ -80,11 +77,11 @@ const MainLayout = ({ children, printRef }) => {
         <div className="h-16"></div>
 
         {/* Main content */}
-       <main
-        className={`flex-1 px-2 sm:px-6 lg:px-8 max-w-full overflow-x-hidden ${
-          isDyeingPage && controlPanelOpen ? "lg:mt-[250px]" : "mt-0"
-        }`}
-      >
+        <main
+          className={`flex-1 px-2 sm:px-6 lg:px-8 max-w-full overflow-x-hidden ${
+            isDyeingPage && controlPanelOpen ? "lg:mt-[250px]" : "mt-0"
+          }`}
+        >
           {isDyeingPage && controlPanelOpen && (
             <DyeingControlPanel
               open={controlPanelOpen}
@@ -92,7 +89,9 @@ const MainLayout = ({ children, printRef }) => {
               printRef={printRef}
             />
           )}
-          {children}
+
+          {/* 👇 this is where child routes render */}
+          <Outlet />
         </main>
       </div>
     </div>

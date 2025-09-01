@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import useDyeingStore from "../store/zustand";
+import useDyeingStore from "../../store/zustand";
 import {
   Colour_Chart,
   Dyestuff_1,
@@ -10,7 +10,8 @@ import {
   Dyestuff_2_Amt,
   Dyestuff_3_Amt,
   Dyestuff_4_Amt,
-} from "../utils/constants";
+} from "../../utils/constants";
+
 import {
   computeAmount,
   getDyeingTemp,
@@ -70,13 +71,13 @@ import {
   getFinishingChem3,
   getFinishingChemAmt,
   totalWaterUsed,
-} from "../components/functions/dyeingfunc";
+} from "../../components/functions/dyeingfunc";
 
 import useScouringData from "./useScouringData";
 import useHotwashData from "./useHotwashData";
 import usePrepareToDyeData from "./usePrepareToDyeData";
 import useDyeingData from "./useDyeingData";
-import { getDyeingSec1ChemAmt1, getDyeingSec1ChemAmt2,  } from "../components/functions/dyeingFunctions";
+import { getDyeingSec1ChemAmt1, getDyeingSec1ChemAmt2,  } from "../../components/functions/dyeingFunctions";
 import useEndData from "./useEndData";
 import useFirstRinseData from "./useFirstRinseData";
 import useSoapingData from "./useSoapingData";

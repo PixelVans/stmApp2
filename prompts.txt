@@ -1,8 +1,14 @@
-=IFERROR(IF(ROUND($C$66*Water_Litres_Dyeing,1)>=1000,ROUND($C$66*Water_Litres_Dyeing/1000,1)
-&Standards!$D$174,ROUND($C$66*Water_Litres_Dyeing,1)&Standards!$D$175),"E")
+and the for finishing toal costs, we can combine the 3 into one formula
+here are the excel  for 1 to 2,
+
+finishingchemical1total cost
+=IFERROR(IF(ROUND($C$66*Water_Litres_Dyeing,1)>=1000,ROUND($C$66*Water_Litres_Dyeing/1000,1)*G94,ROUND($C$66*Water_Litres_Dyeing,1)*G94/1000),"")
+
+finishingchemical2total cost
+=IFERROR(IF(ROUND($C$67*Water_Litres_Dyeing,1)>=1000,ROUND($C$67*Water_Litres_Dyeing/1000,1)*G95,ROUND($C$67*Water_Litres_Dyeing,1)*G95/1000),"")
 
 
-=IFERROR(IF(Dye_Fix_Selection="Dye Fix",IF(ROUND($C$25*Water_Litres_Dyeing,1)>=1000,ROUND($C$25*Water_Litres_Dyeing/1000,1)
-&Standards!$D$174,ROUND($C$25*Water_Litres_Dyeing,1)&Standards!$D$175),Zero),"E")
 
-we also need to cime up with functions for these 2 excel formulas, 
+
+
+

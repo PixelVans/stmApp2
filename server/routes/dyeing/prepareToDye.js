@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { connectToDB, sql } = require('../config/db'); 
+const { connectToDB1, sql } = require('../../config/db'); 
 
 router.get("/:colour", async (req, res) => {
   const { colour } = req.params;
 
   try {
-    const pool = await connectToDB();
+    const pool = await connectToDB1();
     const result = await pool.request()
       .input("colour", sql.VarChar, colour)
       .query(`

@@ -6,7 +6,7 @@ import {
   getFinishingChemGPL2, 
   getFinishingTempTimePh, 
   
-} from "../components/functions/finishingFunctions";
+} from "../../components/functions/finishingFunctions";
 
 export default function useFinishingData(scouring, selectedColour, softener, liqRatio8,) {
   const [finishingTemp, setFinishingTemp] = useState(null);

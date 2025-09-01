@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 
-import {  getEndTemp, getEndTimePh } from "../components/functions/endFunctions";
-import { getSoapingChemGPL, getSoapingTemp, getSoapingTimePh } from "../components/functions/soapingFunctions";
+
+import { getSoapingChemGPL, getSoapingTemp, getSoapingTimePh } from "../../components/functions/soapingFunctions";
 
 export default function useSoapingData(scouring, selectedColour, dyeingSystem) {
   
