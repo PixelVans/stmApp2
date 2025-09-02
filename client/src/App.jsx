@@ -2,9 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import StmHome from "./pages/StmHome";
-import ChemicalTablePage from "./pages/ChemicalTablePage"; // print-only page
-import ChemicalTable from "./pages/dyeing"; // normal page with layout
-import DyeingControlPanel from "./components/DyeingControlPanel";
+import ChemicalTable from "./pages/dyeing"; 
 import DyeingCardCustomPrint from "./pages/dyeingCardCustomPrint";
 
 function App() {

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const navItems = [
-    { name: "Specialised Systems", icon: <FiGrid size={18} />, href: "#" },
+    
     { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
   ];
 
@@ -32,9 +32,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     </div>
 
     {/* Logo */}
-    <div className="mb-10 flex items-center justify-center">
-      <div className="text-2xl mt-12 font-extrabold tracking-wide text-center">
-        STM <span className="text-blue-400">Management</span>
+    <div className="mb-10  items-center justify-center">
+      <div className="text-xl md:text-2xl flex flex-col gap-2 lg:flex-row mt-12 lg:mt-16 font-bold tracking-wide text-center">
+        Specialised <span className="text-blue-400">Systems</span>
       </div>
     </div>
 
@@ -44,7 +44,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         <Link
           key={item.name}
           to={item.href}
-          onClick={() => setIsOpen(false)} // close sidebar on click
+          onClick={() => setIsOpen(false)} 
           className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
         >
           {item.icon}

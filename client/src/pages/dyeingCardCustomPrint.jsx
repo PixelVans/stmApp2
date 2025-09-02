@@ -37,8 +37,6 @@ const totals = getTotals(summarySteps);
   </div>
 </div>
 
-
-
 {steps.map((step, sIdx) => (
         <div key={sIdx} className="sm:p-4 border-b border-gray-200">
           {step.step === "END" && (
@@ -90,7 +88,7 @@ const totals = getTotals(summarySteps);
 
       {/* Totals Section */}
       <div className="mt-5 mx-auto max-w-md rounded-2xl bg-white border border-gray-300 overflow-hidden">
-        <div className="bg-gradient-to-r from-slate-700 to-slate-500 px-4 py-2">
+        <div className="bg-gradient-to-r from-slate-800 to-slate-400 px-4 py-2">
           <h2 className="text-white text-lg font-semibold tracking-wide">Total Cost</h2>
         </div>
         <table className="w-full text-left border-collapse">
