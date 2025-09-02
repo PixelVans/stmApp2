@@ -8,7 +8,7 @@ export default function ChemicalStepTable({ rows }) {
       <thead>
         <tr className="bg-gray-200">
           <th className="border px-2 py-1 text-left">Chemical</th>
-          <th className="border px-2 py-1 text-right">Grams/lt</th>
+          <th className="border px-2 py-1 text-right">Grams/Lt</th>
           <th className="border px-2 py-1 text-left">Amount</th>
           <th className="border px-2 py-1 text-left">Temp</th>
           <th className="border px-2 py-1 text-left">Time</th>

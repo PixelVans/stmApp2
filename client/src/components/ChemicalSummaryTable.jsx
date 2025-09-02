@@ -11,7 +11,7 @@ export default function ChemicalSummaryTable({ rows }) {
           <th className="border px-2 py-1 text-right">Kgs Needed</th>
           <th className="border px-2 py-1 text-left">Amt on Hand</th>
           <th className="border px-2 py-1 text-left">Summary</th>
-          <th className="border px-2 py-1 text-left">Kg/lt Cost</th>
+          <th className="border px-2 py-1 text-left">Kg/Lt Cost</th>
           <th className="border px-2 py-1 text-left">Total Cost</th>
           <th className="border px-2 py-1 text-left hidden">Needed Totals</th>
         </tr>
