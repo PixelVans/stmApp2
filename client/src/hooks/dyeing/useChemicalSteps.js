@@ -455,6 +455,8 @@ export default function useChemicalSteps() {
            
           ],
         },
+
+      
         {
           step: "Step 5 -  First Rinse",
           instructions:

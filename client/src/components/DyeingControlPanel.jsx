@@ -5,6 +5,8 @@ import useDyeingStore from "../store/zustand";
 import { Link, useHref } from "react-router-dom";
 
 import { useReactToPrint } from "react-to-print";
+import ChemicalTable from "../pages/dyeing";
+import DyeingCardCustomPrint from "../pages/dyeingCardCustomPrint";
 
 
 const FormRow = React.memo(function FormRow({ label, children }) {
@@ -22,20 +24,24 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
 
     
 
-const handlePrint = useReactToPrint({
-  content: () => {
-    if (!printRef.current) {
-      console.warn("Nothing to print yet!");
-      return document.createElement("div"); 
-    }
-    return printRef.current;
-  },
-  documentTitle: "Dyeing_Report",
-  pageStyle: `
-    @page { size: A4; margin: 20mm; }
-    body { -webkit-print-color-adjust: exact; }
-  `,
-});
+ const componentRef = useRef(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef, // ✅ use new API
+    documentTitle: "Dyeing Card",
+    pageStyle: `
+      @page {
+        size: A4;
+        margin: 12mm;
+      }
+      body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    `,
+  });
+
+
 
 
  
@@ -302,13 +308,16 @@ const handlePrint = useReactToPrint({
                 Reset
               </button>
 
-              <Link
-                to="/dyeing/print"
-              
-                className="px-3  py-1.5 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+              <button
+                onClick={handlePrint}
+                className="px-3 py-1.5 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
               >
                 Download PDF
-              </Link>
+              </button>
+                 <div className="mt-4 hidden">
+                  <DyeingCardCustomPrint ref={componentRef} />
+                 </div>
+
             </div>
           </div>
         </motion.div>

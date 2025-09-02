@@ -84,10 +84,10 @@ const MainLayout = ({ printRef }) => {
         >
           {isDyeingPage && controlPanelOpen && (
             <DyeingControlPanel
-              open={controlPanelOpen}
-              setOpen={setControlPanelOpen}
-              printRef={printRef}
-            />
+            open={controlPanelOpen}
+            setOpen={setControlPanelOpen}
+            printRef={printRef} // pass ref here
+          />
           )}
 
           {/* 👇 this is where child routes render */}

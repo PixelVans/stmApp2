@@ -1291,3 +1291,58 @@ export function totalWaterUsed({ waterLitresDyeing, gpl, dyeingSystem, lotWeight
   return formatLitres(total);
 }
 
+
+
+  // totals function
+export function getTotals(allSteps) {
+  const toNumber = val => {
+    const num = Number(String(val).replace(/,/g, ""));
+    return isNaN(num) ? 0 : num;
+  };
+
+  // Needed totals (all rows from all steps)
+  const totalsNeeded = allSteps
+    .flatMap(step => step.rows)
+    .reduce((sum, row) => sum + toNumber(row.needed_totals), 0);
+
+  // Chemicals Total
+  let chemicalsTotal = 0;
+
+  allSteps.forEach(step => {
+    if (step.step === "Scouring" || step.step === "Prepare To Dye") {
+      // take all total_cost
+      chemicalsTotal += step.rows.reduce((s, r) => s + toNumber(r.total_cost), 0);
+    }
+
+    if (step.step === "Dyeing" && step.rows.length > 0) {
+      // take *last row only*
+      const lastRow = step.rows[step.rows.length - 1];
+      chemicalsTotal += toNumber(lastRow.total_cost);
+    }
+
+    if (step.step === "Finishing" && step.rows.length >= 2) {
+      // take *last 2 rows only*
+      const lastTwo = step.rows.slice(-2);
+      chemicalsTotal += lastTwo.reduce((s, r) => s + toNumber(r.total_cost), 0);
+    }
+  });
+
+  // Dyestuffs Total = first 3 rows only (if they exist)
+  let dyestuffsTotal = 0;
+  const dyeingStep = allSteps.find(s => s.step === "Dyeing");
+  if (dyeingStep && dyeingStep.rows.length > 0) {
+    const firstThree = dyeingStep.rows.slice(0, 3);
+    dyestuffsTotal = firstThree.reduce((s, r) => s + toNumber(r.total_cost), 0);
+  }
+
+  
+  const chemicalsAndDyesTotal = chemicalsTotal + dyestuffsTotal;
+
+  return {
+    totalsNeeded: totalsNeeded.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    chemicalsTotal: chemicalsTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    dyestuffsTotal: dyestuffsTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    chemicalsAndDyesTotal: chemicalsAndDyesTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+  };
+
+}

@@ -13,7 +13,7 @@ export default function ChemicalSummaryTable({ rows }) {
           <th className="border px-2 py-1 text-left">Summary</th>
           <th className="border px-2 py-1 text-left">Kg/lt Cost</th>
           <th className="border px-2 py-1 text-left">Total Cost</th>
-          <th className="border px-2 py-1 text-left hidden lg:table-cell">Needed Totals</th>
+          <th className="border px-2 py-1 text-left hidden">Needed Totals</th>
         </tr>
       </thead>
       <tbody>
@@ -29,7 +29,7 @@ export default function ChemicalSummaryTable({ rows }) {
               <td className="border px-2 py-1">{r.summary || NBSP}</td>
               <td className="border px-2 py-1">{r.cost_per_kg || NBSP}</td>
               <td className="border px-2 py-1">{r.total_cost || NBSP}</td>
-              <td className="border px-2 py-1 hidden lg:table-cell">{r.needed_totals || NBSP}</td>
+              <td className="border px-2 py-1 hidden">{r.needed_totals || NBSP}</td>
             </tr>
           );
         })}
