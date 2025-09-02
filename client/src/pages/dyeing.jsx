@@ -16,11 +16,11 @@ const ChemicalTable = forwardRef((props, ref) => {
 const totals = getTotals(summarySteps);
 
   return (
-    <div ref={ref} className="p-2 mt-2 bg-white lg:ml-64">
+    <div ref={ref} className="p-2 mt-2 bg-white lg:ml-64 ">
       
       {steps.map((step, sIdx) => (
-        <div key={sIdx} className="sm:p-4 border-b border-gray-200">
-          {step.step === "END" && (
+        <div key={sIdx} className="sm:p-4 ">
+          {step.step === "" && (
              <img
               src="/images/Picture1.png"
               alt="Process illustration"
@@ -71,7 +71,7 @@ const totals = getTotals(summarySteps);
 
       {/* Summary Steps */}
       {summarySteps.map((step, sIdx) => (
-        <div key={sIdx} className="sm:p-1 border-b border-gray-200">
+        <div key={sIdx} className="sm:p-1 ">
           <h2 className="text-md">{step.step}</h2>
           {step.instructions && (
             <p className="text-sm mb-2 ">

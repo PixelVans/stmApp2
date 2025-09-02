@@ -33,7 +33,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
     pageStyle: `
       @page {
         size: A4;
-        margin: 10mm;
+        margin: 12mm;
       }
       body {
         -webkit-print-color-adjust: exact !important;

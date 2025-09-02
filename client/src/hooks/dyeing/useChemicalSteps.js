@@ -217,7 +217,7 @@ export default function useChemicalSteps() {
   const dyeingSecondStep = [
               {
                 chemical: getNameAt(Dyestuff_1),
-                gramsPerLt: dyeingSec2Gpl1 ?? "fetching data...",
+                gramsPerLt: formatNumber(dyeingSec2Gpl1) ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_1_Amt)), lotWeight),
                 temp: dyeingSec2Temp1  ?? "fetching data..",
                 time: dyeingSec2Time1 ?? "fetching data..",
@@ -225,7 +225,7 @@ export default function useChemicalSteps() {
               },
               {
                 chemical: getNameAt(Dyestuff_2),
-                gramsPerLt: dyeingSec2Gpl2 ?? "fetching data...",
+                gramsPerLt: formatNumber(dyeingSec2Gpl2) ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_2_Amt)), lotWeight),
                 temp: "",
                 time: "",
@@ -233,7 +233,7 @@ export default function useChemicalSteps() {
               },
               {
                 chemical: getNameAt(Dyestuff_3),
-                gramsPerLt: dyeingSec2Gpl3 ?? "fetching data...",
+                gramsPerLt: formatNumber(dyeingSec2Gpl3) ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_3_Amt)), lotWeight),
                 temp: "",
                 time: "",
@@ -241,7 +241,7 @@ export default function useChemicalSteps() {
               },
               {
                 chemical: getNameAt(Dyestuff_4),
-                gramsPerLt: dyeingSec2Gpl4 ?? "fetching data...",
+                gramsPerLt: formatNumber(dyeingSec2Gpl4) ?? "fetching data...",
                 amount: computeAmount(Number(getAmtAt(Dyestuff_4_Amt)), lotWeight),
                 temp: "",
                 time: "",
@@ -251,7 +251,7 @@ export default function useChemicalSteps() {
               {
                 //salt filed
                 chemical: saltOptionstep4,
-                gramsPerLt: dyeingSec2Gpl5 ?? "fetching data...",
+                gramsPerLt: formatNumber(dyeingSec2Gpl5) ?? "fetching data...",
                 amount: computeDyeingSaltAmount({
                   chemicalName: saltOptionstep4,
                   selectedColour,
@@ -351,7 +351,7 @@ export default function useChemicalSteps() {
               gramsPerLt: scouringValues[7] ?? "",
               amount: getScouringChemicalAmount(scouring,selectedColour,7,lotWeight, liqRatio,  winch),
               temp: "",
-              time: "",
+              time: "💧💧💧",
               ph: "Drain",
             },
           ],
@@ -359,7 +359,7 @@ export default function useChemicalSteps() {
         {
           step: "Step 2 -  Hot Wash",
           rows: [
-            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "", ph: "" },
+            
             {
               chemical: getHotWashTitle1(dyeingSystem),
               gramsPerLt: "",
@@ -373,7 +373,7 @@ export default function useChemicalSteps() {
               gramsPerLt: hotwashGpl,
               amount: computeHotwashAmount({ selectedColour,dyeingSystem,lotWeight, liqRatio,winch, }),
               temp: "",
-              time: "",
+              time: "💧💧💧",
               ph: "Drain",
             },
           ],
@@ -383,8 +383,7 @@ export default function useChemicalSteps() {
           instructions:
             "ONGEZA ACID KWANZA ALAFU BAADA YA DAKIKA KUMI ONGEZA PEROXIDE KILLER",
           rows: [
-            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "", ph: "" },
-            {
+           {
               chemical: getPrepareToDyeTitle1(scouring),
               gramsPerLt: prepareToDyeChem1Gpl ?? "fetching data...",
               amount: getPrepareToDyeAmt1({ gpl,dyeingSystem,lotWeight,waterLitresDyeing, }),
@@ -431,7 +430,7 @@ export default function useChemicalSteps() {
         },
 
         {
-          step: "END",
+          step: "",
           instructions:
             "ONGEZA 30% YA MAGADI NA CAUSTIC ALAFU BAADA YA DAKIKA ISHIRINI ONGEZA 70%",
           rows: [
@@ -462,8 +461,7 @@ export default function useChemicalSteps() {
           instructions:
             "",
           rows: [
-            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "", ph: "" },
-            {
+           {
               chemical: getFirstRinseChem1( scouring),
               gramsPerLt: "",
               amount: roundupWater(waterLitresDyeing) + " Ltrs",
@@ -471,7 +469,7 @@ export default function useChemicalSteps() {
               time: firstRinseDuration ?? "fetching data...",
               ph: firstRinsePh ?? "fetching data...",
             },
-            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "", ph: "Drain" },
+            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "💧💧💧", ph: "Drain" },
            
           ],
         },
@@ -504,7 +502,7 @@ export default function useChemicalSteps() {
               gramsPerLt: soapingGpl2 ?? "fetching data...",
               amount: getSoapingChemAmt(soapingGpl2,  waterLitresDyeing,) ,
               temp: "",
-              time: "",
+              time: "💧💧💧",
               ph: "Drain",
             },
             
@@ -531,7 +529,7 @@ export default function useChemicalSteps() {
               gramsPerLt: "",
               amount: "",
               temp: "",
-              time: "",
+              time: "💧💧💧",
               ph: "Drain",
             },
             
@@ -577,7 +575,7 @@ export default function useChemicalSteps() {
               gramsPerLt: "",
               amount: "",
               temp: "",
-              time: "",
+              time: "💧💧💧",
               ph: "Drain",
             },
             {
