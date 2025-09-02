@@ -1,11 +1,12 @@
 
-import { FiGrid, FiDroplet, FiLogOut, FiX } from "react-icons/fi";
+import { FiGrid, FiDroplet, FiLogOut, FiX, FiHome } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const navItems = [
-    
+    { name: "Home", icon: <FiHome size={18} className="text-white" />, href: "/" },
     { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
+    
   ];
 
   return (
@@ -15,7 +16,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   className={`
     fixed top-0 left-0 h-full z-40 bg-slate-800 text-white p-4 md:p-6 
     flex flex-col justify-between
-    lg:w-1/6 lg:max-w-none transition-transform duration-300
+    w-2/3 sm:w-1/3 lg:w-1/6 lg:max-w-none transition-transform duration-300
     ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
   `}
 >
@@ -32,11 +33,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     </div>
 
     {/* Logo */}
-    <div className="mb-10  items-center justify-center">
-      <div className="text-xl md:text-2xl flex flex-col gap-2 lg:flex-row mt-12 lg:mt-16 font-bold tracking-wide text-center">
-        Specialised <span className="text-blue-400">Systems</span>
-      </div>
-    </div>
+  <div className="mb-10 flex items-center justify-center">
+  <div className="text-lg md:text-xl lg:text-[22px] font-bold tracking-wide text-center">
+    Specialised <span className="text-blue-400">Systems</span>
+    <div className="mt-4 mx-auto w-full border-b border-gray-500"></div>
+  </div>
+</div>
+
+
 
     {/* Navigation */}
     <nav className="flex flex-col gap-2">

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Colour_Chart } from "../utils/constants";
 import useDyeingStore from "../store/zustand";
 import { Link, useHref } from "react-router-dom";
+import { FiPrinter } from "react-icons/fi";
 
 import { useReactToPrint } from "react-to-print";
 import ChemicalTable from "../pages/dyeing";
@@ -27,12 +28,12 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
  const componentRef = useRef(null);
 
   const handlePrint = useReactToPrint({
-    contentRef: componentRef, // ✅ use new API
+    contentRef: componentRef, 
     documentTitle: "Dyeing Card",
     pageStyle: `
       @page {
         size: A4;
-        margin: 12mm;
+        margin: 10mm;
       }
       body {
         -webkit-print-color-adjust: exact !important;
@@ -247,7 +248,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
                 />
               </FormRow>
 
-              <FormRow label="Liq. Ratio:8">
+              <FormRow label="Dye Fix">
                 <select
                   className={baseSelect}
                   value={liqRatio8}
@@ -294,29 +295,32 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-4 flex gap-3">
+            <div className="mt-4 flex gap-4">
               <button
                 onClick={handleCompute}
-                className="px-3 py-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-sm"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 transition text-sm"
               >
                 Execute
               </button>
               <button
                 onClick={handleReset}
-                className="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm"
               >
                 Reset
               </button>
 
-              <button
+             <button
                 onClick={handlePrint}
-                className="px-3 py-1.5 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
               >
-                Download PDF
+                <FiPrinter className="w-4 h-4" />
+                Print Document
               </button>
-                 <div className="mt-4 hidden">
-                  <DyeingCardCustomPrint ref={componentRef} />
-                 </div>
+
+                <div className="absolute -left-[9999px] top-0">
+                <DyeingCardCustomPrint ref={componentRef} />
+              </div>
+
 
             </div>
           </div>

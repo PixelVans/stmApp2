@@ -16,7 +16,7 @@ const ChemicalTable = forwardRef((props, ref) => {
 const totals = getTotals(summarySteps);
 
   return (
-    <div ref={ref} className="p-2 mt-7 bg-white lg:ml-64">
+    <div ref={ref} className="p-2 mt-2 bg-white lg:ml-64">
       
       {steps.map((step, sIdx) => (
         <div key={sIdx} className="sm:p-4 border-b border-gray-200">
@@ -32,7 +32,7 @@ const totals = getTotals(summarySteps);
               BAADA YA KUONGEZA MAGADI NA CAUSTIC, DWELL KWA DAKIKA ARUBAINE NA TANO AT 60°C</h3>
            )}
 
-          <h2 className="text-md md:text-lg font-bold ">{step.step}</h2>
+          <h2 className="text-md md:text-lg font-bold mt-9 ">{step.step}</h2>
           {step.extraSection && (
             <>
               <h3 className="italic text-sm mb-2 text-blue-600">
@@ -88,7 +88,7 @@ const totals = getTotals(summarySteps);
       ))}
 
       {/* Totals Section */}
-      <div className="mt-5 mx-auto max-w-md rounded-2xl bg-white border border-gray-300 overflow-hidden">
+      <div className="mt-5 mx-auto mb-15 max-w-md rounded-2xl bg-white border border-gray-300 overflow-hidden">
         <div className="bg-gradient-to-r from-slate-800 to-slate-400 px-4 py-2">
           <h2 className="text-white text-lg font-semibold tracking-wide">Total Cost</h2>
         </div>

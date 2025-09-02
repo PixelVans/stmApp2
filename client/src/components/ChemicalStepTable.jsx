@@ -29,7 +29,7 @@ export default function ChemicalStepTable({ rows }) {
             return (
               <tr key={i}>
                 <td colSpan={6} className="border p-0">
-                  <div className="bg-yellow-200 h-12 w-full flex items-center justify-center font-bold">
+                  <div className="bg-yellow-200 h-10 w-full flex items-center justify-center font-semibold">
                     {r.chemical || NBSP}
                   </div>
                 </td>

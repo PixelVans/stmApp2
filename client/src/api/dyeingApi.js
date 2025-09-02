@@ -122,4 +122,16 @@ export async function fetchFinishingRow(colour) {
   return res.json(); 
 }
 
+export async function fetchChemicalsRow(chemical) {
+  const res = await fetch(`/api/chemicals/${encodeURIComponent(chemical)}`);
+  if (!res.ok) throw new Error("Failed to fetch the chemicals row");
+  return res.json(); 
+}
+
+
+export async function fetchDyeStuffsRow(dyestuff) {
+  const res = await fetch(`/api/dyestuff/${encodeURIComponent(dyestuff)}`);
+  if (!res.ok) throw new Error("Failed to fetch the dyes row");
+  return res.json(); 
+}
 

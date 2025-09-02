@@ -1,2 +1,12 @@
 @import "tailwindcss";
 
+@media print {
+  .printable {
+    display: block !important;
+  }
+}
+@media screen {
+  .printable {
+    display: none !important;
+  }
+}

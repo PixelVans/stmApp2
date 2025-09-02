@@ -19,23 +19,29 @@ const totals = getTotals(summarySteps);
   return (
     <div ref={ref} className="p-2 bg-white lg:ml-64 items-center">
    <div className="border border-gray-300 p-2 mb-3 rounded text-xs text-gray-700">
-  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-x-4 gap-y-1">
-    <div><strong>Client:</strong> {client}</div>
-    <div><strong>Lot No:</strong> {lotNo}</div>
-    <div><strong>Article:</strong> {article}</div>
-    <div><strong>Winch:</strong> {winch}</div>
-    <div><strong>Dyeing System:</strong> {dyeingSystem}</div>
-    <div><strong>Shade:</strong> <span className={getTailwindColor(selectedColour)}>{selectedColour}</span></div>
-    <div><strong>Scouring:</strong> {scouring}</div>
-    <div><strong>Softener:</strong> {softener}</div>
-    <div><strong>Liq. Ratio:</strong> {liqRatio}</div>
-    <div><strong>Liq. 8:</strong> {liqRatio8}</div>
-    <div><strong>Weight:</strong> {lotWeight}</div>
-    <div><strong>Salt Opt:</strong> {saltOption}</div>
-    <div><strong>Salt Pos:</strong> {saltPosition}</div>
-    <div><strong>Soaping:</strong> {soaping}</div>
-  </div>
-</div>
+    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-x-4 gap-y-1">
+      <div><strong>Client:</strong> {client ?? '-'}</div>
+      <div><strong>Lot No:</strong> {lotNo ?? '-'}</div>
+      <div><strong>Article:</strong> {article ?? '-'}</div>
+      <div><strong>Winch:</strong> {winch ?? '-'}</div>
+      <div><strong>Dyeing System:</strong> {dyeingSystem ?? '-'}</div>
+      <div>
+        <strong>Shade:</strong>{" "}
+        <span className={getTailwindColor(selectedColour)}>
+          {selectedColour ?? '-'}
+        </span>
+      </div>
+      <div><strong>Scouring:</strong> {scouring ?? '-'}</div>
+      <div><strong>Softener:</strong> {softener ?? '-'}</div>
+      <div><strong>Liq. Ratio:</strong> {liqRatio ?? '-'}</div>
+      <div><strong>Dye-Fix:</strong> {liqRatio8 ?? '-'}</div>
+      <div><strong>Lot Weight:</strong> {lotWeight ? `${lotWeight} Kgs` : '-'}</div>
+      <div><strong>Salt Option:</strong> {saltOption ?? '-'}</div>
+      <div><strong>Salt Position:</strong> {saltPosition ?? '-'}</div>
+      <div><strong>Soaping:</strong> {soaping ?? '-'}</div>
+    </div>
+
+    </div>
 
 {steps.map((step, sIdx) => (
         <div key={sIdx} className="sm:p-4 border-b border-gray-200">
