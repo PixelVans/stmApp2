@@ -16,7 +16,7 @@ const ChemicalTable = forwardRef((props, ref) => {
 const totals = getTotals(summarySteps);
 
   return (
-    <div ref={ref} className="p-2 mt-2 bg-white lg:ml-64 ">
+    <div ref={ref} className="p-1 sm:p-2 mt-2  bg-white lg:ml-64 ">
       
       {steps.map((step, sIdx) => (
         <div key={sIdx} className="sm:p-4 ">
@@ -28,7 +28,7 @@ const totals = getTotals(summarySteps);
             />
            )}
           {step.step == "Step 5 -  First Rinse" && (
-            <h3 className="italic text-sm mb-2 text-blue-600">
+            <h3 className="italic text-sm my-3 text-blue-600">
               BAADA YA KUONGEZA MAGADI NA CAUSTIC, DWELL KWA DAKIKA ARUBAINE NA TANO AT 60°C</h3>
            )}
 
@@ -72,16 +72,8 @@ const totals = getTotals(summarySteps);
       {/* Summary Steps */}
       {summarySteps.map((step, sIdx) => (
         <div key={sIdx} className="sm:p-1 ">
-          <h2 className="text-md">{step.step}</h2>
-          {step.instructions && (
-            <p className="text-sm mb-2 ">
-              SHADE:{" "}
-              <span className={`text-sm mb-2 font-bold ${getTailwindColor(selectedColour)}`}>
-                {selectedColour}hhhh
-              </span>
-            </p>
-          )}
-          <div className="text-xs">
+          <h2 className="text-sm sm:text-md p-1 mt-2">{step.step}</h2>
+         <div className="text-xs">
             <ChemicalSummaryTable rows={step.rows} />
           </div>
         </div>
@@ -90,9 +82,9 @@ const totals = getTotals(summarySteps);
       {/* Totals Section */}
       <div className="mt-5 mx-auto mb-15 max-w-md rounded-2xl bg-white border border-gray-300 overflow-hidden">
         <div className="bg-gradient-to-r from-slate-800 to-slate-400 px-4 py-2">
-          <h2 className="text-white text-lg font-semibold tracking-wide">Total Cost</h2>
+          <h2 className="text-white ml-4  text-lg font-semibold tracking-wide">Total Cost</h2>
         </div>
-        <table className="w-full text-left border-collapse">
+        <table className="w-full ml-4 text-left border-collapse">
           <tbody>
             <tr className="border-b border-gray-200">
               <td className="px-4 py-2 text-sm font-medium text-gray-700">Chemicals Totals</td>

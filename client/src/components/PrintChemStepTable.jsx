@@ -18,7 +18,9 @@ export default function PrintChemStepTable({ rows }) {
     const groups = [];
     let current = [];
 
-    for (const r of rows) {
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+
       if (isInstructionRow(r)) {
         if (current.length > 0) {
           groups.push({ type: "group", rows: current });
@@ -31,6 +33,14 @@ export default function PrintChemStepTable({ rows }) {
       const phSafe = r.ph === undefined || r.ph === null ? "" : String(r.ph).toLowerCase();
 
       if (phSafe === "drain") {
+        // auto-fill previous group's last temp with drops if empty
+        if (current.length > 0) {
+          const lastRow = current[current.length - 1];
+          if (!lastRow.temp || String(lastRow.temp).trim() === "") {
+            lastRow.temp = "💧".repeat(20);
+          }
+        }
+
         if (current.length > 0) {
           groups.push({ type: "group", rows: current });
           current = [];
@@ -52,15 +62,15 @@ export default function PrintChemStepTable({ rows }) {
   let globalRowIndex = 0;
 
   return (
-    <table className="table-auto border-collapse border border-gray-300 w-full text-[10px] text-center">
+    <table className="table-auto border-collapse border border-gray-300 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
       <thead>
         <tr className="bg-gray-200">
           <th className="border px-0.5 py-0.5 align-middle">Chemical</th>
-          <th className="border px-0.5 py-0.5 align-middle">Grams/Lt</th>
-          <th className="border px-0.5 py-0.5 align-middle">Amount</th>
-          <th className="border px-0.5 py-0.5 align-middle">Temp</th>
-          <th className="border px-0.5 py-0.5 align-middle">Time</th>
-          <th className="border px-0.5 py-0.5 align-middle">pH</th>
+          <th className="border px-0.5 py-0.5 align-middle w-24">Grams/Lt</th>
+          <th className="border px-0.5 py-0.5 align-middle w-24">Amount</th>
+          <th className="border px-0.5 py-0.5 align-middle w-20">Temp</th>
+          <th className="border px-0.5 py-0.5 align-middle w-28">Time</th>
+          <th className="border px-0.5 py-0.5 align-middle w-20">pH</th>
         </tr>
       </thead>
 
@@ -85,11 +95,11 @@ export default function PrintChemStepTable({ rows }) {
             return (
               <tr key={`drain-${gIdx}`} className={`${bg} font-semibold`}>
                 <td className="border px-0.5 py-0.5 align-middle">{r.chemical || NBSP}</td>
-                <td className="border px-0.5 py-0.5 align-middle">{r.gramsPerLt || NBSP}</td>
-                <td className="border px-0.5 py-0.5 align-middle">{r.amount || NBSP}</td>
-                <td className="border px-0.5 py-0.5 align-middle">{r.temp || NBSP}</td>
-                <td className="border px-0.5 py-0.5 align-middle">{r.time || NBSP}</td>
-                <td className="border px-0.5 py-0.5 align-middle font-bold italic">
+                <td className="border px-0.5 py-0.5 align-middle w-16">{r.gramsPerLt || NBSP}</td>
+                <td className="border px-0.5 py-0.5 align-middle w-16">{r.amount || NBSP}</td>
+                <td className="border px-0.5 py-0.5 align-middle w-16">{r.temp || NBSP}</td>
+                <td className="border px-0.5 py-0.5 align-middle w-28">{r.time || NBSP}</td>
+                <td className="border px-0.5 py-0.5 align-middle font-bold italic w-16">
                   {r.ph || NBSP}
                 </td>
               </tr>
@@ -117,18 +127,18 @@ export default function PrintChemStepTable({ rows }) {
             return (
               <tr key={`g-${gIdx}-r-${i}`} className={bg}>
                 <td className="border px-0.5 py-0.5 align-middle">{r.chemical || NBSP}</td>
-                <td className="border px-0.5 py-0.5 align-middle">{r.gramsPerLt || NBSP}</td>
-                <td className="border px-0.5 py-0.5 align-middle">{r.amount || NBSP}</td>
+                <td className="border px-0.5 py-0.5 align-middle w-16">{r.gramsPerLt || NBSP}</td>
+                <td className="border px-0.5 py-0.5 align-middle w-16">{r.amount || NBSP}</td>
 
                 {isFirst && (
                   <>
-                    <td className="border px-0.5 py-0.5 align-middle" rowSpan={groupRowsArr.length}>
+                    <td className="border px-0.5 py-0.5 align-middle w-16" rowSpan={groupRowsArr.length}>
                       {groupTemp}
                     </td>
-                    <td className="border px-0.5 py-0.5 align-middle" rowSpan={groupRowsArr.length}>
+                    <td className="border px-0.5 py-0.5 align-middle w-28" rowSpan={groupRowsArr.length}>
                       {groupTime}
                     </td>
-                    <td className="border px-0.5 py-0.5 align-middle" rowSpan={groupRowsArr.length}>
+                    <td className="border px-0.5 py-0.5 align-middle w-16" rowSpan={groupRowsArr.length}>
                       {groupPh}
                     </td>
                   </>

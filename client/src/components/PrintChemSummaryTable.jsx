@@ -4,15 +4,15 @@ export default function PrintChemSummaryTable({ rows }) {
   const NBSP = "\u00A0";
 
   return (
-    <table className="table-auto border-collapse border border-gray-300 w-full text-[10px]">
+    <table className="table-auto border-collapse border border-gray-300 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
       <thead>
         <tr className="bg-gray-200">
           <th className="border px-0.5 py-0.5 text-center">Chemicals Summary</th>
-          <th className="border px-0.5 py-0.5 text-center">Kgs Needed</th>
-          <th className="border px-0.5 py-0.5 text-center">Amt on Hand</th>
-          <th className="border px-0.5 py-0.5 text-center">Summary</th>
-          <th className="border px-0.5 py-0.5 text-center">Kg/Lt Cost</th>
-          <th className="border px-0.5 py-0.5 text-center">Total Cost</th>
+          <th className="border px-0.5 py-0.5 text-center w-24">Kgs Needed</th>
+          <th className="border px-0.5 py-0.5 text-center w-24">Amt on Hand</th>
+          <th className="border px-0.5 py-0.5 text-center w-24">Summary</th>
+          <th className="border px-0.5 py-0.5 text-center w-24">Kg/Lt Cost</th>
+          <th className="border px-0.5 py-0.5 text-center w-24">Total Cost</th>
           <th className="border px-0.5 py-0.5 text-center hidden">Needed Totals</th>
         </tr>
       </thead>

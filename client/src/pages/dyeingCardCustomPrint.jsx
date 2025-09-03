@@ -30,7 +30,7 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
   const totals = getTotals(summarySteps);
 
   return (
-    <div ref={ref} className="p-1 bg-white text-[10px] leading-tight">
+    <div ref={ref} className="p-1 sm:p-2  bg-white text-[10px] leading-tight">
       {/* Header Info */}
       <div className="border border-gray-300 p-1 mb-2 rounded text-[9px] text-gray-700">
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-x-2 gap-y-0.5">
@@ -62,13 +62,13 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
           {step.step === "" && (
             <img
               src="/images/Picture1.png"
-              alt="Process illustration"
-              className="mb-2 mt-2 h-[150px] mx-auto"
+              alt="Isotherm"
+              className="mb-2 mt-2 h-[100px] mx-auto"
             />
           )}
 
           {step.step === "Step 5 -  First Rinse" && (
-            <h3 className="italic text-[9px] mb-1 text-blue-600">
+            <h3 className="italic text-[9px] mb-2 text-blue-600">
               BAADA YA KUONGEZA MAGADI NA CAUSTIC, DWELL KWA DAKIKA ARUBAINE NA TANO AT 60°C
             </h3>
           )}
@@ -94,13 +94,13 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
 
       {/* Scouring & Softener Summary */}
       
-        <h1 className="p-1 text-center mx-auto text-[10px] font-semibold">Summary</h1>
+        <h1 className="p-2 text-center mx-auto text-[10px] font-semibold">Summary</h1>
       
 
       {/* Summary Steps */}
       {summarySteps.map((step, sIdx) => (
         <div key={sIdx} className="p-1 ">
-          <h2 className="text-[10px]">{step.step}</h2>
+          <h2 className="text-[10px] mb-1">{step.step}</h2>
           <div className="text-[9px]">
             <PrintChemSummaryTable rows={step.rows} />
           </div>
@@ -110,9 +110,9 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
       {/* Totals Section */}
       <div className="mt-2 mx-auto max-w-sm rounded-lg bg-white border border-gray-300 overflow-hidden text-[9px]">
         <div className="bg-gradient-to-r from-slate-800 to-slate-400 px-1 py-0.5">
-          <h2 className="text-white text-[10px] font-semibold tracking-wide">Total Cost</h2>
+          <h2 className="text-white ml-4 text-[10px] font-semibold tracking-wide">Total Cost</h2>
         </div>
-        <table className="w-full text-left border-collapse">
+        <table className="w-full ml-4 text-left border-collapse">
           <tbody>
             <tr className="border-b border-gray-200">
               <td className="px-1 py-0.5 font-medium text-gray-700">Chemicals Totals</td>

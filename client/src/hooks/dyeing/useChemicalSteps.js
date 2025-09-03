@@ -350,8 +350,16 @@ export default function useChemicalSteps() {
               chemical: scouringChemical7,
               gramsPerLt: scouringValues[7] ?? "",
               amount: getScouringChemicalAmount(scouring,selectedColour,7,lotWeight, liqRatio,  winch),
+              temp: ".",
+              time: "",
+              ph: "",
+            },
+            {
+              chemical: "",
+              gramsPerLt:  "",
+              amount: "",
               temp: "",
-              time: "💧💧💧",
+              time: "💧💧💧💧💧💧💧💧💧💧",
               ph: "Drain",
             },
           ],
@@ -373,7 +381,7 @@ export default function useChemicalSteps() {
               gramsPerLt: hotwashGpl,
               amount: computeHotwashAmount({ selectedColour,dyeingSystem,lotWeight, liqRatio,winch, }),
               temp: "",
-              time: "💧💧💧",
+              time: "💧💧💧💧💧💧💧💧💧💧",
               ph: "Drain",
             },
           ],
@@ -469,7 +477,7 @@ export default function useChemicalSteps() {
               time: firstRinseDuration ?? "fetching data...",
               ph: firstRinsePh ?? "fetching data...",
             },
-            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "💧💧💧", ph: "Drain" },
+            { chemical: "", gramsPerLt: "", amount: "", temp: "", time: "💧💧💧💧💧💧💧💧💧💧", ph: "Drain" },
            
           ],
         },
@@ -502,7 +510,7 @@ export default function useChemicalSteps() {
               gramsPerLt: soapingGpl2 ?? "fetching data...",
               amount: getSoapingChemAmt(soapingGpl2,  waterLitresDyeing,) ,
               temp: "",
-              time: "💧💧💧",
+              time: "",
               ph: "Drain",
             },
             
@@ -510,7 +518,7 @@ export default function useChemicalSteps() {
           ],
         },
         {
-          step: "Step 7 - Final_Rinse",
+          step: "Step 7 - Final Rinse",
           instructions:
             "",
           rows: [
@@ -529,7 +537,7 @@ export default function useChemicalSteps() {
               gramsPerLt: "",
               amount: "",
               temp: "",
-              time: "💧💧💧",
+              time: "💧💧💧💧💧💧💧💧💧💧",
               ph: "Drain",
             },
             
@@ -575,7 +583,7 @@ export default function useChemicalSteps() {
               gramsPerLt: "",
               amount: "",
               temp: "",
-              time: "💧💧💧",
+              time: "💧💧💧💧💧💧💧💧💧",
               ph: "Drain",
             },
             {

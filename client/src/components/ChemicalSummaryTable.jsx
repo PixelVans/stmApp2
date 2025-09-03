@@ -4,7 +4,7 @@ export default function ChemicalSummaryTable({ rows }) {
   const NBSP = "\u00A0";
 
   return (
-    <table className="table-auto border-collapse border border-gray-300 w-full text-sm">
+    <table className="table-auto border-collapse border border-gray-300 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
       <thead>
         <tr className="bg-gray-200 text-center">
           <th className="border px-2 py-1">Chemicals Summary</th>
