@@ -62,6 +62,13 @@ export async function fetchDyeStuffsRow(dyestuff) {
 }
 
 
+export async function fetchweavingProductionRows(weeknumber) {
+  const res = await fetch(`http://localhost:3000/api/weaving-production/${encodeURIComponent(weeknumber)}`);
+  if (!res.ok) throw new Error("Failed to fetch the weaving-production row");
+  return res.json(); 
+}
+
+
 
 
 

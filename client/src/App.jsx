@@ -4,6 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import StmHome from "./pages/StmHome";
 import ChemicalTable from "./pages/dyeing"; 
 import DyeingCardCustomPrint from "./pages/dyeingCardCustomPrint";
+import ProductionTable from "./pages/production";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<StmHome />} />
           <Route path="/dyeing" element={<ChemicalTable />} />
+          <Route path="/weaving/production" element={<ProductionTable />} />
         </Route>
 
         {/* Standalone route without layout */}

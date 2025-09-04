@@ -4,19 +4,18 @@ import ChemicalStepTable from "../components/ChemicalStepTable";
 import usedyeingSummarySteps from "../hooks/dyeing/usedyeingSummarySteps";
 import ChemicalSummaryTable from "../components/ChemicalSummaryTable";
 import useDyeingStore from "../store/zustand";
-import { getTailwindColor } from "../utils/constants";
 import { getTotals } from "../components/functions/dyeingfunc";
 
 const ChemicalTable = forwardRef((props, ref) => {
   const steps = useChemicalSteps();
   const summarySteps = usedyeingSummarySteps();
-  const { scouring, selectedColour, softener } = useDyeingStore();
+  const { scouring, softener } = useDyeingStore();
 
 
 const totals = getTotals(summarySteps);
 
   return (
-    <div ref={ref} className="p-1 sm:p-2 mt-2  bg-white lg:ml-64 ">
+    <div ref={ref} className="p-1 flex sm:p-2 mt-2  bg-white lg:ml-64 ">
       
       {steps.map((step, sIdx) => (
         <div key={sIdx} className="sm:p-4 ">

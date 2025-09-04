@@ -15,6 +15,7 @@ const finalRinse = require('./routes/dyeing/finalRinse');
 const finishing = require('./routes/dyeing/finishing');
 const chemicals = require('./routes/dyeing/chemicals');
 const dyestuffs = require('./routes/dyeing/dyestuffs');
+const weavingProduction = require('./routes/production/weavingProduction');
 
 const app = express();
 const PORT = 3000;
@@ -35,6 +36,7 @@ app.use('/api/final-rinse', finalRinse);
 app.use('/api/finishing', finishing);
 app.use('/api/chemicals', chemicals);
 app.use('/api/dyestuff', dyestuffs);
+app.use('/api/weaving-production', weavingProduction);
 
 
 const reactBuildPath = path.resolve(__dirname, '../client/dist');

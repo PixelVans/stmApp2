@@ -1,11 +1,12 @@
 
-import { FiGrid, FiDroplet, FiLogOut, FiX, FiHome } from "react-icons/fi";
+import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const navItems = [
     { name: "Home", icon: <FiHome size={18} className="text-white" />, href: "/" },
     { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
+    { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving/production" },
     
   ];
 
@@ -32,7 +33,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       </button>
     </div>
 
-    {/* Logo */}
+    {/* */}
   <div className="mb-10 flex items-center justify-center">
   <div className="text-lg md:text-xl lg:text-[22px] font-bold tracking-wide text-center">
     Specialised <span className="text-blue-400">Systems</span>
@@ -42,7 +43,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
 
 
-    {/* Navigation */}
+    {/*  */}
     <nav className="flex flex-col gap-2">
       {navItems.map((item) => (
         <Link
@@ -58,7 +59,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     </nav>
   </div>
 
-  {/* Logout */}
+  {/*  */}
   <div className="mt-6">
     <a
       href="#"
@@ -70,7 +71,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   </div>
 </aside>
 
-{/* Overlay (mobile + md only) */}
+{/**/}
 {isOpen && (
   <div
     className="fixed inset-0 bg-black/40 lg:hidden"
@@ -78,7 +79,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   ></div>
 )}
 
-    </>
+  </>
   );
 };
 
