@@ -6,7 +6,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const navItems = [
     { name: "Home", icon: <FiHome size={18} className="text-white" />, href: "/" },
     { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
-    { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving/production" },
+    { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving-production" },
     
   ];
 

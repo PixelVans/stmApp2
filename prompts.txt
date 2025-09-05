@@ -1,14 +1,2 @@
-and the for finishing toal costs, we can combine the 3 into one formula
-here are the excel  for 1 to 2,
-
-finishingchemical1total cost
-=IFERROR(IF(ROUND($C$66*Water_Litres_Dyeing,1)>=1000,ROUND($C$66*Water_Litres_Dyeing/1000,1)*G94,ROUND($C$66*Water_Litres_Dyeing,1)*G94/1000),"")
-
-finishingchemical2total cost
-=IFERROR(IF(ROUND($C$67*Water_Litres_Dyeing,1)>=1000,ROUND($C$67*Water_Litres_Dyeing/1000,1)*G95,ROUND($C$67*Water_Litres_Dyeing,1)*G95/1000),"")
-
-
-
-
-
-
+Exactly, like that, so now the daily total part is where we now calculate the total fileds of all shifts A nad B for that day.
+and then the total of that week in the respecitve filed on the daily total wekkly totals colum cell

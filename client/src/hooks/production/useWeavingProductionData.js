@@ -12,15 +12,19 @@ export default function useWeavingData(selectedWeek) {
     async function load() {
       if (!selectedWeek) return;
 
+      // reset state immediately when week changes
+      setLoading(true);
+      setData(null);
+      setError(null);
+
       try {
         const weavingRows = await getMachineWeavingData(selectedWeek);
 
         if (mounted) {
-          // build clean structured object
           const structured = {};
 
           weavingRows.forEach((row, index) => {
-            const day = row.Day || `Day${index + 1}`; // Mon, Tue, ...
+            const day = row.Day || `Day${index + 1}`;
             structured[day] = {
               machines: {
                 1: {
@@ -69,7 +73,7 @@ export default function useWeavingData(selectedWeek) {
       } catch (err) {
         console.error("Failed loading weaving data", err);
         if (mounted) {
-          setError("Server / DB error");
+          setError(err);
           setLoading(false);
         }
       }

@@ -142,3 +142,10 @@ export async function fetchweavingProductionRows(weeknumber) {
 //   return res.json(); 
 // }
 
+// export async function fetchweavingProductionRows(weeknumber) {
+//   const res = await fetch(`/api/weaving-production/${encodeURIComponent(weeknumber)}`);
+//   if (!res.ok) throw new Error("Failed to fetch the weaving-production row");
+//   return res.json(); 
+// }
+
+
