@@ -15,7 +15,7 @@ const ChemicalTable = forwardRef((props, ref) => {
 const totals = getTotals(summarySteps);
 
   return (
-    <div ref={ref} className="p-1 flex sm:p-2 mt-2  bg-white lg:ml-64 ">
+    <div ref={ref} className="p-1 sm:p-2 mt-2  bg-white lg:ml-64 ">
       
       {steps.map((step, sIdx) => (
         <div key={sIdx} className="sm:p-4 ">

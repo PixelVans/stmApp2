@@ -65,12 +65,12 @@ export default function ChemicalStepTable({ rows }) {
 
       <thead>
         <tr className="bg-gray-200">
-          <th className="border px-2 py-1 align-middle">Chemical</th>
-          <th className="border px-2 py-1 align-middle">Grams/Lt</th>
-          <th className="border px-2 py-1 align-middle">Amount</th>
-          <th className="border px-2 py-1 align-middle">Temp</th>
-          <th className="border px-2 py-1 align-middle">Time</th>
-          <th className="border px-2 py-1 align-middle">pH</th>
+          <th className="border px-2 py-1 align-middle w-40">Chemical</th>
+          <th className="border px-2 py-1 align-middle w-32">Grams/Lt</th>
+          <th className="border px-2 py-1 align-middle w-32">Amount</th>
+          <th className="border px-2 py-1 align-middle w-32">Temp</th>
+          <th className="border px-2 py-1 align-middle w-40">Time</th>
+          <th className="border px-2 py-1 align-middle w-32">pH</th>
         </tr>
       </thead>
 

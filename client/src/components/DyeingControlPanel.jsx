@@ -129,7 +129,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
         >
           {/* Collapsible content */}
           <div
-            className=" lg:ml-64 lg:mr-3 flex
+            className=" lg:ml-64 lg:mr-3 
               p-3 pb-6 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-4
               lg:fixed top-0 z-30 mt-[8px] lg:mt-[64px] rounded-t-none  lg:px-6 
               text-sm mx-auto 
@@ -311,7 +311,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
 
              <button
                 onClick={handlePrint}
-                className=" items-center hidden gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+                className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
               >
                 <FiPrinter className="w-4 h-4" />
                 Print Document
