@@ -41,7 +41,7 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
           <div><strong>Dyeing System:</strong> {dyeingSystem ?? "-"}</div>
           <div>
             <strong>Shade:</strong>{" "}
-            <span className={getTailwindColor(selectedColour)}>
+            <span >
               {selectedColour ?? "-"}
             </span>
           </div>
@@ -63,7 +63,7 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
             <img
               src="/images/Picture1.png"
               alt="Isotherm"
-              className="mb-2 mt-2 h-[100px] mx-auto"
+              className="mb-2 mt-2 h-[113px] mx-auto"
             />
           )}
 
@@ -86,7 +86,7 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
           {step.instructions && (
             <p className="italic text-[9px] mb-1 text-blue-600">{step.instructions}</p>
           )}
-          <div className="mt-2">
+          <div className="mt-1">
             <PrintChemStepTable rows={step.rows} />
           </div>
         </div>
@@ -108,11 +108,11 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
       ))}
 
       {/* Totals Section */}
-      <div className="mt-2 mx-auto max-w-sm rounded-lg bg-white border border-gray-300 overflow-hidden text-[9px]">
-        <div className="bg-gradient-to-r from-slate-800 to-slate-400 px-1 py-0.5">
+      <div className="mt-4 mx-auto max-w-sm rounded-lg bg-white border border-gray-300 overflow-hidden text-[9px]">
+        <div className="bg-gradient-to-r from-slate-800 to-slate-500 px-1 py-1.5">
           <h2 className="text-white ml-4 text-[10px] font-semibold tracking-wide">Total Cost</h2>
         </div>
-        <table className="w-full ml-4 text-left border-collapse">
+        <table className="w-full ml-4 my-1 text-left border-collapse">
           <tbody>
             <tr className="border-b border-gray-200">
               <td className="px-1 py-0.5 font-medium text-gray-700">Chemicals Totals</td>

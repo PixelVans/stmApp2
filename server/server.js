@@ -25,7 +25,6 @@ app.use(cors());
 app.use(express.json());
 
 // API routes
-
 app.use('/api/scouring', scouring);
 app.use('/api/hotwash', hotwash);
 app.use('/api/dyeing', dyeing);

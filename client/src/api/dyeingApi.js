@@ -1,4 +1,4 @@
-// // src/api/scouringApi.js
+// src/api/scouringApi.js
 export async function fetchScouringRow(colour) {
   const res = await fetch(`http://localhost:3000/api/scouring/${encodeURIComponent(colour)}`);
   if (!res.ok) throw new Error("Failed to fetch scouring row");
@@ -62,12 +62,19 @@ export async function fetchDyeStuffsRow(dyestuff) {
 }
 
 
+// Fetch weaving production by week
 export async function fetchweavingProductionRows(weeknumber) {
-  const res = await fetch(`http://localhost:3000/api/weaving-production/${encodeURIComponent(weeknumber)}`);
+  const res = await fetch(`http://localhost:3000/api/weaving-production/week/${encodeURIComponent(weeknumber)}`);
   if (!res.ok) throw new Error("Failed to fetch the weaving-production row");
   return res.json(); 
 }
 
+// Fetch warping data by beam
+export async function fetchwarpingdataRow(beamnumber) {
+  const res = await fetch(`http://localhost:3000/api/weaving-production/beam/${encodeURIComponent(beamnumber)}`);
+  if (!res.ok) throw new Error("Failed to fetch the warping data row");
+  return res.json(); 
+}
 
 
 

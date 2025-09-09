@@ -52,7 +52,7 @@ export async function getScouringTemperature(scouring, selectedColour) {
 
     // Replace "?" with a the degree symbol
     if (typeof temp === "string") {
-      temp = temp.replace("?", "˚"); // use "°"
+      temp = temp.replace("?", "˚"); 
     }
 
     return temp;

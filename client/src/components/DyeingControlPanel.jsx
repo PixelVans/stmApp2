@@ -311,7 +311,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
 
              <button
                 onClick={handlePrint}
-                className="hidden items-center  gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+                className=" items-center hidden gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
               >
                 <FiPrinter className="w-4 h-4" />
                 Print Document

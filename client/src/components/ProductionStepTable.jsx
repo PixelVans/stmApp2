@@ -13,10 +13,10 @@ export default function ProductionStepTable({ rows }) {
   };
 
   const days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
-  const months = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
-  ];
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    
+    
+  
 
   
   function getMondayOfISOWeek(week, year) {
@@ -46,40 +46,45 @@ export default function ProductionStepTable({ rows }) {
   };
 
  
-  const renderCell = (value, row) => {
-    const isNotesRow = row.prodInfo?.toLowerCase().includes("notes");
-    const hasValue = value !== "" && value !== NBSP && value != null;
+const renderCell = (value, row) => {
+  const isNotesRow = row.prodInfo?.toLowerCase().includes("notes");
+  const hasValue = value !== "" && value !== NBSP && value != null;
+  const valueText = (typeof value === "string" ? value : String(value ?? ""))
+    .replace(/\u00A0/g, " ")
+    .trim();
 
-    return (
-      <td
-        className={`border px-2 py-1 align-middle ${
-          isNotesRow && hasValue ? "bg-yellow-100" : ""
-        }`}
-      >
-        {formatNumber(value)}
-      </td>
-    );
-  };
+  const isStopped = valueText.toLowerCase().includes("stopped");
+  const bgClass = isStopped ? "bg-red-300" : (isNotesRow && hasValue ? "bg-yellow-100" : "");
 
   return (
-    <table className="table-auto border-collapse border border-gray-300 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
+    <td className={`border px-2 py-1 align-middle ${bgClass}`}>
+      {formatNumber(value)}
+    </td>
+  );
+};
+
+
+
+  return (
+    <table className="table-auto border-collapse border border-gray-300 w-full text-[3px] 
+          sm:text-[10px] md:text-xs lg:text-[11px] text-center">
       <thead>
-        <tr className="bg-gray-200">
-          <th className="border px-2 py-1 align-middle"></th>
+        <tr className="bg-gray-200 ">
+          <th className="border px-2 py-1 align-middle w-40 "></th>
           {headers.map((h, i) => (
-            <th key={i} className="border px-2 py-1 align-middle">
+            <th key={i} className="border px-2 py-1 align-middle w-40  font-semibold">
               {h}
             </th>
           ))}
-          <th className="border px-2 py-1 align-middle">Weekly Total</th>
+          <th className="border px-2 py-1 align-middle w-28 font-semibold">Weekly Total</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((r, i) =>
           r.isTitle ? (
-            <tr key={i} className="bg-blue-100 font-bold">
+            <tr key={i} className="bg-blue-100 font-bold ">
               <td
-                className="border px-2 py-1 text-left"
+                className="border px-2 py-1 text-left "
                 colSpan={headers.length + 2}
               >
                 {r.prodInfo}
@@ -87,7 +92,7 @@ export default function ProductionStepTable({ rows }) {
             </tr>
           ) : (
             <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-              <td className="border px-2 py-1 align-middle">
+              <td className="border px-2 py-1 align-middle ">
                 {r.prodInfo || NBSP}
               </td>
               {renderCell(r.mon, r)}
