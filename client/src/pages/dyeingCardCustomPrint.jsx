@@ -94,18 +94,19 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
 
       {/* Scouring & Softener Summary */}
       
-        <h1 className="p-2 text-center mx-auto text-[10px] font-semibold">Summary</h1>
-      
+     {/* Summary Section */}
+     <div className="mt-4 mb-4 max-w-xs my-2 mx-auto rounded-lg shadow-md ">
+      <h1 className="p-2 text-center  text-[12px] font-semibold tracking-wide">
+        Summary
+      </h1>
+    </div>
 
-      {/* Summary Steps */}
-      {summarySteps.map((step, sIdx) => (
-        <div key={sIdx} className="p-1 ">
-          <h2 className="text-[10px] mb-1">{step.step}</h2>
-          <div className="text-[9px]">
-            <PrintChemSummaryTable rows={step.rows} />
-          </div>
-        </div>
-      ))}
+
+
+      <div className="p-1 text-[9px]">
+        <PrintChemSummaryTable steps={summarySteps} />
+      </div>
+
 
       {/* Totals Section */}
       <div className="mt-4 mx-auto max-w-sm rounded-lg bg-white border border-gray-300 overflow-hidden text-[9px]">

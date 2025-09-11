@@ -90,7 +90,7 @@ export default function PrintChemStepTable({ rows }) {
 
           if (g.type === "drain") {
             const r = g.row;
-            const bg = globalRowIndex % 2 === 0 ? "bg-white" : "bg-gray-50";
+            const bg = globalRowIndex % 2 === 0 ? "bg-white" : "bg-white";
             globalRowIndex += 1;
             return (
               <tr key={`drain-${gIdx}`} className={`${bg} font-semibold`}>
@@ -121,7 +121,7 @@ export default function PrintChemStepTable({ rows }) {
 
           return groupRowsArr.map((r, i) => {
             const isFirst = i === 0;
-            const bg = globalRowIndex % 2 === 0 ? "bg-white" : "bg-gray-50";
+            const bg = globalRowIndex % 2 === 0 ? "bg-white" : "bg-white";
             globalRowIndex += 1;
 
             return (

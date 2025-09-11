@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PrintChemSummaryTable({ rows }) {
+export default function PrintChemSummaryTable({ steps }) {
   const NBSP = "\u00A0";
 
   return (
@@ -17,16 +17,34 @@ export default function PrintChemSummaryTable({ rows }) {
         </tr>
       </thead>
       <tbody>
-        {rows.map((r, i) => (
-          <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-            <td className="border px-0.5 py-0.5 text-center">{r.chemical || NBSP}</td>
-            <td className="border px-0.5 py-0.5 text-center">{r.kgs_needed || NBSP}</td>
-            <td className="border px-0.5 py-0.5 text-center">{r.amt_on_hand || NBSP}</td>
-            <td className="border px-0.5 py-0.5 text-center">{r.summary || NBSP}</td>
-            <td className="border px-0.5 py-0.5 text-center">{r.cost_per_kg || NBSP}</td>
-            <td className="border px-0.5 py-0.5 text-center">{r.total_cost || NBSP}</td>
-            <td className="border px-0.5 py-0.5 text-center hidden">{r.needed_totals || NBSP}</td>
-          </tr>
+        {steps.map((step, sIdx) => (
+          <React.Fragment key={sIdx}>
+            {/* 🔹 Section row */}
+            <tr className="bg-blue-50 font-bold">
+              <td
+                colSpan={7}
+                className="border px-0.5 py-0.5 text-left text-gray-700"
+              >
+                {step.step}
+              </td>
+            </tr>
+
+            {/* 🔹 Rows for chemicals */}
+            {step.rows.map((r, i) => (
+              <tr
+                key={i}
+                className={`${i % 2 === 0 ? "bg-white" : "bg-white"} text-center`}
+              >
+                <td className="border px-0.5 py-0.5">{r.chemical || NBSP}</td>
+                <td className="border px-0.5 py-0.5">{r.kgs_needed || NBSP}</td>
+                <td className="border px-0.5 py-0.5">{r.amt_on_hand || NBSP}</td>
+                <td className="border px-0.5 py-0.5">{r.summary || NBSP}</td>
+                <td className="border px-0.5 py-0.5">{r.cost_per_kg || NBSP}</td>
+                <td className="border px-0.5 py-0.5">{r.total_cost || NBSP}</td>
+                <td className="border px-0.5 py-0.5 hidden">{r.needed_totals || NBSP}</td>
+              </tr>
+            ))}
+          </React.Fragment>
         ))}
       </tbody>
     </table>
