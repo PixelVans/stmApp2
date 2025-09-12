@@ -510,7 +510,7 @@ export default function useChemicalSteps() {
               gramsPerLt: soapingGpl2 ?? "fetching data...",
               amount: getSoapingChemAmt(soapingGpl2,  waterLitresDyeing,) ,
               temp: "",
-              time: "",
+              time: "💧💧💧💧💧💧💧💧💧💧",
               ph: "Drain",
             },
             

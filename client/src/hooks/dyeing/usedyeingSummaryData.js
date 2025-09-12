@@ -13,6 +13,13 @@ export default function useChemicalsinHandData(
   dyeStuff1, dyeStuff2, dyeStuff3, dyeStuff4, dyeingchem5,
   finishingchemical1, finishingchemical2, finishingchemical3,
 ) {
+  // helpers
+  const formatCost = (value) => {
+    if (value === null || value === undefined || value === "") return null;
+    const num = Number(value);
+    return isNaN(num) ? null : num.toFixed(2);
+  };
+
   // chemicals amount on hand
   const [chem1AmtinHand, setChem1AmtinHand] = useState(null);
   const [chem2AmtinHand, setChem2AmtinHand] = useState(null);
@@ -131,36 +138,36 @@ export default function useChemicalsinHandData(
           setChem10AmtinHand(chem10);
           setDye5AmtinHand(chem11);
 
-          // set costs
-          setChem1Cost(chem1cost);
-          setChem2Cost(chem2cost);
-          setChem3Cost(chem3cost);
-          setChem4Cost(chem4cost);
-          setChem5Cost(chem5cost);
-          setChem6Cost(chem6cost);
-          setChem7Cost(chem7cost);
-          setChem8Cost(chem8cost);
-          setChem9Cost(chem9cost);
-          setChem10Cost(chem10cost);
-          setDye5Cost(chem11cost);
+          // set costs (formatted to 2 decimals)
+          setChem1Cost(formatCost(chem1cost));
+          setChem2Cost(formatCost(chem2cost));
+          setChem3Cost(formatCost(chem3cost));
+          setChem4Cost(formatCost(chem4cost));
+          setChem5Cost(formatCost(chem5cost));
+          setChem6Cost(formatCost(chem6cost));
+          setChem7Cost(formatCost(chem7cost));
+          setChem8Cost(formatCost(chem8cost));
+          setChem9Cost(formatCost(chem9cost));
+          setChem10Cost(formatCost(chem10cost));
+          setDye5Cost(formatCost(chem11cost));
 
           // finishing
           setFinishingChem1AmtinHand(chem12);
           setFinishingChem2AmtinHand(chem13);
           setFinishingChem3AmtinHand(chem14);
-          setFinishingChem1Cost(chem12Cost);
-          setFinishingChem2Cost(chem13Cost);
-          setFinishingChem3Cost(chem14Cost);
+          setFinishingChem1Cost(formatCost(chem12Cost));
+          setFinishingChem2Cost(formatCost(chem13Cost));
+          setFinishingChem3Cost(formatCost(chem14Cost));
 
           // dyes
           setDye1AmtinHand(dye1);
           setDye2AmtinHand(dye2);
           setDye3AmtinHand(dye3);
           setDye4AmtinHand(dye4);
-          setDye1Cost(dye1cost);
-          setDye2Cost(dye2cost);
-          setDye3Cost(dye3cost);
-          setDye4Cost(dye4cost);
+          setDye1Cost(formatCost(dye1cost));
+          setDye2Cost(formatCost(dye2cost));
+          setDye3Cost(formatCost(dye3cost));
+          setDye4Cost(formatCost(dye4cost));
 
           setLoading(false);
         }
@@ -191,7 +198,7 @@ export default function useChemicalsinHandData(
     dye1AmtinHand, dye2AmtinHand, dye3AmtinHand, dye4AmtinHand, dye5AmtinHand,
     finishingChem1AmtinHand, finishingChem2AmtinHand, finishingChem3AmtinHand,
 
-    // costs
+    // costs (all 2 decimals)
     chem1Cost, chem2Cost, chem3Cost, chem4Cost, chem5Cost,
     chem6Cost, chem7Cost, chem8Cost, chem9Cost, chem10Cost,
     dye1Cost, dye2Cost, dye3Cost, dye4Cost, dye5Cost,

@@ -51,7 +51,7 @@ export default function PrintingProductionStepTable({ rows }) {
 
     return (
       <td
-        className={`border px-2 align-middle 
+        className={`border border-gray-500 px-2 align-middle 
           ${isNotesRow && hasValue ? "bg-yellow-200 font-semibold" : ""}
           ${(isShiftRow || isTotalRow) && hasValue ? "font-bold" : ""}
         `}
@@ -62,16 +62,16 @@ export default function PrintingProductionStepTable({ rows }) {
   };
 
   return (
-    <table className="table-auto border-collapse border border-gray-300 w-full text-[10px] text-center">
+    <table className="table-auto border-collapse border border-gray-500 w-full text-[10px] text-center">
       <thead>
         <tr className="bg-gray-300">
-          <th className="border px-2 align-middle w-40"></th>
+          <th className="border border-gray-500 px-2 align-middle w-40"></th>
           {headers.map((h, i) => (
-            <th key={i} className="border px-2 text-[11px] align-middle w-40 font-bold">
+            <th key={i} className="border border-gray-500 px-2 text-[11px] align-middle w-40 font-bold">
               {h}
             </th>
           ))}
-          <th className="border px-2 align-middle w-28 font-bold">Weekly Total</th>
+          <th className="border border-gray-500 px-2 align-middle w-28 font-bold">Weekly Total</th>
         </tr>
       </thead>
       <tbody>
@@ -79,7 +79,7 @@ export default function PrintingProductionStepTable({ rows }) {
           r.isTitle ? (
             <tr key={i} className="bg-blue-200 font-bold">
               <td
-                className="border px-2 text-left"
+                className="border border-gray-500 px-2 text-left"
                 colSpan={headers.length + 2}
               >
                 {r.prodInfo}
@@ -87,7 +87,7 @@ export default function PrintingProductionStepTable({ rows }) {
             </tr>
           ) : (
             <tr key={i}>
-              <td className="border px-2 align-middle">{r.prodInfo || NBSP}</td>
+              <td className="border border-gray-500 px-2 align-middle">{r.prodInfo || NBSP}</td>
               {renderCell(r.mon, r)}
               {renderCell(r.tue, r)}
               {renderCell(r.wed, r)}

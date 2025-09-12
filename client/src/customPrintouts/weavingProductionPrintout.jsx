@@ -100,20 +100,20 @@ const WeavingProductionPrintout = forwardRef((props, ref) => {
       sm:text-[9px] md:text-xs lg:text-sm text-center ">
       <thead>
         <tr className="bg-gray-300 text-[9px] ">
-          <th className="border border-gray-700 p-[1px] font-medium w-40">Average A</th>
-          <th className="border border-gray-700 p-[1px] font-medium w-40">Average B</th>
-          <th className="border border-gray-700 p-[1px] font-medium w-40">Weekly Total A</th>
-          <th className="border border-gray-700 p-[1px] font-medium w-40">Weekly Total B</th>
-          <th className="border border-gray-700 p-[1px] font-medium w-40">Weekly Total</th>
+          <th className="border border-gray-600 p-[1px] font-medium w-40">Average A</th>
+          <th className="border border-gray-600 p-[1px] font-medium w-40">Average B</th>
+          <th className="border border-gray-600 p-[1px] font-medium w-40">Weekly Total A</th>
+          <th className="border border-gray-600 p-[1px] font-medium w-40">Weekly Total B</th>
+          <th className="border border-gray-600 p-[1px] font-medium w-40">Weekly Total</th>
         </tr>
       </thead>
       <tbody>
         <tr className="text-center text-[9px] font-bold">
-          <td className="border border-gray-00 p-">{summary.avgA.toLocaleString()}</td>
-          <td className="border border-gray-00 p-">{summary.avgB.toLocaleString()}</td>
-          <td className="border border-gray-00 p-">{summary.weeklyA.toLocaleString()}</td>
-          <td className="border border-gray-00 p-">{summary.weeklyB.toLocaleString()}</td>
-          <td className="border border-gray-00 p- ">{summary.weeklyTotal.toLocaleString()}</td>
+          <td className="border border-gray-600 p-">{summary.avgA.toLocaleString()}</td>
+          <td className="border border-gray-600 p-">{summary.avgB.toLocaleString()}</td>
+          <td className="border border-gray-600 p-">{summary.weeklyA.toLocaleString()}</td>
+          <td className="border border-gray-600 p-">{summary.weeklyB.toLocaleString()}</td>
+          <td className="border border-gray-600 p- ">{summary.weeklyTotal.toLocaleString()}</td>
         </tr>
       </tbody>
     </table>

@@ -6,6 +6,7 @@ import useDyeingStore from "../store/zustand";
 import WeavingProductionPrintout from "../customPrintouts/weavingProductionPrintout";  
 import { useReactToPrint } from "react-to-print";
 import { FiPrinter } from "react-icons/fi";
+import WeavingReportFormModal from "../components/forms/WeavingReportFormModal";
 
 function getISOWeek(date = new Date()) {
   const tempDate = new Date(date.getTime());
@@ -31,6 +32,7 @@ const WeavingProductionTable = forwardRef((props, ref) => {
   const { selectedWeek, setSelectedWeek } = useDyeingStore();
   const weekNumbers = Array.from({ length: 52 }, (_, i) => i + 1);
   const [seconds, setSeconds] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
 
   // LOading Helper 
   useEffect(() => {
@@ -98,18 +100,18 @@ const handlePrint = useReactToPrint({
 
  {/* control panel */}
 <div className="fixed top-16 right-5 left-5 bg-slate-100 rounded-b-md shadow-md px-4 py-3 
-  flex flex-col sm:flex-row items-center justify-between gap-3 z-50 lg:ml-[270px]">
+  flex flex-col  sm:flex-row items-center justify-between gap-3 z-30 lg:ml-[270px]">
 
   {/* Dropdown control */}
   <div className="flex items-center gap-2 w-full sm:w-auto">
-    <label className="font-medium  text-gray-700 text-md sm:text-base whitespace-nowrap ">
+    <label className="font-medium hidden lg:block text-gray-700 text-md sm:text-base whitespace-nowrap ">
       Select Week:
     </label>
     <select
       value={selectedWeek || getISOWeek()}
       onChange={(e) => setSelectedWeek(Number(e.target.value))}
       className="rounded-lg bg-green-100 border-gray-300 text-sm sm:text-base font-semibold shadow-sm 
-        focus:ring-2 focus:ring-blue-400 focus:border-blue-400 px-3 py-2 w-full sm:w-44 "
+        focus:ring-2 focus:ring-blue-400 focus:border-blue-400 px-3 py-2 w-44 sm:w-44 "
     >
       {weekNumbers.map((w) => (
         <option key={w} value={w}>
@@ -121,12 +123,15 @@ const handlePrint = useReactToPrint({
 
   {/* Action buttons */}
   <div className="flex gap-2 sm:gap-4 ml-5 sm:ml-0">
-    <button className="px-4 py-2 bg-white rounded-lg shadow-sm text-sm sm:text-base font-medium hover:bg-slate-200 transition">
-      Action 1
+    <button
+      onClick={() => setModalOpen(true)}
+      className="px-4 py-2 bg-white rounded-lg shadow-sm text-sm sm:text-base font-medium hover:bg-slate-200 transition"
+    >
+      Report
     </button>
     <button
      onClick={handlePrint}
-     className=" items-center hidden gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+     className=" items-center hidden  gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
      >
       <FiPrinter className="w-4 h-4" />
        Print Document
@@ -163,26 +168,28 @@ const handlePrint = useReactToPrint({
           sm:text-[9px] md:text-xs lg:text-sm text-center ">
           <thead>
             <tr className="bg-gray-200 text-[5px] sm:text-[12px]">
-              <th className="border border-gray-700 p-1 font-medium w-40">Average A</th>
-              <th className="border border-gray-700 p-1 font-medium w-40">Average B</th>
-              <th className="border border-gray-700 p-1 font-medium w-40">Weekly Total A</th>
-              <th className="border border-gray-700 p-1 font-medium w-40">Weekly Total B</th>
-              <th className="border border-gray-700 p-1 font-medium w-40">Weekly Total</th>
+              <th className="border border-gray-600 p-1 font-medium w-40">Average A</th>
+              <th className="border border-gray-600 p-1 font-medium w-40">Average B</th>
+              <th className="border border-gray-600 p-1 font-medium w-40">Weekly Total A</th>
+              <th className="border border-gray-600 p-1 font-medium w-40">Weekly Total B</th>
+              <th className="border border-gray-600 p-1 font-medium w-40">Weekly Total</th>
             </tr>
           </thead>
           <tbody>
             <tr className="text-center ">
-              <td className="border border-gray-00 p-1">{summary.avgA.toLocaleString()}</td>
-              <td className="border border-gray-00 p-1">{summary.avgB.toLocaleString()}</td>
-              <td className="border border-gray-00 p-1">{summary.weeklyA.toLocaleString()}</td>
-              <td className="border border-gray-00 p-1">{summary.weeklyB.toLocaleString()}</td>
-              <td className="border border-gray-00 p-1 ">{summary.weeklyTotal.toLocaleString()}</td>
+              <td className="border border-gray-600 p-1">{summary.avgA.toLocaleString()}</td>
+              <td className="border border-gray-600 p-1">{summary.avgB.toLocaleString()}</td>
+              <td className="border border-gray-600 p-1">{summary.weeklyA.toLocaleString()}</td>
+              <td className="border border-gray-600 p-1">{summary.weeklyB.toLocaleString()}</td>
+              <td className="border border-gray-600 p-1 ">{summary.weeklyTotal.toLocaleString()}</td>
             </tr>
           </tbody>
         </table>
       </div>
     )}
-
+    
+    {/* report form  */}
+    <WeavingReportFormModal open={modalOpen} onClose={() => setModalOpen(false)} />
 
     </div>
   );

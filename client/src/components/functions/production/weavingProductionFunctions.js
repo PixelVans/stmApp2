@@ -26,14 +26,14 @@ export async function getMachineKnottingCountCount(beamnumber) {
   try {
     const row = await fetchwarpingdataRow(beamnumber);
 
-  if (!row || row.length === 0) return "dbErr"; 
+  if (!row || row.length === 0) return ""; 
   
-    // Extract KnottingCounter field from th row
+    // Extract KnottingCounter field
     return row[0].KnottingCounter;
 
   } catch (err) {
     console.error("Failed to fetch weaving production row:", err);
-    return "dbErr"; 
+    return "-"; 
   }
 }
 

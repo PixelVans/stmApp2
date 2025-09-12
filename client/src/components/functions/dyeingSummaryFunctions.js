@@ -420,13 +420,13 @@ export function getprepareToDyeChem4KgsNeeded(waterLitresDyeing, c26, c34, saltP
       grams = c26 * waterLitresDyeing;
     }
 
-    if (isNaN(grams)) return "E";
+    if (isNaN(grams)) return "";
     if (grams >= 1000) {
-      return `${(grams / 1000).toFixed(1)} Kgs`;
+      return `${(grams / 1000)} Kgs`;
     }
     return `${grams.toFixed(0)} g`;
   } catch {
-    return "E";
+    return "";
   }
 }
 
@@ -491,7 +491,7 @@ export function getDyeingChem5KgsNeeded(lotWeight, waterLitresDyeing, c34, saltP
   try {
     if(!c34)return ''
     if (!saltPosition || saltPosition === "After Dyes") {
-      const valueKg = (c34 / 100) * waterLitresDyeing;
+      const valueKg = (c34 / 1000) * waterLitresDyeing;
       if (valueKg >= 1) {
         return `${Math.ceil(valueKg)} Kgs`;
       }

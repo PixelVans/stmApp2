@@ -83,16 +83,16 @@ const ChemicalTable = forwardRef((props, ref) => {
 
       {/* Unified Summary Table */}
       <div className="mt-5 overflow-x-auto">
-        <table className="table-auto border-collapse border border-gray-300 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
+        <table className="table-auto border-collapse border border-gray-400 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
           <thead>
-            <tr className="bg-gray-200 text-center">
-              <th className="border px-2 py-1 w-40">Chemicals Summary</th>
-              <th className="border px-2 py-1 w-32">Kgs Needed</th>
-              <th className="border px-2 py-1 w-32">Amt on Hand</th>
-              <th className="border px-2 py-1 w-32">Summary</th>
-              <th className="border px-2 py-1 w-32">Kg/Lt Cost</th>
-              <th className="border px-2 py-1 w-32">Total Cost</th>
-              <th className="border px-2 py-1 hidden">Needed Totals</th>
+            <tr className="bg-gray-300 border  text-center">
+              <th className="border border-gray-600  px-2 py-1 w-40">Chemicals Summary</th>
+              <th className="border border-gray-600 px-2 py-1 w-32">Kgs Needed</th>
+              <th className="border border-gray-600 px-2 py-1 w-32">Amt on Hand</th>
+              <th className="border border-gray-600 px-2 py-1 w-32">Summary</th>
+              <th className="border border-gray-600 px-2 py-1 w-32">Kg/Lt Cost</th>
+              <th className="border border-gray-600 px-2 py-1 w-32">Total Cost</th>
+              <th className="border border-gray-600 px-2 py-1 hidden">Needed Totals</th>
             </tr>
           </thead>
           <tbody>

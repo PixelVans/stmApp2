@@ -75,4 +75,16 @@ export async function fetchwarpingdataRow(beamnumber) {
 
 
 
+// Save weaving production (insert/update)
+export async function saveWeavingProduction(data) {
+  const res = await fetch("/api/weaving-production/update-weaving-report", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to save weaving production data");
+  return res.json();
+}
+
+
 

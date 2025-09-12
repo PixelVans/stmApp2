@@ -29,7 +29,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
 
   const handlePrint = useReactToPrint({
     contentRef: componentRef, 
-    documentTitle: "Dyeing Card",
+    documentTitle: ".",
     pageStyle: `
       @page {
         size: A4;
@@ -131,7 +131,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
           <div
             className=" lg:ml-64 lg:mr-3 
               p-3 pb-6 border border-gray-200 rounded-xl shadow-md bg-blue-50 mb-4
-              lg:fixed top-0 z-30 mt-[8px] lg:mt-[64px] rounded-t-none  lg:px-6 
+              lg:fixed top-0 z-100 mt-[8px] lg:mt-[64px] rounded-t-none  lg:px-6 
               text-sm mx-auto 
             "
           >

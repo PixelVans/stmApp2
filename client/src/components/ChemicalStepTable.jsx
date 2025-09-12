@@ -14,7 +14,6 @@ export default function ChemicalStepTable({ rows }) {
     );
   };
 
-  // Group rows until Drain or instruction rows
   const groupRows = (rows) => {
     const groups = [];
     let current = [];
@@ -29,14 +28,14 @@ export default function ChemicalStepTable({ rows }) {
         continue;
       }
 
-      const phSafe = r.ph === undefined || r.ph === null ? "" : String(r.ph).toLowerCase();
+      const phSafe =
+        r.ph === undefined || r.ph === null ? "" : String(r.ph).toLowerCase();
 
       if (phSafe === "drain") {
-        
         if (current.length > 0) {
           const lastRow = current[current.length - 1];
           if (!lastRow.temp || String(lastRow.temp).trim() === "") {
-            lastRow.temp = "⇩⇩⇩".repeat(2); 
+            lastRow.temp = "⇩⇩⇩".repeat(2);
           }
         }
 
@@ -61,16 +60,27 @@ export default function ChemicalStepTable({ rows }) {
   let globalRowIndex = 0;
 
   return (
-    <table className="table-auto border-collapse border border-gray-300 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
-
+    <table className="table-auto border-collapse border border-gray-600 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
       <thead>
-        <tr className="bg-gray-200">
-          <th className="border px-2 py-1 align-middle w-40">Chemical</th>
-          <th className="border px-2 py-1 align-middle w-32">Grams/Lt</th>
-          <th className="border px-2 py-1 align-middle w-32">Amount</th>
-          <th className="border px-2 py-1 align-middle w-32">Temp</th>
-          <th className="border px-2 py-1 align-middle w-40">Time</th>
-          <th className="border px-2 py-1 align-middle w-32">pH</th>
+        <tr className="bg-gray-300">
+          <th className="border border-gray-600 px-2 py-1 align-middle w-40">
+            Chemical
+          </th>
+          <th className="border border-gray-600 px-2 py-1 align-middle w-32">
+            Grams/Lt
+          </th>
+          <th className="border border-gray-600 px-2 py-1 align-middle w-32">
+            Amount
+          </th>
+          <th className="border border-gray-600 px-2 py-1 align-middle w-32">
+            Temp
+          </th>
+          <th className="border border-gray-600 px-2 py-1 align-middle w-40">
+            Time
+          </th>
+          <th className="border border-gray-600 px-2 py-1 align-middle w-32">
+            pH
+          </th>
         </tr>
       </thead>
 
@@ -79,7 +89,7 @@ export default function ChemicalStepTable({ rows }) {
           if (g.type === "instruction") {
             return (
               <tr key={`instr-${gIdx}`}>
-                <td colSpan={6} className="border p-0">
+                <td colSpan={6} className="border border-gray-600 p-0">
                   <div className="bg-yellow-200 h-9 w-full flex items-center justify-center font-semibold">
                     {g.row.chemical || NBSP}
                   </div>
@@ -90,29 +100,41 @@ export default function ChemicalStepTable({ rows }) {
 
           if (g.type === "drain") {
             const r = g.row;
-            const bg = globalRowIndex % 2 === 0 ? "bg-white" : "bg-gray-50";
+            const bg =
+              globalRowIndex % 2 === 0 ? "bg-white" : "bg-gray-50";
             globalRowIndex += 1;
             return (
-              <tr key={`drain-${gIdx}`} className={`${bg} font-semibold`}>
-                <td className="border px-2 py-1 align-middle">{r.chemical || NBSP}</td>
-                <td className="border px-2 py-1 align-middle">{r.gramsPerLt || NBSP}</td>
-                <td className="border px-2 py-1 align-middle">{r.amount || NBSP}</td>
+              <tr key={`drain-${gIdx}`} className={`${bg}`}>
+                <td className="border border-gray-600 px-2 py-1 align-middle">
+                  {r.chemical || NBSP}
+                </td>
+                <td className="border border-gray-600 px-2 py-1 align-middle">
+                  {r.gramsPerLt || NBSP}
+                </td>
+                <td className="border border-gray-600 px-2 py-1 align-middle">
+                  {r.amount || NBSP}
+                </td>
                 <td
-                  className="border px-2 py-1 align-middle font-mono tracking-tighter"
-                  colSpan={2} 
+                  className="border border-gray-600 px-2 py-1 align-middle font-mono tracking-tighter"
+                  colSpan={2}
                 >
                   {r.time || NBSP}
                 </td>
-                <td className="border px-2 py-1 align-middle font-bold italic">{r.ph || NBSP}</td>
+                <td className="border border-gray-600 px-2 py-1 align-middle font-bold italic">
+                  {r.ph || NBSP}
+                </td>
               </tr>
             );
           }
 
-
           const groupRowsArr = g.rows;
           const pickFirstNonEmpty = (key) => {
             for (const rr of groupRowsArr) {
-              if (rr[key] !== undefined && rr[key] !== null && String(rr[key]).trim() !== "") {
+              if (
+                rr[key] !== undefined &&
+                rr[key] !== null &&
+                String(rr[key]).trim() !== ""
+              ) {
                 return rr[key];
               }
             }
@@ -124,24 +146,40 @@ export default function ChemicalStepTable({ rows }) {
 
           return groupRowsArr.map((r, i) => {
             const isFirst = i === 0;
-            const bg = globalRowIndex % 2 === 0 ? "bg-white" : "bg-gray-50";
+            const bg =
+              globalRowIndex % 2 === 0 ? "bg-white" : "bg-gray-50";
             globalRowIndex += 1;
 
             return (
               <tr key={`g-${gIdx}-r-${i}`} className={bg}>
-                <td className="border px-2 py-1 align-middle">{r.chemical || NBSP}</td>
-                <td className="border px-2 py-1 align-middle">{r.gramsPerLt || NBSP}</td>
-                <td className="border px-2 py-1 align-middle">{r.amount || NBSP}</td>
+                <td className="border border-gray-600 px-2 py-1 align-middle">
+                  {r.chemical || NBSP}
+                </td>
+                <td className="border border-gray-600 px-2 py-1 align-middle">
+                  {r.gramsPerLt || NBSP}
+                </td>
+                <td className="border border-gray-600 px-2 py-1 align-middle">
+                  {r.amount || NBSP}
+                </td>
 
                 {isFirst && (
                   <>
-                    <td className="border px-2 py-1 align-middle" rowSpan={groupRowsArr.length}>
+                    <td
+                      className="border border-gray-600 px-2 py-1 align-middle"
+                      rowSpan={groupRowsArr.length}
+                    >
                       {groupTemp}
                     </td>
-                    <td className="border px-2 py-1 align-middle" rowSpan={groupRowsArr.length}>
+                    <td
+                      className="border border-gray-600 px-2 py-1 align-middle"
+                      rowSpan={groupRowsArr.length}
+                    >
                       {groupTime}
                     </td>
-                    <td className="border px-2 py-1 align-middle" rowSpan={groupRowsArr.length}>
+                    <td
+                      className="border border-gray-600 px-2 py-1 align-middle"
+                      rowSpan={groupRowsArr.length}
+                    >
                       {groupPh}
                     </td>
                   </>
