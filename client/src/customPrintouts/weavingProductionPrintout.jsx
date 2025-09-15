@@ -95,7 +95,7 @@ const WeavingProductionPrintout = forwardRef((props, ref) => {
 
    {/* Render summary */}
   {summary && (
-  <div className="mb-5 flex justify-center">
+  <div className="mb-5 mt-2 flex justify-center">
     <table className="table-auto border-collapse border border-gray-700 text-[9px] 
       sm:text-[9px] md:text-xs lg:text-sm text-center ">
       <thead>

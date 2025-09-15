@@ -206,7 +206,7 @@ export default function WeavingReportFormModal({ open, onClose }) {
               </div>
 
               {/* Shift B */}
-              <div className="space-y-3 border rounded-lg p-3 bg-blue-50">
+              <div className="space-y-3 border rounded-lg p-3 bg-blue-50 shadow-md shadow-slate-400">
                 <h3 className="text-sm sm:text-md font-semibold text-blue-700 text-center">
                   Shift B
                 </h3>
@@ -296,14 +296,14 @@ export default function WeavingReportFormModal({ open, onClose }) {
             <DialogFooter>
               <Button
                 type="button"
-                variant="outline"
+                variant="destructive"
                 onClick={() => {
                   onClose();
                 }}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button  type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </DialogFooter>

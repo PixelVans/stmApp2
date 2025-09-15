@@ -1,5 +1,5 @@
 
-import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp } from "react-icons/fi";
+import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -7,6 +7,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { name: "Home", icon: <FiHome size={18} className="text-white" />, href: "/" },
     { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
     { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving-production" },
+     { 
+    name: "Update Production Data", 
+    icon: <FiEdit3 size={18} className="text-blue-400" />, 
+    href: "/update-weaving-production" 
+  },
     
   ];
 
@@ -50,10 +55,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           key={item.name}
           to={item.href}
           onClick={() => setIsOpen(false)} 
-          className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+          className="flex items-center gap-3 px-2 py-3 rounded-lg hover:bg-gray-700 transition"
         >
           {item.icon}
-          <span className="font-medium">{item.name}</span>
+          <span className="font-medium text-sm">{item.name}</span>
         </Link>
       ))}
     </nav>

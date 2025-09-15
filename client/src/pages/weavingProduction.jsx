@@ -51,7 +51,7 @@ const componentRef = useRef(null);
 
 const handlePrint = useReactToPrint({
   contentRef: componentRef, 
-  documentTitle: "",
+  documentTitle: ".",
   pageStyle: `
     @page {
       size: A4 landscape;
@@ -68,10 +68,10 @@ const handlePrint = useReactToPrint({
   // Loading UI
   if (loading) {
     return (
-      <div className="flex flex-col mt-[-100px] items-center justify-center h-screen lg:ml-64">
+      <div className="flex flex-col mt-[-100px] items-center justify-center h-screen ">
         <div className="animate-spin h-16 w-16 border-4 border-blue-500 border-t-transparent rounded-full"></div>
         <p className="mt-4 text-lg font-medium text-gray-700">
-          Loading Weaving production for week {selectedWeek}
+          Loading Weaving production Data
         </p>
         <p className="mt-2 text-sm text-gray-600">
           Waiting for <span className="font-semibold">{seconds}</span> sec
@@ -84,7 +84,7 @@ const handlePrint = useReactToPrint({
   
   if (error) {
     return (
-      <div className="flex flex-col mt-[-100px] items-center justify-center h-screen text-red-600 lg:ml-64">
+      <div className="flex flex-col mt-[-100px] items-center justify-center h-screen text-red-600">
         <Server className="h-16 w-16 mb-4" />
         <p className="text-xl font-semibold">Server Error</p>
         <p className="mt-2 text-gray-700">
@@ -96,7 +96,7 @@ const handlePrint = useReactToPrint({
 
   
   return (
-  <div ref={ref} className="p-1 sm:p-2 lg:p-4  bg-white lg:ml-64 mt-20 md:mt-9"> 
+  <div ref={ref} className="p-1 sm:p-2 lg:p-4  bg-white  mt-20 md:mt-9"> 
 
  {/* control panel */}
 <div className="fixed top-16 right-5 left-5 bg-slate-100 rounded-b-md shadow-md px-4 py-3 
@@ -125,9 +125,10 @@ const handlePrint = useReactToPrint({
   <div className="flex gap-2 sm:gap-4 ml-5 sm:ml-0">
     <button
       onClick={() => setModalOpen(true)}
-      className="px-4 py-2 bg-white rounded-lg shadow-sm text-sm sm:text-base font-medium hover:bg-slate-200 transition"
+      className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-sm text-sm sm:text-base font-medium
+       hover:bg-blue-700 transition"
     >
-      Report
+      Update
     </button>
     <button
      onClick={handlePrint}

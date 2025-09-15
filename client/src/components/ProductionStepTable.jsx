@@ -65,7 +65,7 @@ export default function ProductionStepTable({ rows }) {
   };
 
   return (
-    <table className="table-auto border-collapse border border-gray-600 w-full text-[3px] sm:text-[10px] md:text-xs lg:text-[11px] text-center">
+    <table className="table-auto border-collapse border border-gray-600 w-full text-[6px] sm:text-[10px] md:text-xs lg:text-[11px] text-center">
       <thead>
         <tr className="bg-gray-300">
           <th className="border  border-gray-600 px-2 py-1 align-middle w-40"></th>

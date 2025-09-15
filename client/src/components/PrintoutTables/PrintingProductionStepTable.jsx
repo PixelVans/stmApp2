@@ -52,7 +52,7 @@ export default function PrintingProductionStepTable({ rows }) {
     return (
       <td
         className={`border border-gray-500 px-2 align-middle 
-          ${isNotesRow && hasValue ? "bg-yellow-200 font-semibold" : ""}
+          ${isNotesRow && hasValue ? "bg-yellow-300 font-semibold" : ""}
           ${(isShiftRow || isTotalRow) && hasValue ? "font-bold" : ""}
         `}
       >
@@ -67,11 +67,16 @@ export default function PrintingProductionStepTable({ rows }) {
         <tr className="bg-gray-300">
           <th className="border border-gray-500 px-2 align-middle w-40"></th>
           {headers.map((h, i) => (
-            <th key={i} className="border border-gray-500 px-2 text-[11px] align-middle w-40 font-bold">
+            <th
+              key={i}
+              className="border border-gray-500 px-2 text-[11px] align-middle w-40 font-bold"
+            >
               {h}
             </th>
           ))}
-          <th className="border border-gray-500 px-2 align-middle w-28 font-bold">Weekly Total</th>
+          <th className="border border-gray-500 px-2 align-middle w-28 font-bold">
+            Weekly Total
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -86,8 +91,15 @@ export default function PrintingProductionStepTable({ rows }) {
               </td>
             </tr>
           ) : (
-            <tr key={i}>
-              <td className="border border-gray-500 px-2 align-middle">{r.prodInfo || NBSP}</td>
+            <tr
+              key={i}
+              className={`${
+                r.prodInfo === "Daily Total" ? "border-t-9 border-gray-50" : ""
+              }`}
+            >
+              <td className="border border-gray-500 px-2 align-middle">
+                {r.prodInfo || NBSP}
+              </td>
               {renderCell(r.mon, r)}
               {renderCell(r.tue, r)}
               {renderCell(r.wed, r)}

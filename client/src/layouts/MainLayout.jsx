@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { FiSearch, FiBell, FiUser, FiMenu } from "react-icons/fi";
-import { useLocation, Outlet } from "react-router-dom"; // 👈 import Outlet
+import { useLocation, Outlet } from "react-router-dom"; 
 import Sidebar from "../components/Sidebar";
 import DyeingControlPanel from "../components/DyeingControlPanel";
 
 const MainLayout = ({ printRef }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [controlPanelOpen, setControlPanelOpen] = useState(true);
-
+  
   const location = useLocation();
   const isDyeingPage = location.pathname === "/dyeing";
 
@@ -78,7 +78,7 @@ const MainLayout = ({ printRef }) => {
 
         {/* Main content */}
         <main
-          className={`flex-1 px-2 sm:px-6 lg:px-8 max-w-full overflow-x-hidden ${
+          className={`flex-1 lg:ml-64  px-2 sm:px-6 lg:px-6 max-w-full overflow-x-hidden ${
             isDyeingPage && controlPanelOpen ? "lg:mt-[250px]" : "mt-0"
           }`}
         >
@@ -86,12 +86,10 @@ const MainLayout = ({ printRef }) => {
             <DyeingControlPanel
             open={controlPanelOpen}
             setOpen={setControlPanelOpen}
-            printRef={printRef} // pass ref here
+            printRef={printRef} 
           />
           )}
-
-          {/* 👇 this is where child routes render */}
-          <Outlet />
+        <Outlet />
         </main>
       </div>
     </div>
