@@ -9,7 +9,7 @@ export default function StmHome() {
       }}
     >
       {/* Dark overlay to improve readability */}
-      <div className="absolute inset-0 bg-black/60"></div>
+      {/* <div className="absolute inset-0 bg-black/60"></div> */}
 
       {/* Main Content */}
       <div className="relative flex-1 mt-[-100px] flex flex-col items-center justify-center text-center space-y-4 py-8">

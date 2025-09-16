@@ -43,7 +43,7 @@ export default function ProductionStepTable({ rows }) {
     return value;
   };
 
-  const renderCell = (value, row) => {
+  const renderCell = (value, row, colKey) => {
     const isNotesRow = row.prodInfo?.toLowerCase().includes("notes");
     const hasValue = value !== "" && value !== NBSP && value != null;
     const valueText = (typeof value === "string" ? value : String(value ?? ""))
@@ -51,11 +51,18 @@ export default function ProductionStepTable({ rows }) {
       .trim();
 
     const isStopped = valueText.toLowerCase().includes("stopped");
-    const bgClass = isStopped
-      ? "bg-yellow-200"
-      : isNotesRow && hasValue
-      ? "bg-yellow-200"
-      : "";
+
+    const isWeeklyTotalCol = colKey === "total";
+    const isBeamBTotal = row.isBeamB && isWeeklyTotalCol;
+    const isDailyTotal = row.isDailyTotal && isWeeklyTotalCol;
+
+    const bgClass =
+      isStopped ||
+      (isNotesRow && hasValue) ||
+      isBeamBTotal ||
+      isDailyTotal
+        ? "bg-yellow-200"
+        : "";
 
     return (
       <td className={`border border-gray-600 px-2 py-1 align-middle ${bgClass}`}>
@@ -68,7 +75,7 @@ export default function ProductionStepTable({ rows }) {
     <table className="table-auto border-collapse border border-gray-600 w-full text-[6px] sm:text-[10px] md:text-xs lg:text-[11px] text-center">
       <thead>
         <tr className="bg-gray-300">
-          <th className="border  border-gray-600 px-2 py-1 align-middle w-40"></th>
+          <th className="border border-gray-600 px-2 py-1 align-middle w-40"></th>
           {headers.map((h, i) => (
             <th
               key={i}
@@ -98,14 +105,14 @@ export default function ProductionStepTable({ rows }) {
               <td className="border border-gray-600 px-2 py-1 align-middle">
                 {r.prodInfo || NBSP}
               </td>
-              {renderCell(r.mon, r)}
-              {renderCell(r.tue, r)}
-              {renderCell(r.wed, r)}
-              {renderCell(r.thur, r)}
-              {renderCell(r.fri, r)}
-              {renderCell(r.sat, r)}
-              {renderCell(r.sun, r)}
-              {renderCell(r.total, r)}
+              {renderCell(r.mon, r, "mon")}
+              {renderCell(r.tue, r, "tue")}
+              {renderCell(r.wed, r, "wed")}
+              {renderCell(r.thur, r, "thur")}
+              {renderCell(r.fri, r, "fri")}
+              {renderCell(r.sat, r, "sat")}
+              {renderCell(r.sun, r, "sun")}
+              {renderCell(r.total, r, "total")}
             </tr>
           )
         )}

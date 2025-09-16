@@ -9,6 +9,7 @@ export default function useProductionSteps() {
   let summary = null;
 
   if (!loading && !error && data) {
+
     // row blueprint
     const rowTemplates = (machineId) => [
       { prodInfo: `Machine ${machineId} Shift A`, key: "shiftA" },
@@ -22,14 +23,12 @@ export default function useProductionSteps() {
 
     const days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
 
-   
     const sumWeek = (machineId, key) =>
       days.reduce(
         (sum, d) => sum + (Number(data[d].machines[machineId][key]) || 0),
         0
       );
 
-    
     const buildRows = (machineId) =>
       rowTemplates(machineId).map((template) => {
         const row = {
@@ -48,10 +47,11 @@ export default function useProductionSteps() {
           row.total = sumWeek(machineId, "shiftA");
         } else if (template.key === "shiftB") {
           row.total = sumWeek(machineId, "shiftB");
-        } else if (template.key === "beam2") {
-          // Beam Number row gets shiftA + shiftB total
+        } else if (template.key === "beamB") {
+          
           row.total =
             sumWeek(machineId, "shiftA") + sumWeek(machineId, "shiftB");
+          row.isBeamB = true; 
         }
 
         return row;
@@ -97,7 +97,7 @@ export default function useProductionSteps() {
       ],
     });
 
-    // ----- SUMMARY CALCULATIONS -----
+    // SUMMARY CALCULATIONS 
     const machineTotalsA = [];
     const machineTotalsB = [];
 
@@ -120,384 +120,3 @@ export default function useProductionSteps() {
 
   return { steps, summary, loading, error };
 }
-
-
-
-
-
-
-
-
-
-
-// import { useMemo } from "react";
-// import useDyeingStore from "../../store/zustand";
-// import useWeavingData from "./useWeavingProductionData";
-
-
-// export default function useProductionSteps() {
-//  const { selectedWeek } = useDyeingStore();
-//  const { data, loading, error } = useWeavingData(selectedWeek);
-//  let steps = null;
-//   if (!loading && !error && data) {
-//  console.log("Beam1B Is found to be:",data.Tue.machines[1].beamB )
-    
-//     steps = [
-//       {
-//     machine: "Machine No: 1",
-//     rows: [
-//       {
-//         prodInfo:"Machine 1 Shift A",
-//         mon: data.Mon.machines[1].shiftA, 
-//         tue: data.Tue.machines[1].shiftA, 
-//         wed: data.Wed.machines[1].shiftA, 
-//         thur: data.Thur.machines[1].shiftA ,
-//         fri: data.Fri.machines[1].shiftA, 
-//         sat: data.Sat.machines[1].shiftA,
-//         sun: data.Sun.machines[1].shiftA,
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Notes - A",
-//         mon: data.Mon.machines[1].notesA,
-//         tue: data.Tue.machines[1].notesA,
-//         wed: data.Wed.machines[1].notesA,
-//         thur: data.Thur.machines[1].notesA,
-//         fri: data.Fri.machines[1].notesA,
-//         sat: data.Sat.machines[1].notesA,
-//         sun: data.Sun.machines[1].notesA,
-//         total: "",
-            
-//       },
-//       {
-//         prodInfo:"Beam Number",
-//         mon: data.Mon.machines[1].beamA,
-//         tue: data.Tue.machines[1].beamA,
-//         wed: data.Wed.machines[1].beamA,
-//         thur: data.Thur.machines[1].beamA,
-//         fri: data.Fri.machines[1].beamA,
-//         sat: data.Sat.machines[1].beamA,
-//         sun: data.Sun.machines[1].beamA,
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Shift B",
-//         mon: data.Mon.machines[1].shiftB,
-//         tue: data.Tue.machines[1].shiftB,
-//         wed: data.Wed.machines[1].shiftB,
-//         thur: data.Thur.machines[1].shiftB,
-//         fri: data.Fri.machines[1].shiftB,
-//         sat: data.Sat.machines[1].shiftB,
-//         sun: data.Sun.machines[1].shiftB,
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Notes B",
-//         mon: data.Mon.machines[1].notesB,
-//         tue: data.Tue.machines[1].notesB,
-//         wed: data.Wed.machines[1].notesB,
-//         thur: data.Thur.machines[1].notesB,
-//         fri: data.Fri.machines[1].notesB,
-//         sat: data.Sat.machines[1].notesB,
-//         sun: data.Sun.machines[1].notesB,
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Article",            
-//         mon: data.Mon.machines[1].article,
-//         tue: data.Tue.machines[1].article,
-//         wed: data.Wed.machines[1].article,
-//         thur: data.Thur.machines[1].article,
-//         fri: data.Fri.machines[1].article,
-//         sat: data.Sat.machines[1].article,
-//         sun: data.Sun.machines[1].article,
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Beam Number",
-//         mon: data.Mon.machines[1].beamB,
-//         tue: data.Tue.machines[1].beamB,
-//         wed: data.Wed.machines[1].beamB,
-//         thur: data.Thur.machines[1].beamB,
-//         fri: data.Fri.machines[1].beamB,
-//         sat: data.Sat.machines[1].beamB,
-//         sun: data.Sun.machines[1].beamB,
-//         total: "",
-//       },
-      
-//     ],
-//   },
-//      {
-//     machine: "Machine No: 2",
-//     rows: [
-//       {
-//         prodInfo:"Machine 2 Shift A",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Notes - A",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Beam Number",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Shift B",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Notes B",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Article",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Beam Number",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-      
-//     ],
-//   },
-//      {
-//     machine: "Machine No: 3",
-//     rows: [
-//       {
-//         prodInfo:"Machine 3 Shift A",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Notes - A",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Beam Number",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Shift B",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Notes B",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Article",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Beam Number",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-      
-//     ],
-//   },
-//      {
-//     machine: "Machine No: 4",
-//     rows: [
-//       {
-//         prodInfo:"Machine 4 Shift A",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Notes - A",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Beam Number",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Shift B",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Notes B",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Article",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-//       {
-//         prodInfo:"Beam Number",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-      
-//     ],
-//   },{
-    
-//     rows: [
-//       {
-//         prodInfo:"Daily  Total",
-//         mon: "",
-//         tue: "",
-//         wed: "",
-//         thur: "",
-//         fri: "",
-//         sat: "",
-//         sun: "",
-//         total: "",
-//       },
-      
-      
-//     ],
-//   },
-   
-//     ]
-//   }
-
-   
-// return { steps, loading, error };
-
-// }

@@ -43,17 +43,22 @@ export default function PrintingProductionStepTable({ rows }) {
     return value;
   };
 
-  const renderCell = (value, row) => {
+  const renderCell = (value, row, colKey) => {
     const isNotesRow = row.prodInfo?.toLowerCase().includes("notes");
     const isShiftRow = row.prodInfo?.toLowerCase().includes("shift");
     const isTotalRow = row.prodInfo?.toLowerCase().includes("total");
     const hasValue = value !== "" && value !== NBSP && value != null;
+
+    const isWeeklyTotalCol = colKey === "total";
+    const isBeamBTotal = row.isBeamB && isWeeklyTotalCol;
+    const isDailyTotal = row.prodInfo?.toLowerCase().includes("daily total") && isWeeklyTotalCol;
 
     return (
       <td
         className={`border border-gray-500 px-2 align-middle 
           ${isNotesRow && hasValue ? "bg-yellow-300 font-semibold" : ""}
           ${(isShiftRow || isTotalRow) && hasValue ? "font-bold" : ""}
+          ${(isBeamBTotal || isDailyTotal) ? "bg-yellow-300 font-semibold" : ""}
         `}
       >
         {formatNumber(value)}
@@ -69,7 +74,7 @@ export default function PrintingProductionStepTable({ rows }) {
           {headers.map((h, i) => (
             <th
               key={i}
-              className="border border-gray-500 px-2 text-[11px] align-middle w-40 font-bold"
+              className="border border-gray-500 text-[11px] align-middle w-40 font-bold"
             >
               {h}
             </th>
@@ -80,38 +85,69 @@ export default function PrintingProductionStepTable({ rows }) {
         </tr>
       </thead>
       <tbody>
-        {rows.map((r, i) =>
-          r.isTitle ? (
-            <tr key={i} className="bg-blue-200 font-bold">
-              <td
-                className="border border-gray-500 px-2 text-left"
-                colSpan={headers.length + 2}
-              >
-                {r.prodInfo}
-              </td>
-            </tr>
-          ) : (
-            <tr
-              key={i}
-              className={`${
-                r.prodInfo === "Daily Total" ? "border-t-9 border-gray-50" : ""
-              }`}
+  {(() => {
+    
+    const dailyIndex = rows.findIndex((r) => r.prodInfo === "Daily Total");
+
+    return rows.map((r, i) => {
+      // title rows unchanged
+      if (r.isTitle) {
+        return (
+          <tr key={`title-${i}`} className="bg-blue-200 font-bold">
+            <td
+              className="border border-gray-500 px-2 text-left"
+              colSpan={headers.length + 2}
             >
+              {r.prodInfo}
+            </td>
+          </tr>
+        );
+      }
+    if (i === dailyIndex) {
+        return (
+          <React.Fragment key={`daily-frag-${i}`}>
+            {/* space above Daily Total row*/}
+            <tr key={`spacer-${i}`}>
+              <td colSpan={headers.length + 2} className="h-3"></td>
+            </tr>
+
+            {/* Daily Total row */}
+            <tr key={`row-${i}`} className=" font-bold ">
               <td className="border border-gray-500 px-2 align-middle">
                 {r.prodInfo || NBSP}
               </td>
-              {renderCell(r.mon, r)}
-              {renderCell(r.tue, r)}
-              {renderCell(r.wed, r)}
-              {renderCell(r.thur, r)}
-              {renderCell(r.fri, r)}
-              {renderCell(r.sat, r)}
-              {renderCell(r.sun, r)}
-              {renderCell(r.total, r)}
+              {renderCell(r.mon, r, "mon")}
+              {renderCell(r.tue, r, "tue")}
+              {renderCell(r.wed, r, "wed")}
+              {renderCell(r.thur, r, "thur")}
+              {renderCell(r.fri, r, "fri")}
+              {renderCell(r.sat, r, "sat")}
+              {renderCell(r.sun, r, "sun")}
+              {renderCell(r.total, r, "total")}
             </tr>
-          )
-        )}
-      </tbody>
+          </React.Fragment>
+        );
+      }
+
+      return (
+        <tr key={`row-${i}`}>
+          <td className="border border-gray-500 px-2 align-middle">
+            {r.prodInfo || NBSP}
+          </td>
+          {renderCell(r.mon, r, "mon")}
+          {renderCell(r.tue, r, "tue")}
+          {renderCell(r.wed, r, "wed")}
+          {renderCell(r.thur, r, "thur")}
+          {renderCell(r.fri, r, "fri")}
+          {renderCell(r.sat, r, "sat")}
+          {renderCell(r.sun, r, "sun")}
+          {renderCell(r.total, r, "total")}
+        </tr>
+      );
+    });
+  })()}
+</tbody>
+
     </table>
   );
 }

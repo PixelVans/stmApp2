@@ -1,10 +1,9 @@
-
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { saveWeavingProduction } from "@/api/dyeingApi";
 import { toast } from "sonner";
-import { CheckCircle, XCircle } from "lucide-react"; 
+import { CheckCircle, XCircle } from "lucide-react";
 
 // helper: get ISO week number
 function getISOWeek(date = new Date()) {
@@ -15,29 +14,46 @@ function getISOWeek(date = new Date()) {
   return (
     1 +
     Math.round(
-      ((tempDate.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7
+      ((tempDate.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) /
+        7
     )
   );
+}
+
+// helper: format date like "16th Sept 2025"
+function formatTodayDate() {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.toLocaleString("en-US", { month: "short" });
+  const year = today.getFullYear();
+
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+      ? "nd"
+      : day % 10 === 3 && day !== 13
+      ? "rd"
+      : "th";
+
+  return `${day}${suffix} ${month} ${year}`;
 }
 
 export default function UpdateWeavingProductionPage() {
   const [formData, setFormData] = useState({
     weekNo: getISOWeek(),
     day: "",
-    machineNo: "",
+    machineNo: "1", // default machine
     machineReadingShiftA: "",
     machineReadingShiftB: "",
     stopReasonShiftA: "",
     stopReasonShiftB: "",
-    beamNoShiftA: "",
-    beamNoShiftB: "",
-    counterShiftA: "",
-    counterShiftB: "",
-    article: "",
+    counter: "",
+    article: "Cellular", // default article
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [machineStatus, setMachineStatus] = useState(null); 
+  const [machineStatus, setMachineStatus] = useState(null);
 
   const stopReasons = [
     "",
@@ -59,7 +75,14 @@ export default function UpdateWeavingProductionPage() {
     "Stopped",
   ];
 
-  const articleOptions = ["", "Cellular", "Striped Blue C/P", "Bedsheet", "Towels"];
+  const articleOptions = ["Cellular", "CreamStripe Blue", "Bedsheet", "Towels"];
+
+  const machineArticles = {
+    1: "Cellular",
+    2: "CreamStripe Blue",
+    3: "Bedsheet",
+    4: "Towels",
+  };
 
   // set current day automatically
   useEffect(() => {
@@ -71,33 +94,27 @@ export default function UpdateWeavingProductionPage() {
     setFormData((prev) => ({
       weekNo: prev.weekNo,
       day: new Date().toLocaleDateString("en-US", { weekday: "short" }),
-      machineNo: keepMachine ? prev.machineNo : "",
+      machineNo: keepMachine ? prev.machineNo : "1",
       machineReadingShiftA: "",
       machineReadingShiftB: "",
       stopReasonShiftA: "",
       stopReasonShiftB: "",
-      beamNoShiftA: "",
-      beamNoShiftB: "",
-      counterShiftA: "",
-      counterShiftB: "",
-      article: "",
+      counter: "",
+      article: keepMachine ? prev.article : "Cellular",
     }));
-    if (!keepMachine) setMachineStatus(null); 
+    if (!keepMachine) setMachineStatus(null);
   };
 
   const handleMachineChange = (value) => {
     setFormData((prev) => ({
       ...prev,
       machineNo: value,
+      article: machineArticles[value] || prev.article,
       machineReadingShiftA: "",
       machineReadingShiftB: "",
       stopReasonShiftA: "",
       stopReasonShiftB: "",
-      beamNoShiftA: "",
-      beamNoShiftB: "",
-      counterShiftA: "",
-      counterShiftB: "",
-      article: "",
+      counter: "",
     }));
     setMachineStatus(null);
   };
@@ -119,7 +136,7 @@ export default function UpdateWeavingProductionPage() {
     } catch (err) {
       console.error("Save error:", err);
       toast.error(err.message || "Failed to submit form.");
-      setMachineStatus("error"); 
+      setMachineStatus("error");
     } finally {
       setIsSubmitting(false);
     }
@@ -129,18 +146,22 @@ export default function UpdateWeavingProductionPage() {
     resetShiftData(false);
   };
 
-  // focus classes
-  const focusRing = "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
+  const focusRing =
+    "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
 
   return (
-    <div className="max-w-xl mx-auto py-3 px-3 md:px-6 mt-2 shadow-md shadow-slate-500 rounded-lg">
-      <h1 className="text-lg sm:text-xl mt-4 font-bold text-center mb-3">
+    <div className="relative max-w-xl mx-auto py-3 px-3 md:px-6 mt-2 shadow-md shadow-slate-500 rounded-lg">
+      {/* Today date top-right */}
+      <div className="absolute top-3 right-4 text-sm font-medium text-slate-500">
+        {formatTodayDate()}
+      </div>
+
+      <h1 className="text-lg sm:text-xl mt-7 font-bold text-center mb-4">
         Update Weaving Production
       </h1>
 
       {/* Week + Day selector */}
       <div className="mb-4 text-center flex items-center justify-center gap-4">
-
         {/* Week Selector */}
         <div>
           <label className="text-sm font-medium mr-2">Week:</label>
@@ -159,7 +180,6 @@ export default function UpdateWeavingProductionPage() {
           </select>
         </div>
 
-        
         {/* Day Selector */}
         <div>
           <label className="text-sm font-medium mr-2">Day:</label>
@@ -175,10 +195,7 @@ export default function UpdateWeavingProductionPage() {
             ))}
           </select>
         </div>
-
-
       </div>
-
 
       {/* Machine number with status */}
       {formData.machineNo && (
@@ -187,7 +204,9 @@ export default function UpdateWeavingProductionPage() {
           {machineStatus === "success" && (
             <CheckCircle className="w-5 h-5 text-green-500" />
           )}
-          {machineStatus === "error" && <XCircle className="w-5 h-5 text-red-500" />}
+          {machineStatus === "error" && (
+            <XCircle className="w-5 h-5 text-red-500" />
+          )}
         </p>
       )}
 
@@ -202,10 +221,27 @@ export default function UpdateWeavingProductionPage() {
             onChange={(e) => handleMachineChange(e.target.value)}
             className={`w-full border border-gray-400 rounded-md px-2 py-1 text-sm ${focusRing}`}
           >
-            <option value=""></option>
-            {[1, 2, 3,].map((num) => (
+            {[1, 2, 3, 4].map((num) => (
               <option key={num} value={num}>
                 {num}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Article Dropdown */}
+        <div className="text-center">
+          <label className="text-xs font-medium">Select Article:</label>
+          <select
+            value={formData.article}
+            onChange={(e) =>
+              setFormData({ ...formData, article: e.target.value })
+            }
+            className={`w-56 border border-slate-400 rounded-md px-2 py-1 text-sm mx-auto block ${focusRing}`}
+          >
+            {articleOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
               </option>
             ))}
           </select>
@@ -243,24 +279,6 @@ export default function UpdateWeavingProductionPage() {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="text-xs font-medium">Beam Number</label>
-              <input
-                type="text"
-                value={formData.beamNoShiftA}
-                onChange={(e) => setFormData({ ...formData, beamNoShiftA: e.target.value })}
-                className={`w-full border border-slate-400 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium">Counter</label>
-              <input
-                type="number"
-                value={formData.counterShiftA}
-                onChange={(e) => setFormData({ ...formData, counterShiftA: e.target.value })}
-                className={`w-full border border-slate-400 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
-              />
-            </div>
           </div>
 
           {/* Shift B */}
@@ -293,49 +311,31 @@ export default function UpdateWeavingProductionPage() {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="text-xs font-medium">Beam Number</label>
-              <input
-                type="text"
-                value={formData.beamNoShiftB}
-                onChange={(e) => setFormData({ ...formData, beamNoShiftB: e.target.value })}
-                className={`w-full border border-slate-400 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium">Counter</label>
-              <input
-                type="number"
-                value={formData.counterShiftB}
-                onChange={(e) => setFormData({ ...formData, counterShiftB: e.target.value })}
-                className={`w-full border border-slate-400 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
-              />
-            </div>
           </div>
         </div>
 
-        {/* Article Dropdown */}
-        <div className="text-center">
-          <label className="text-xs font-medium">
-            {formData.machineNo ? `Article ${formData.machineNo}` : "Article"}
-          </label>
-          <select
-            value={formData.article}
-            onChange={(e) => setFormData({ ...formData, article: e.target.value })}
-            className={`w-56 border border-slate-400 rounded-md px-2 py-1 text-sm mx-auto block ${focusRing}`}
-          >
-            {articleOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
+        {/* Counter */}
+        <div className="mt-5 text-center">
+          <label className="text-sm font-medium block mb-1">Counter</label>
+          <input
+            type="number"
+            value={formData.counter}
+            onChange={(e) =>
+              setFormData({ ...formData, counter: e.target.value })
+            }
+            className={`w-56 border border-slate-400 rounded-md px-2 py-1 text-sm ${focusRing}`}
+          />
         </div>
 
         {/* Buttons */}
         <div className="flex justify-center mb-4 mt-5 md:mt-7 sm:mb-2 gap-4">
-          <Button type="button" variant="destructive" onClick={handleCancel} size="md">
-            Clear
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={handleCancel}
+            size="md"
+          >
+            Reset
           </Button>
           <Button type="submit" disabled={isSubmitting} size="md">
             {isSubmitting ? "Submitting..." : "Submit"}

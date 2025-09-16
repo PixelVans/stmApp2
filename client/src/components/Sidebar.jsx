@@ -49,7 +49,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
 
     {/*  */}
-    <nav className="flex flex-col gap-2">
+    <nav className="flex flex-col gap-2 ">
       {navItems.map((item) => (
         <Link
           key={item.name}

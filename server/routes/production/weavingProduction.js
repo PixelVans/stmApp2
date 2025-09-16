@@ -24,6 +24,7 @@ router.get("/week/:weeknumber", async (req, res) => {
 
 
 
+
 router.get("/beam/:beamnumber", async (req, res) => {
   const { beamnumber } = req.params;
   try {
@@ -45,6 +46,7 @@ router.get("/beam/:beamnumber", async (req, res) => {
 
 
 
+// update weaving report
 router.post("/update-weaving-report", async (req, res) => {
   const {
     weekNo,
@@ -54,14 +56,10 @@ router.post("/update-weaving-report", async (req, res) => {
     machineReadingShiftB,
     stopReasonShiftA,
     stopReasonShiftB,
-    beamNoShiftA,
-    beamNoShiftB,
-    counterShiftA,
-    counterShiftB,
     article,
+    counter, 
   } = req.body;
 
-  
   const normalize = (val, type = "string") => {
     if (val === undefined || val === null || val === "") return null;
     if (type === "int") {
@@ -80,21 +78,17 @@ router.post("/update-weaving-report", async (req, res) => {
 
     const pool = await connectToDB2();
 
-    
     const prefix = `Mach${machineNo}`;
     const cols = {
       shiftA: `${prefix}ShiftA`,
       shiftB: `${prefix}ShiftB`,
       notesA: `Notes${machineNo}A`,
       notesB: `Notes${machineNo}B`,
-      counterA: `Counter${machineNo}A`,
-      counterB: `Counter${machineNo}B`,
-      beamA: `Beam${machineNo}A`,
-      beamB: `Beam${machineNo}B`,
       article: `Article${machineNo}`,
+      counter: `Counter${machineNo}B`, 
     };
 
-    
+    // check if row exists
     const existing = await pool
       .request()
       .input("weekNo", sql.Int, weekNo)
@@ -106,7 +100,8 @@ router.post("/update-weaving-report", async (req, res) => {
       `);
 
     if (existing.recordset.length > 0) {
-      
+
+      // UPDATE path
       let updateQuery = `
         UPDATE [Specialised Systems].dbo.ProductionData2025
         SET 
@@ -114,10 +109,7 @@ router.post("/update-weaving-report", async (req, res) => {
           ${cols.shiftB} = @machineReadingShiftB,
           ${cols.notesA} = @stopReasonShiftA,
           ${cols.notesB} = @stopReasonShiftB,
-          ${cols.counterA} = @counterShiftA,
-          ${cols.counterB} = @counterShiftB,
-          ${cols.beamA} = @beamNoShiftA,
-          ${cols.beamB} = @beamNoShiftB
+          ${cols.counter} = @counter
       `;
 
       if (normalize(article)) {
@@ -130,14 +122,19 @@ router.post("/update-weaving-report", async (req, res) => {
         .request()
         .input("weekNo", sql.Int, weekNo)
         .input("day", sql.VarChar(10), day)
-        .input("machineReadingShiftA", sql.VarChar(50), normalize(machineReadingShiftA))
-        .input("machineReadingShiftB", sql.VarChar(50), normalize(machineReadingShiftB))
+        .input(
+          "machineReadingShiftA",
+          sql.VarChar(50),
+          normalize(machineReadingShiftA)
+        )
+        .input(
+          "machineReadingShiftB",
+          sql.VarChar(50),
+          normalize(machineReadingShiftB)
+        )
         .input("stopReasonShiftA", sql.VarChar(255), normalize(stopReasonShiftA))
         .input("stopReasonShiftB", sql.VarChar(255), normalize(stopReasonShiftB))
-        .input("counterShiftA", sql.Int, normalize(counterShiftA, "int"))
-        .input("counterShiftB", sql.Int, normalize(counterShiftB, "int"))
-        .input("beamNoShiftA", sql.VarChar(50), normalize(beamNoShiftA))
-        .input("beamNoShiftB", sql.VarChar(50), normalize(beamNoShiftB));
+        .input("counter", sql.Int, normalize(counter, "int"));
 
       if (normalize(article)) {
         reqUpdate.input("article", sql.VarChar(255), article);
@@ -147,15 +144,14 @@ router.post("/update-weaving-report", async (req, res) => {
 
       return res.json({ message: "Production data updated successfully" });
     } else {
-      
+
+      // INSERT path
       let insertCols = `
-        WeekNo, Day, ${cols.shiftA}, ${cols.shiftB}, ${cols.notesA}, ${cols.notesB},
-        ${cols.counterA}, ${cols.counterB}, ${cols.beamA}, ${cols.beamB}
+        WeekNo, Day, ${cols.shiftA}, ${cols.shiftB}, ${cols.notesA}, ${cols.notesB}, ${cols.counter}
       `;
       let insertVals = `
         @weekNo, @day, @machineReadingShiftA, @machineReadingShiftB,
-        @stopReasonShiftA, @stopReasonShiftB, @counterShiftA, @counterShiftB,
-        @beamNoShiftA, @beamNoShiftB
+        @stopReasonShiftA, @stopReasonShiftB, @counter
       `;
 
       if (normalize(article)) {
@@ -172,14 +168,19 @@ router.post("/update-weaving-report", async (req, res) => {
         .request()
         .input("weekNo", sql.Int, weekNo)
         .input("day", sql.VarChar(10), day)
-        .input("machineReadingShiftA", sql.VarChar(50), normalize(machineReadingShiftA))
-        .input("machineReadingShiftB", sql.VarChar(50), normalize(machineReadingShiftB))
+        .input(
+          "machineReadingShiftA",
+          sql.VarChar(50),
+          normalize(machineReadingShiftA)
+        )
+        .input(
+          "machineReadingShiftB",
+          sql.VarChar(50),
+          normalize(machineReadingShiftB)
+        )
         .input("stopReasonShiftA", sql.VarChar(255), normalize(stopReasonShiftA))
         .input("stopReasonShiftB", sql.VarChar(255), normalize(stopReasonShiftB))
-        .input("counterShiftA", sql.Int, normalize(counterShiftA, "int"))
-        .input("counterShiftB", sql.Int, normalize(counterShiftB, "int"))
-        .input("beamNoShiftA", sql.VarChar(50), normalize(beamNoShiftA))
-        .input("beamNoShiftB", sql.VarChar(50), normalize(beamNoShiftB));
+        .input("counter", sql.Int, normalize(counter, "int")); 
 
       if (normalize(article)) {
         reqInsert.input("article", sql.VarChar(255), article);
@@ -193,7 +194,9 @@ router.post("/update-weaving-report", async (req, res) => {
     console.error(err);
     res.status(500).send("Error saving weaving production data");
   }
+
 });
+
 
 
 
