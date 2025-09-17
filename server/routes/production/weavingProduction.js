@@ -46,8 +46,8 @@ router.get("/beam/:beamnumber", async (req, res) => {
 
 
 
-// update weaving report
-router.post("/update-weaving-report", async (req, res) => {
+// update weaving data
+router.post("/update-weaving-data", async (req, res) => {
   const {
     weekNo,
     day,
@@ -196,6 +196,77 @@ router.post("/update-weaving-report", async (req, res) => {
   }
 
 });
+
+
+
+
+
+// update warping data
+router.post("/update-warping-data", async (req, res) => {
+  const {
+    beamNumber,
+    date,
+    machineNumber,
+    beamPosition,
+    article,
+    yarnCount1,
+    yarnCount2,
+    weightYarn1,
+    weightYarn2,
+    totalEnds,
+    meters,
+    beamUnitCounter,
+  } = req.body;
+
+  const normalize = (val, type = "string") => {
+    if (val === undefined || val === null || val === "") return null;
+    if (type === "int") {
+      const parsed = parseInt(val, 10);
+      return Number.isNaN(parsed) ? null : parsed;
+    }
+    if (type === "float") {
+      const parsed = parseFloat(val);
+      return Number.isNaN(parsed) ? null : parsed;
+    }
+    return val;
+  };
+
+  
+  try {
+    const pool = await connectToDB2();
+
+    const insertQuery = `
+      INSERT INTO [Specialised Systems].dbo.WarpingData2025
+        (BeamNumber, Date, MachineNumber, BeamPosition, Article, Yarn1, Yarn2, 
+         WeightofYarn1, WeightofYarn2, TotalEnds, Meters, KnottingCounter)
+      VALUES
+        (@beamNumber, @date, @machineNumber, @beamPosition, @article, @yarn1, @yarn2,
+         @weightYarn1, @weightYarn2, @totalEnds, @meters, @knottingCounter)
+    `;
+
+    await pool
+      .request()
+      .input("beamNumber", sql.VarChar(50), normalize(beamNumber))
+      .input("date", sql.Date, normalize(date))
+      .input("machineNumber", sql.Int, normalize(machineNumber, "int"))
+      .input("beamPosition", sql.VarChar(50), normalize(beamPosition))
+      .input("article", sql.VarChar(255), normalize(article))
+      .input("yarn1", sql.VarChar(50), normalize(yarnCount1))
+      .input("yarn2", sql.VarChar(50), normalize(yarnCount2))
+      .input("weightYarn1", sql.Float, normalize(weightYarn1, "float"))
+      .input("weightYarn2", sql.Float, normalize(weightYarn2, "float"))
+      .input("totalEnds", sql.Int, normalize(totalEnds, "int"))
+      .input("meters", sql.Float, normalize(meters, "float"))
+      .input("knottingCounter", sql.Int, normalize(beamUnitCounter, "int"))
+      .query(insertQuery);
+
+    res.json({ message: "Warping data saved successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error saving warping data");
+  }
+});
+
 
 
 

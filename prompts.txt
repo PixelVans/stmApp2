@@ -1,2 +1,0 @@
-Exactly, like that, so now the daily total part is where we now calculate the total fileds of all shifts A nad B for that day.
-and then the total of that week in the respecitve filed on the daily total wekkly totals colum cell

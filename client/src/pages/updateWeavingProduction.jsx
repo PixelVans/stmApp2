@@ -150,9 +150,9 @@ export default function UpdateWeavingProductionPage() {
     "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
 
   return (
-    <div className="relative max-w-xl mx-auto py-3 px-3 md:px-6 mt-2 shadow-md shadow-slate-500 rounded-lg">
+    <div className="flex lg:block lg:relative max-w-xl mx-auto py-3 px-3 md:px-6 mt-5 shadow-md shadow-slate-500 rounded-lg">
       {/* Today date top-right */}
-      <div className="absolute top-3 right-4 text-sm font-medium text-slate-500">
+      <div className="absolute top-3 right-4 text-xs font-medium text-slate-500">
         {formatTodayDate()}
       </div>
 
@@ -170,7 +170,7 @@ export default function UpdateWeavingProductionPage() {
             onChange={(e) =>
               setFormData({ ...formData, weekNo: Number(e.target.value) })
             }
-            className={`border border-gray-400 rounded-md px-2 py-1 text-sm w-28 ${focusRing}`}
+            className={`border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm w-28 ${focusRing}`}
           >
             {Array.from({ length: 52 }, (_, i) => i + 1).map((week) => (
               <option key={week} value={week}>
@@ -186,7 +186,7 @@ export default function UpdateWeavingProductionPage() {
           <select
             value={formData.day}
             onChange={(e) => setFormData({ ...formData, day: e.target.value })}
-            className={`border border-gray-400 rounded-md px-2 py-1 text-sm w-28 ${focusRing}`}
+            className={`border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm w-28 ${focusRing}`}
           >
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
               <option key={d} value={d}>
@@ -219,7 +219,7 @@ export default function UpdateWeavingProductionPage() {
             required
             value={formData.machineNo}
             onChange={(e) => handleMachineChange(e.target.value)}
-            className={`w-full border border-gray-400 rounded-md px-2 py-1 text-sm ${focusRing}`}
+            className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
           >
             {[1, 2, 3, 4].map((num) => (
               <option key={num} value={num}>
@@ -237,7 +237,7 @@ export default function UpdateWeavingProductionPage() {
             onChange={(e) =>
               setFormData({ ...formData, article: e.target.value })
             }
-            className={`w-56 border border-slate-400 rounded-md px-2 py-1 text-sm mx-auto block ${focusRing}`}
+            className={`w-56 border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm mx-auto block ${focusRing}`}
           >
             {articleOptions.map((opt) => (
               <option key={opt} value={opt}>
@@ -260,7 +260,7 @@ export default function UpdateWeavingProductionPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, machineReadingShiftA: e.target.value })
                 }
-                className={`w-full border border-slate-400 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
               />
             </div>
             <div>
@@ -270,7 +270,7 @@ export default function UpdateWeavingProductionPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, stopReasonShiftA: e.target.value })
                 }
-                className={`w-full border border-slate-400 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
               >
                 {stopReasons.map((r) => (
                   <option key={r} value={r}>
@@ -292,7 +292,7 @@ export default function UpdateWeavingProductionPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, machineReadingShiftB: e.target.value })
                 }
-                className={`w-full border border-slate-400 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
               />
             </div>
             <div>
@@ -302,7 +302,7 @@ export default function UpdateWeavingProductionPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, stopReasonShiftB: e.target.value })
                 }
-                className={`w-full border border-slate-400 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
               >
                 {stopReasons.map((r) => (
                   <option key={r} value={r}>
@@ -323,7 +323,7 @@ export default function UpdateWeavingProductionPage() {
             onChange={(e) =>
               setFormData({ ...formData, counter: e.target.value })
             }
-            className={`w-56 border border-slate-400 rounded-md px-2 py-1 text-sm ${focusRing}`}
+            className={`w-56 border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
           />
         </div>
 

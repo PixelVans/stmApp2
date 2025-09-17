@@ -1,19 +1,23 @@
 
-import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3 } from "react-icons/fi";
+import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3, FiLayers } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
-  const navItems = [
-    { name: "Home", icon: <FiHome size={18} className="text-white" />, href: "/" },
-    { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
-    { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving-production" },
-     { 
+const navItems = [
+  { name: "Home", icon: <FiHome size={18} className="text-white" />, href: "/" },
+  { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
+  { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving-production" },
+  { 
     name: "Update Production Data", 
     icon: <FiEdit3 size={18} className="text-blue-400" />, 
     href: "/update-weaving-production" 
   },
-    
-  ];
+  { 
+    name: "Update Warping Data", 
+    icon: <FiEdit3 size={18} className="text-purple-400" />, 
+    href: "/update-warping-data" 
+  },
+];
 
   return (
     <>
@@ -68,7 +72,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   <div className="mt-6">
     <a
       href="#"
-      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-600 transition bg-gray-800"
+      className="hidden items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-600 transition bg-gray-800"
     >
       <FiLogOut size={18} />
       <span className="font-medium">Logout</span>

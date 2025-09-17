@@ -7,6 +7,7 @@ import DyeingCardCustomPrint from "./pages/dyeingCardCustomPrint";
 import WeavingProductionTable from "./pages/weavingProduction";
 import WeavingProductionPrintout from "./customPrintouts/weavingProductionPrintout";
 import UpdateWeavingProductionPage from "./pages/updateWeavingProduction";
+import UpdateWarpingData from "./pages/updateWarpingData";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/dyeing" element={<ChemicalTable />} />
           <Route path="/weaving-production" element={<WeavingProductionTable />} />
           <Route path="/update-weaving-production" element={<UpdateWeavingProductionPage />} />
+          <Route path="/update-warping-data" element={<UpdateWarpingData />} />
         </Route>
 
         {/* Standalone routes without layout */}

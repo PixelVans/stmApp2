@@ -430,7 +430,7 @@ const finishingSummary4 = getChemSummary(totalWaterLtrsUsed, finishingChem3Amtin
 
 
 
-console.log("We are getting",getNeededTotal(scouringSummary1, scouringChem1TotalCost))
+
 
 
  
