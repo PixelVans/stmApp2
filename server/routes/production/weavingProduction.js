@@ -244,6 +244,8 @@ router.post("/update-warping-data", async (req, res) => {
          @weightYarn1, @weightYarn2, @totalEnds, @meters, @knottingCounter)
     `;
 
+
+    
     await pool
       .request()
       .input("beamNumber", sql.VarChar(50), normalize(beamNumber))

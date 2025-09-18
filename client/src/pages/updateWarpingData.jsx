@@ -108,7 +108,7 @@ export default function UpdateWarpingData() {
         Machine No: {formData.machineNumber}
       </p>
 
-      <form onSubmit={''}>
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left column */}
           <div className="space-y-2 sm:space-y-4">
@@ -128,6 +128,7 @@ export default function UpdateWarpingData() {
             <div>
               <label className="text-sm font-medium">Machine Number</label>
               <select
+                required
                 value={formData.machineNumber}
                 onChange={(e) =>
                   setFormData({ ...formData, machineNumber: e.target.value })
@@ -145,6 +146,7 @@ export default function UpdateWarpingData() {
               <div>
               <label className="text-sm font-medium">Beam Position</label>
               <select
+                required
                 value={formData.beamPosition}
                 onChange={(e) =>
                   setFormData({ ...formData, beamPosition: e.target.value })
@@ -164,6 +166,7 @@ export default function UpdateWarpingData() {
               <div>
               <label className="text-sm font-medium">Article</label>
               <select
+                required
                 value={formData.article}
                 onChange={(e) =>
                   setFormData({ ...formData, article: e.target.value })
@@ -182,6 +185,7 @@ export default function UpdateWarpingData() {
             <div>
               <label className="text-sm font-medium">Beam Number</label>
               <input
+                required
                 type="text"
                 value={formData.beamNumber}
                 onChange={(e) =>
@@ -196,6 +200,7 @@ export default function UpdateWarpingData() {
             <div>
               <label className="text-sm font-medium">Meters</label>
               <input
+                required
                 type="number"
                 value={formData.meters}
                 onChange={(e) =>
@@ -213,6 +218,7 @@ export default function UpdateWarpingData() {
             <div>
               <label className="text-sm font-medium">Yarn Count 1</label>
               <select
+                required
                 value={formData.yarnCount1}
                 onChange={(e) =>
                   setFormData({ ...formData, yarnCount1: e.target.value })
@@ -245,10 +251,13 @@ export default function UpdateWarpingData() {
                 ))}
               </select>
             </div>
-
+              {/* <h1 className="hidden "></h1> */}
+              {/* ,, */}
+              
             <div>
               <label className="text-sm font-medium">Total Ends</label>
               <input
+                required
                 type="number"
                 value={formData.totalEnds}
                 onChange={(e) =>
@@ -261,6 +270,7 @@ export default function UpdateWarpingData() {
             <div>
               <label className="text-sm font-medium">Weight of Yarn 1 (Kg)</label>
               <input
+                required
                 type="number"
                 value={formData.weightYarn1}
                 onChange={(e) =>
@@ -308,3 +318,35 @@ export default function UpdateWarpingData() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
