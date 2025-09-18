@@ -42,7 +42,7 @@ export default function StmHome() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <FaHome className="h-14 w-14 sm:h-16 sm:w-16 text-blue-600" />
+          <FaHome className="h-14 w-14 sm:h-16 sm:w-16 text-blue-600 animate-bounce" />
         </motion.div>
 
         <motion.h1

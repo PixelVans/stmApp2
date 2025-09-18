@@ -84,7 +84,7 @@ export default function UpdateWeavingProductionPage() {
     4: "Towels",
   };
 
-  // set current day automatically
+  
   useEffect(() => {
     const today = new Date().toLocaleDateString("en-US", { weekday: "short" });
     setFormData((prev) => ({ ...prev, day: today }));
@@ -250,7 +250,7 @@ export default function UpdateWeavingProductionPage() {
         {/* Shifts */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
           {/* Shift A */}
-          <div className="space-y-2 border rounded-md p-4 sm:p-2">
+          <div className="space-y-2 border bg-yellow-50 rounded-md p-4 sm:p-4 shadow-md ">
             <h3 className="text-sm font-semibold text-blue-700 text-center">Shift A</h3>
             <div>
               <label className="text-xs font-medium">Meter Reading</label>
@@ -264,13 +264,13 @@ export default function UpdateWeavingProductionPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium">Stop Reason</label>
+              <label className="text-xs font-medium ">Stop Reason</label>
               <select
                 value={formData.stopReasonShiftA}
                 onChange={(e) =>
                   setFormData({ ...formData, stopReasonShiftA: e.target.value })
                 }
-                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2  py-0.5 text-sm ${focusRing}`}
               >
                 {stopReasons.map((r) => (
                   <option key={r} value={r}>
@@ -282,7 +282,7 @@ export default function UpdateWeavingProductionPage() {
           </div>
 
           {/* Shift B */}
-          <div className="space-y-2 border rounded-md p-4 sm:p-2 bg-blue-50 shadow-md">
+          <div className="space-y-2 border rounded-md p-4 sm:p-4 bg-slate-300  shadow-md">
             <h3 className="text-sm font-semibold text-blue-700 text-center">Shift B</h3>
             <div>
               <label className="text-xs font-medium">Meter Reading</label>

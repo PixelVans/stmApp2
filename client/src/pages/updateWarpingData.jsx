@@ -54,7 +54,7 @@ export default function UpdateWarpingData() {
     '90" Wide Bed Sheet',
   ];
 
-  const yarnCounts1 = ["20/2", "9/4", "6/4", "6/2", "13.5/6", "30/2 PC",]; 
+  const yarnCounts1 = ["20/2", "9/4", "6/4", "6/2", "13.5/6", "24/2", "30/2 PC",]; 
   const yarnCounts2 = ["24/2 Dyed", "13.5/6",  "9/4", "6/4","6/2",]; 
 
   const handleSubmit = async (e) => {
@@ -100,7 +100,7 @@ export default function UpdateWarpingData() {
       {/* Title */}
       <h1 className="text-lg sm:text-xl mt-7 font-bold text-center md:mb-7">
         Update Warping Data for: <span className="text-blue-600 font-bold hidden md:inline"> 
-           Machine No: {formData.machineNumber}</span>
+           Machine No: {formData.machineNumber ? formData.machineNumber:"-" }</span>
       </h1>
 
       {/* Mobile-only machine number below title */}

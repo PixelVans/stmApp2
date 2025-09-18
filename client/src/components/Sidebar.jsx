@@ -1,5 +1,5 @@
 
-import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3, FiLayers } from "react-icons/fi";
+import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3,  } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -21,7 +21,7 @@ const navItems = [
 
   return (
     <>
-      {/* Sidebar */}
+  {/* Sidebar */}
      <aside
   className={`
     fixed top-0 left-0 h-full z-40 bg-slate-800 text-white p-4 md:p-6 
