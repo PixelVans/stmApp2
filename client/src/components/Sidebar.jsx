@@ -19,7 +19,7 @@ const navItems = [
   },
   { 
     name: "Update Stock", 
-    icon: <FiBox size={18} className="text-red-400" />, 
+    icon: <FiBox size={18} className="text-green-400" />, 
     href: "/update-stock" 
   },
 ];

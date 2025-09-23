@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -34,7 +33,7 @@ export default function ChemicalsForm() {
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   // Add/Edit modal state
-  const [editingIdx, setEditingIdx] = useState(null); // index or "new"
+  const [editingIdx, setEditingIdx] = useState(null);
   const [formData, setFormData] = useState({});
 
   const chemicalFields = [
@@ -58,15 +57,30 @@ export default function ChemicalsForm() {
     { key: "VATUnitCost", label: "VAT Unit Cost", type: "number" },
   ];
 
-  // Reusable fetch function
+  // Reusable fetch function with sorting
   const fetchChemicals = async () => {
     try {
       const res = await fetch("/api/chemicals-stock");
       if (!res.ok) throw new Error("Failed to fetch chemicals");
       const data = await res.json();
-      setChemicals(data);
+
+      // Sort alphabetically by Description
+      let sorted = [...data].sort((a, b) =>
+        a.Description.localeCompare(b.Description)
+      );
+
+      // Move "IDO" after "Water" if both exist
+      const waterIdx = sorted.findIndex((c) => c.Description === "Water");
+      const idoIdx = sorted.findIndex((c) => c.Description === "IDO");
+
+      if (waterIdx !== -1 && idoIdx !== -1) {
+        const [ido] = sorted.splice(idoIdx, 1);
+        sorted.splice(waterIdx + 1, 0, ido);
+      }
+
+      setChemicals(sorted);
       setRows(
-        data.map((chem) => ({
+        sorted.map((chem) => ({
           ...chem,
           in: "",
           out: "",
@@ -138,7 +152,7 @@ export default function ChemicalsForm() {
         editingIdx === "new" ? "New chemical added!" : "Chemical updated!"
       );
 
-      await fetchChemicals(); // Always refresh list
+      await fetchChemicals();
     } catch (err) {
       console.error(err);
       toast.error("Error saving chemical");
@@ -161,7 +175,7 @@ export default function ChemicalsForm() {
       if (!res.ok) throw new Error("Failed to delete");
 
       toast.success(`Deleted chemical: ${confirmDelete}`);
-      await fetchChemicals(); // Refresh after delete
+      await fetchChemicals();
     } catch (err) {
       console.error(err);
       toast.error("Error deleting chemical");
@@ -188,14 +202,16 @@ export default function ChemicalsForm() {
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="font-semibold text-blue-700 text-lg">Update Chemicals</h2>
+        <h2 className="font-semibold text-blue-800 text-lg">
+          Update Chemicals Stock
+        </h2>
+
+        <Button type="button" variant="outline" onClick={() => setManageOpen(true)}>
+          Manage Chemicals
+        </Button>
 
         {/* Manage Chemicals Modal */}
         <Dialog open={manageOpen} onOpenChange={setManageOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline">Manage Chemicals</Button>
-          </DialogTrigger>
-
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 mt-2 mb-5 text-center mx-auto text-blue-800">
@@ -371,57 +387,76 @@ export default function ChemicalsForm() {
           <thead className="bg-slate-200">
             <tr>
               <th className="border px-2 py-1 text-left">Item Description</th>
-              <th className="border px-2 py-1">Opening</th>
+              <th className="border px-2 py-1">Current Stock</th>
               <th className="border px-2 py-1">In</th>
               <th className="border px-2 py-1">Out</th>
               <th className="border px-2 py-1">Balance</th>
             </tr>
           </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-                <td className="border px-2 py-1">{row.Description}</td>
-                <td className="border px-2 py-1">
-                  <input
-                    type="number"
-                    value={row.QuantityonHand}
-                    onChange={(e) =>
-                      handleChange(i, "QuantityonHand", e.target.value)
-                    }
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                </td>
-                <td className="border px-2 py-1">
-                  <input
-                    type="number"
-                    value={row.in}
-                    onChange={(e) => handleChange(i, "in", e.target.value)}
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                </td>
-                <td className="border px-2 py-1">
-                  <input
-                    type="number"
-                    value={row.out}
-                    onChange={(e) => handleChange(i, "out", e.target.value)}
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                </td>
-                <td className="border px-2 py-1">
-                  <input
-                    type="number"
-                    value={row.balance}
-                    onChange={(e) => handleChange(i, "balance", e.target.value)}
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
+      <tbody>
+  {rows.map((row, i) => (
+    <tr key={row.ID || i} className="bg-white even:bg-slate-50">
+      <td className="border px-2 py-1">{row.Description}</td>
+
+      {/* Current Stock - only editable + tabbable */}
+      <td className="border px-2 py-1">
+        <input
+          type="number"
+          value={row.QuantityonHand}
+          onChange={(e) =>
+            handleChange(i, "QuantityonHand", e.target.value)
+          }
+          className="w-full border rounded-md px-2 py-1 text-sm"
+          tabIndex={0} // tabbable
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === "Tab") {
+              e.preventDefault();
+              const nextInput = document.querySelector(
+                `#stock-input-${i + 1}`
+              );
+              if (nextInput) nextInput.focus();
+            }
+          }}
+          id={`stock-input-${i}`}
+        />
+      </td>
+
+      {/* Other inputs remain non-tabbable */}
+      <td className="border px-2 py-1">
+        <input
+          type="number"
+          value={row.in}
+          onChange={(e) => handleChange(i, "in", e.target.value)}
+          className="w-full border rounded-md px-2 py-1 text-sm"
+          tabIndex={-1} // skipped on Tab
+        />
+      </td>
+      <td className="border px-2 py-1">
+        <input
+          type="number"
+          value={row.out}
+          onChange={(e) => handleChange(i, "out", e.target.value)}
+          className="w-full border rounded-md px-2 py-1 text-sm"
+          tabIndex={-1}
+        />
+      </td>
+      <td className="border px-2 py-1">
+        <input
+          type="number"
+          value={row.balance}
+          onChange={(e) => handleChange(i, "balance", e.target.value)}
+          className="w-full border rounded-md px-2 py-1 text-sm"
+          tabIndex={-1}
+        />
+      </td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
 
-      <Button type="submit" disabled={saving}>
+      <Button type="button" disabled={saving}>
         {saving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
