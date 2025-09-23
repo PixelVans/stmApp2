@@ -9,6 +9,7 @@ import WeavingProductionPrintout from "./customPrintouts/weavingProductionPrinto
 import UpdateWeavingProductionPage from "./pages/updateWeavingProduction";
 import UpdateWarpingData from "./pages/updateWarpingData";
 import Countdown from "./pages/err";
+import UpdateStockPage from "./pages/stocksUpdatePage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/update-weaving-production" element={<UpdateWeavingProductionPage />} />
           <Route path="/update-warping-data" element={<UpdateWarpingData />} />
           <Route path="/err" element={<Countdown />} />
+          <Route path="/update-stock" element={<UpdateStockPage />} />
         </Route>
 
         {/* Standalone routes without layout */}

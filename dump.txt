@@ -1,453 +1,400 @@
-import React from "react";
+when editting or creating a new chemical, below are all the fields we will need,
+during edits, the default value from the database should be poining from these as well,
+
+or update opening fieds is correctly pointing correctly and its what we edit and save accordingly, 
+sothis form rerquires to be updated and point correctly, 
+[ChemicalsIndex
+: 
+"10"
+CostperKgLt
+: 
+100
+Description
+: 
+"AntiFoam"
+ID
+: 
+1
+QuantityonHand
+: 
+29
+SSMA_TimeStamp
+: 
+{type: 'Buffer', data: Array(8)}
+SellingUnits
+: 
+20
+SupplierItemCode
+: 
+"33078387"
+SupplierName
+: 
+"Brenntag"
+UnitCost
+: 
+2000
+UnitCostgm
+: 
+0.1
+UnitofMeasure
+: 
+"kilogram (kg)"
+VATCostKg
+: 
+116
+VATCostgm
+: 
+0.116
+VATUnitCost
+: 
+2320]
+
+
+
+here isa the form that we need to update, 
+"use client";
+
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
-  Colour_Chart,
-  Dyestuff_1,
-  Dyestuff_2,
-  Dyestuff_3,
-  Dyestuff_4,
-  Dyestuff_1_Amt,
-  Dyestuff_2_Amt,
-  Dyestuff_3_Amt,
-  Dyestuff_4_Amt,
-} from "../utils/constants";
-
-import DyeingControlPanel from "../components/DyeingControlPanel";
-import useDyeingStore from "../store/zustand";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
-  computeAmount,
-  getDyeingTemp,
-  getDyeingPh,
-  getDyeingTime,
-  getChemicalField,
-  computeDyeingSaltAmount,
-  getSaltGramsPerL,
-  getSaltDynamicTemp,
-  getSaltDynamicDuration,
-  getRemainInDwell,
-  computeStartingWaterAmount,
-  getScouringTemp,
-  getScouringTime,
-  getScouringPH,
-  
-  getScouringChemical1,
-  getScouringChemical2,
-  getScouringChemical3,
-  getScouringChemical4,
-  getScouringChemical5,
-  getScouringChemical7,
-  getScouringChemical6,
-  getScouringPL,
-  getScouringChemicalAmount,
- 
-  getgramsPLForHotwash,
-  getHotWashTitle1,
-  getHotWashTitle2,
-  computeRoundedWater80,
-  computeHotwashAmount,
-  getHotwashTemp,
-  getHotwashDuration,
-  getHotwashPh,
-  getPrepareToDyeTitle1,
-  getPrepareToDyeTitle2,
-  getPrepareToDyeTitle3,
-  getPrepareToDyeGPL1,
-  getPrepareToDyeGPL2,
-  getPrepareToDyeGPL3,
-  getPrepareToDyeAmt,
-  getPrepareToDyeAmt1,
-  getPrepareToDyeTemp,
-  getPrepareToDyeProperty,
-} from "../components/functions/dyeingfunc";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { Pencil, Trash2, Plus } from "lucide-react";
 
-const ChemicalTable = () => {
-  const {
-    winch,
-    lotNo,
-    softener,
-    scouring,
-    saltOption,
-    client,
-    article,
-    dyeFix,
-    selectedColour,
-    saltPosition,
-    liqRatio,
-    lotWeight,
-    dyeingSystem,
-  } = useDyeingStore();
+export default function ChemicalsForm() {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const chemical = getChemicalField({
-    saltPosition,
-    saltOption,
-    scouring,
-    dyeingSystem,
-    selectedColour,
-  });
+  // Manage modal state
+  const [manageOpen, setManageOpen] = useState(false);
+  const [chemicals, setChemicals] = useState([]);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
-  const waterLitresDyeing = computeStartingWaterAmount({lotWeight,liqRatio,winch})
-  const gpl = getPrepareToDyeGPL1(dyeingSystem, selectedColour)
-  const selectedIndex = React.useMemo(() => {
-    if (!selectedColour) return -1;
-    return Colour_Chart.findIndex(
-      (color) =>
-        typeof color === "string" &&
-        typeof selectedColour === "string" &&
-        color.trim() === selectedColour.trim()
+  // Add/Edit modal state
+  const [editingIdx, setEditingIdx] = useState(null); // index or "new"
+  const [formData, setFormData] = useState({});
+
+  // 🔹 Define all the editable columns in the Chemicals table
+  const chemicalFields = [
+    { key: "Description", label: "Description", type: "text" },
+    { key: "QuantityOnHand", label: "Quantity on Hand", type: "number" },
+    { key: "UnitOfMeasure", label: "Unit of Measure", type: "text" },
+    { key: "CostPerKgLt", label: "Cost per Kg/Lt", type: "number" },
+    { key: "Supplier", label: "Supplier", type: "text" },
+    { key: "ReorderLevel", label: "Reorder Level", type: "number" },
+    { key: "ReorderQuantity", label: "Reorder Quantity", type: "number" },
+    // 🔹 add more fields based on SSMS output
+  ];
+
+  // Fetch chemicals
+  useEffect(() => {
+    async function fetchChemicals() {
+      try {
+        const res = await fetch("/api/chemicals-stock");
+        if (!res.ok) throw new Error("Failed to fetch chemicals");
+        const data = await res.json();
+
+        setChemicals(data);
+        console.log(data)
+        // Keep QuantityOnHand so Opening shows correctly
+        setRows(
+          data.map((chem) => ({
+            ...chem,
+            in: "",
+            out: "",
+            balance: "",
+          }))
+        );
+      } catch (err) {
+        console.error(err);
+        toast.error("Could not load chemicals");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchChemicals();
+  }, []);
+
+  const handleChange = (index, field, value) => {
+    setRows((prev) =>
+      prev.map((row, i) => (i === index ? { ...row, [field]: value } : row))
     );
-  }, [selectedColour]);
-
-  const getNameAt = (arr) =>
-    selectedIndex === -1 ? "" : arr?.[selectedIndex] ?? "";
-
-  const getAmtAt = (arr) => {
-    if (selectedIndex === -1) return "";
-    const v = arr?.[selectedIndex];
-    return v === null || v === undefined || v === "" ? "" : v;
   };
 
-const formatNumber = (val) => {
-  if (val === "" || val === null || val === undefined) return "";
-  const n = Number(val);
-  if (Number.isNaN(n)) return String(val);
-  return n.toFixed(3);
-};
+  // Save stock updates
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      toast.success("Chemicals Stock data updated (frontend only).");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not update chemicals stock data");
+    } finally {
+      setSaving(false);
+    }
+  };
 
+  // Delete
+  const confirmDeleteChemical = async () => {
+    if (!confirmDelete) return;
+    setChemicals((prev) =>
+      prev.filter((c) => c.Description !== confirmDelete)
+    );
+    setRows((prev) => prev.filter((r) => r.Description !== confirmDelete));
+    toast.success(`Deleted chemical: ${confirmDelete}`);
+    setConfirmDelete(null);
+  };
 
-  const dwellValue = getRemainInDwell({
-    saltPosition,
-    scouringSystemSelected: scouring,
-    selectedColour,
-  });
-
-  const dyeingRows = [
-      
-    {
-      chemical: getNameAt(Dyestuff_1),
-      gramsPerLt: formatNumber(getAmtAt(Dyestuff_1_Amt)),
-      amount: computeAmount(Number(getAmtAt(Dyestuff_1_Amt)), lotWeight),
-      temp: getDyeingTemp(scouring, selectedColour, dyeingSystem),
-      time: getDyeingTime(selectedColour, dyeingSystem),
-      ph: getDyeingPh(selectedColour, dyeingSystem),
-    },
-    {
-      chemical: getNameAt(Dyestuff_2),
-      gramsPerLt: formatNumber(getAmtAt(Dyestuff_2_Amt)),
-      amount: computeAmount(Number(getAmtAt(Dyestuff_2_Amt)), lotWeight),
-      temp: "",
-      time: "",
-      ph: "",
-    },
-    {
-      chemical: getNameAt(Dyestuff_3),
-      gramsPerLt: formatNumber(getAmtAt(Dyestuff_3_Amt)),
-      amount: computeAmount(Number(getAmtAt(Dyestuff_3_Amt)), lotWeight),
-      temp: "",
-      time: "",
-      ph: "",
-    },
-    {
-      chemical: getNameAt(Dyestuff_4),
-      gramsPerLt: formatNumber(getAmtAt(Dyestuff_4_Amt)),
-      amount: computeAmount(Number(getAmtAt(Dyestuff_4_Amt)), lotWeight),
-      temp: "",
-      time: "",
-      ph: "",
-    },
-    { isInstructionRow: true, chemical: dwellValue ?? "" },
-
-    // Salt row with rowspan group
-    {
-      chemical: chemical,
-      gramsPerLt: Number(getSaltGramsPerL({ chemicalName: chemical, selectedColour })).toFixed(3),
-      amount: computeDyeingSaltAmount({
-        chemicalName: chemical,
-        selectedColour,
-        saltPosition,
-        scouring,
-        waterLitresDyeing: computeStartingWaterAmount({
-        lotWeight,
-        liqRatio,
-        winch
-      }).toFixed(3),
-        lotWeight,
-      }),
-      temp: getSaltDynamicTemp({ selectedColour, scouring }),
-      time: getSaltDynamicDuration({ selectedColour }),
-      ph: "",
-      rowSpanGroup: "salt",
-    },
-    {
-      chemical: "Total Shade Percentage",
-      gramsPerLt:(
-          Number(formatNumber(getAmtAt(Dyestuff_1_Amt))) +
-          Number(formatNumber(getAmtAt(Dyestuff_2_Amt))) +
-          Number(formatNumber(getAmtAt(Dyestuff_3_Amt))) +
-          Number(formatNumber(getAmtAt(Dyestuff_4_Amt)))
-        ).toFixed(3),
-      amount: "",
-      temp: "",
-      time: "",
-      ph: "",
-      rowSpanGroupContinuation: "salt",
-    },
-  ];
-
-  const steps = [
-    {
-      step: "Step 1 — Scouring",
-        rows: [
-      {
-        chemical: getScouringChemical1({ scouringSystem: scouring }),
-        // water liters Dyeing
-        gramsPerLt: "",
-        amount: `${computeStartingWaterAmount({lotWeight,liqRatio,winch})} Ltrs`,
-        temp: getScouringTemp({
-            selectedColour,
-            scouring
-          }),
-        time: getScouringTime({ selectedColour }),
-        ph: getScouringPH({ selectedColour, scouring })
-      },
-      {
-        chemical: getScouringChemical2({ scouringSystem: scouring }),
-        gramsPerLt: getScouringPL( scouring, selectedColour, 2 ),
-        amount: getScouringChemicalAmount(scouring, selectedColour,2,lotWeight,liqRatio,winch,),
-        temp: "",
-        time: "",
-        ph: ""
-      },
-      {
-        chemical: getScouringChemical3({ scouringSystem: scouring }),
-        gramsPerLt: getScouringPL( scouring, selectedColour, 3 ),
-        amount: getScouringChemicalAmount(scouring, selectedColour,3,lotWeight,liqRatio,winch,),
-        temp: "",
-        time: "",
-        ph: ""
-      },
-      {
-        chemical: getScouringChemical4({ scouringSystem: scouring }),
-        gramsPerLt: getScouringPL( scouring, selectedColour, 4 ),
-        amount: getScouringChemicalAmount(scouring, selectedColour,4,lotWeight,liqRatio,winch,),
-        temp: "",
-        time: "",
-        ph: ""
-      },
-      {
-        chemical: getScouringChemical5({ scouringSystem: scouring }),
-        gramsPerLt: getScouringPL( scouring, selectedColour, 5 ),
-        amount: getScouringChemicalAmount(scouring, selectedColour,5,lotWeight,liqRatio,winch,),
-        temp: "",
-        time: "",
-        ph: ""
-      },
-      {
-        chemical: getScouringChemical6({ scouringSystem: scouring }),
-        gramsPerLt: getScouringPL( scouring, selectedColour, 6 ),
-        amount: getScouringChemicalAmount(scouring, selectedColour,6,lotWeight,liqRatio,winch,),
-        temp: "",
-        time: "",
-        ph: ""
-      },
-      {
-        chemical: getScouringChemical7({ scouringSystem: scouring }),
-        gramsPerLt: getScouringPL( scouring, selectedColour, 7 ),
-        amount: getScouringChemicalAmount(scouring, selectedColour,7,lotWeight,liqRatio,winch,),
-        temp: "",
-        time: "",
-        ph: "Drain"
-      },
-    ],
-
-    },
-    {
-      step: "Step 2 — Hot Wash",
-      rows: [
-        {
-        chemical: "",
-        gramsPerLt: "",
-        amount: '',
-        temp: "",
-        time: "",
-        ph: ""
-      },
-        {
-        chemical: getHotWashTitle1(dyeingSystem),
-        gramsPerLt: "",
-        amount: `${computeRoundedWater80({ lotWeight, liqRatio, winch })} Ltrs`,
-        temp: getHotwashTemp(selectedColour, dyeingSystem),
-        time: getHotwashDuration(selectedColour, dyeingSystem),
-        ph: getHotwashPh(selectedColour, dyeingSystem)
-      },
-        {
-        chemical: getHotWashTitle2(dyeingSystem),
-        gramsPerLt: getgramsPLForHotwash(selectedColour, dyeingSystem),
-        amount: computeHotwashAmount({ selectedColour, dyeingSystem, lotWeight, liqRatio, winch }),
-        temp: "",
-        time: "",
-        ph: ""
-      },
-      ],
-    },
-    
-    {
-      step: "Step 3 — Prepare to Dye",
-      instructions: "ONGEZA ACID KWANZA ALAFU BAADA YA DAKIKA KUMI ONGEZA PEROXIDE KILLER",
-      rows: [
-          {
-        chemical: "",
-        gramsPerLt: "",
-        amount: "",
-        temp: "",
-        time: "",
-        ph: ""
-      },
-          {
-        chemical: getPrepareToDyeTitle1(scouring),
-        gramsPerLt: getPrepareToDyeGPL1(dyeingSystem, selectedColour),
-        amount: getPrepareToDyeAmt1({gpl,   dyeingSystem,   lotWeight,  waterLitresDyeing, }),
-        temp: getPrepareToDyeTemp({scouring,  dyeingSystem,selectedColour, }),
-        time: getPrepareToDyeProperty(21, dyeingSystem,selectedColour,),
-        ph: getPrepareToDyeProperty(22, dyeingSystem,selectedColour,),
-      },
-        {
-        chemical: getPrepareToDyeTitle2(scouring, true) ,
-        gramsPerLt: Number(getPrepareToDyeGPL2(dyeingSystem, selectedColour,null,scouring)).toFixed(1),
-        amount: getPrepareToDyeAmt({
-          gpl: getPrepareToDyeGPL2(dyeingSystem, selectedColour, null, scouring),
-          dyeingSystem,
-          lotWeight,
-          waterLitresDyeing
-        }),
-        temp: "",
-        time: "",
-        ph: ""
-      },
-        {
-        chemical: getPrepareToDyeTitle3(scouring),
-        gramsPerLt: Number(getPrepareToDyeGPL3( dyeingSystem,selectedColour, scouring)).toFixed(1),
-        amount: getPrepareToDyeAmt({
-        gpl: getPrepareToDyeGPL3(dyeingSystem, selectedColour, scouring),
-        dyeingSystem,
-        lotWeight,
-        waterLitresDyeing
-      }),
-        temp: "",
-        time: "",
-        ph: ""
-      },
-       
-      ],
-    },
-    {
-      step: "Step 4 — Dyeing",
-      instructions: "ONGEZA 50% YA RANGI — ALAFU BAADA YA DAKIKA KUMI ONGEZA 50%",
-      rows: dyeingRows,
-    },
-    
-  ];
-
-  const NBSP = "\u00A0"; 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-20 ">
+        <div className="animate-spin h-7 w-7 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+        <p className="mt-4 text-sm font-medium text-gray-700">
+          Loading Chemicals Stock Data...
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="mt-[300px]">
-      <DyeingControlPanel />
-      {steps.map((stepData, sIdx) => (
-        <div key={sIdx} className="mb-8 p-4 sm:p-6">
-          <h2 className="text-lg font-bold mb-2">{stepData.step}</h2>
-          {stepData.instructions && (
-            <p className="italic text-sm mb-2">{stepData.instructions}</p>
-          )}
-          <div className="overflow-x-auto">
-            <table className="table-auto border-collapse border border-gray-300 w-full text-sm">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border border-gray-300 px-2 py-1 text-left">Chemical</th>
-                  <th className="border border-gray-300 px-2 py-1 text-right">Grams/lt</th>
-                  <th className="border border-gray-300 px-2 py-1 text-left">Amount</th>
-                  <th className="border border-gray-300 px-2 py-1 text-left">Temp</th>
-                  <th className="border border-gray-300 px-2 py-1 text-left">Time</th>
-                  <th className="border border-gray-300 px-2 py-1 text-left">pH</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(() => {
-                  let normalCounter = 0;
-                  return stepData.rows.map((r, i) => {
-                    const chemText = (r.chemical || "").toString().toUpperCase().trim();
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-12"
+    >
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h2 className="font-semibold text-blue-700 text-lg">
+          Update Chemicals
+        </h2>
 
-                    const isInstructionRow = !!r.isInstructionRow ||
-                      chemText.includes("REMAIN IN DWELL") ||
-                      chemText.includes("WAIT FOR") ||
-                      chemText === "E" ||
-                      chemText.includes("20 MIN");
+        {/* Manage Chemicals Modal */}
+        <Dialog open={manageOpen} onOpenChange={setManageOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline">Manage Chemicals</Button>
+          </DialogTrigger>
 
-                    if (isInstructionRow) {
-                      return (
-                        <tr key={`${sIdx}-${i}`}>
-                          <td colSpan={6} className="border border-gray-300 p-0">
-                            <div className="bg-yellow-200 h-12 w-full flex items-center justify-center font-bold">
-                              {String(r.chemical || "").trim() !== "" ? String(r.chemical) : NBSP}
-                            </div>
-                          </td>
-                        </tr>
-                      );
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Chemicals Master List</DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-3">
+              {chemicals.length === 0 && (
+                <p className="text-sm text-slate-500">No chemicals found.</p>
+              )}
+
+              {chemicals.map((chem, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between gap-3 border rounded-md p-2 bg-white"
+                >
+                  <span className="text-sm">{chem.Description}</span>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => {
+                        setEditingIdx(idx);
+                        setFormData(chem);
+                      }}
+                      title="Edit"
+                    >
+                      <Pencil size={16} />
+                    </Button>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => setConfirmDelete(chem.Description)}
+                      title="Delete"
+                    >
+                      <Trash2 size={16} className="text-red-500" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Add New Chemical Button */}
+            <div className="mt-4">
+              <Button
+                onClick={() => {
+                  setEditingIdx("new");
+                  setFormData({});
+                }}
+              >
+                <Plus size={14} className="mr-1" /> Add New Chemical
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Add/Edit Chemical Modal */}
+        <Dialog open={editingIdx !== null} onOpenChange={() => setEditingIdx(null)}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIdx === "new" ? "Add New Chemical" : "Edit Chemical"}
+              </DialogTitle>
+            </DialogHeader>
+
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (editingIdx === "new") {
+                  setChemicals((prev) => [...prev, formData]);
+                  setRows((prev) => [...prev, { ...formData, in: "", out: "", balance: "" }]);
+                  toast.success("New chemical added (frontend only).");
+                } else {
+                  setChemicals((prev) =>
+                    prev.map((c, i) => (i === editingIdx ? formData : c))
+                  );
+                  setRows((prev) =>
+                    prev.map((r, i) => (i === editingIdx ? { ...formData, in: r.in, out: r.out, balance: r.balance } : r))
+                  );
+                  toast.success("Chemical updated (frontend only).");
+                }
+                setEditingIdx(null);
+              }}
+            >
+              {chemicalFields.map((field) => (
+                <div key={field.key}>
+                  <label className="block text-sm font-medium">
+                    {field.label}
+                  </label>
+                  <input
+                    type={field.type}
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                    value={formData[field.key] || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, [field.key]: e.target.value })
                     }
+                  />
+                </div>
+              ))}
 
-                    const rowClass = normalCounter % 2 === 0 ? "bg-white" : "bg-gray-50";
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setEditingIdx(null)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {editingIdx === "new" ? "Add Chemical" : "Save Changes"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
 
-                    if (r.rowSpanGroupContinuation) {
-                      normalCounter++;
-                      return (
-                        <tr key={`${sIdx}-${i}`} className={rowClass}>
-                          <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
-                          <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
-                          <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
-                        </tr>
-                      );
-                    }
+      {/* Editable Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border text-sm">
+          <thead className="bg-slate-200">
+            <tr>
+              <th className="border px-2 py-1 text-left">Item Description</th>
+              <th className="border px-2 py-1">Opening</th>
+              <th className="border px-2 py-1">In</th>
+              <th className="border px-2 py-1">Out</th>
+              <th className="border px-2 py-1">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={i} className="bg-white even:bg-slate-50">
+                <td className="border px-2 py-1">{row.Description}</td>
+                <td className="border px-2 py-1">
+                  <input
+                    type="number"
+                    value={row.QuantityonHand}
+                    onChange={(e) => handleChange(i, "in", e.target.value)}
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                  />
+                </td>
+                <td className="border px-2 py-1">
+                  <input
+                    type="number"
+                    value={row.in}
+                    onChange={(e) => handleChange(i, "in", e.target.value)}
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                  />
+                </td>
+                <td className="border px-2 py-1">
+                  <input
+                    type="number"
+                    value={row.out}
+                    onChange={(e) => handleChange(i, "out", e.target.value)}
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                  />
+                </td>
+                <td className="border px-2 py-1">
+                  <input
+                    type="number"
+                    value={row.balance}
+                    onChange={(e) => handleChange(i, "balance", e.target.value)}
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-                    if (r.rowSpanGroup) {
-                      normalCounter++;
-                      return (
-                        <tr key={`${sIdx}-${i}`} className={rowClass}>
-                          <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
-                          <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
-                          <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
-                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.temp || NBSP}</td>
-                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.time || NBSP}</td>
-                          <td className="border border-gray-300 px-2 py-1 text-center align-middle" rowSpan={2}>{r.ph || NBSP}</td>
-                        </tr>
-                      );
-                    }
+      <Button type="submit" disabled={saving}>
+        {saving ? "Saving..." : "Save Updates"}
+      </Button>
 
-                    normalCounter++;
-                    return (
-                      <tr key={`${sIdx}-${i}`} className={rowClass}>
-                        <td className="border border-gray-300 px-2 py-1">{r.chemical || NBSP}</td>
-                        <td className="border border-gray-300 px-2 py-1 text-right">{r.gramsPerLt || NBSP}</td>
-                        <td className="border border-gray-300 px-2 py-1">{r.amount || NBSP}</td>
-                        <td className="border border-gray-300 px-2 py-1">{r.temp || NBSP}</td>
-                        <td className="border border-gray-300 px-2 py-1">{r.time || NBSP}</td>
-                        <td className="border border-gray-300 px-2 py-1">{r.ph || NBSP}</td>
-                      </tr>
-                    );
-                  });
-                })()}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      ))}
-    </div>
+      {/* Delete Confirmation */}
+      <AlertDialog
+        open={!!confirmDelete}
+        onOpenChange={() => setConfirmDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Chemical</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete{" "}
+              <span className="font-semibold">{confirmDelete}</span>? This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setConfirmDelete(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-500 hover:bg-red-600"
+              onClick={confirmDeleteChemical}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </form>
   );
-};
-
-export default ChemicalTable;
-
-
-
-in this component, where we are renderinf step 4, before the text "ONGEZA 50% YA RANGI — ALAFU BAADA YA DAKIKA KUMI ONGEZA 50%",
-WE NEED a section above it with the text 'usimwage maji'
-and then below below that text the same set up of rows with 3 rows, and then the logic continues for other fields. we are just adding a section above the one 
-we currently have in step 4, strudy the component and add that section with the heading title and the table rows below it, right aster step 4 Dyeing,  and then return the 
-full updated compoinent
+}

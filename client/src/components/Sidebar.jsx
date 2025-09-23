@@ -1,5 +1,5 @@
 
-import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3,  } from "react-icons/fi";
+import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3, FiBox,  } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -17,7 +17,13 @@ const navItems = [
     icon: <FiEdit3 size={18} className="text-purple-400" />, 
     href: "/update-warping-data" 
   },
+  { 
+    name: "Update Stock", 
+    icon: <FiBox size={18} className="text-red-400" />, 
+    href: "/update-stock" 
+  },
 ];
+
 
   return (
     <>

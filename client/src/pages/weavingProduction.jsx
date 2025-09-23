@@ -6,7 +6,7 @@ import useDyeingStore from "../store/zustand";
 import WeavingProductionPrintout from "../customPrintouts/weavingProductionPrintout";  
 import { useReactToPrint } from "react-to-print";
 import { FiPrinter } from "react-icons/fi";
-import WeavingReportFormModal from "../components/forms/WeavingReportFormModal";
+
 
 function getISOWeek(date = new Date()) {
   const tempDate = new Date(date.getTime());
@@ -186,8 +186,8 @@ const handlePrint = useReactToPrint({
       </div>
     )}
     
-    {/* report form  */}
-    <WeavingReportFormModal open={modalOpen} onClose={() => setModalOpen(false)} />
+  
+
 
     </div>
   );

@@ -1,0 +1,463 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { Pencil, Trash2, Plus, FlaskConical, Loader2 } from "lucide-react";
+
+export default function ChemicalsForm() {
+  const [rows, setRows] = useState([]);
+  const [chemicals, setChemicals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [savingChemical, setSavingChemical] = useState(false);
+
+  // Manage modal state
+  const [manageOpen, setManageOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+
+  // Add/Edit modal state
+  const [editingIdx, setEditingIdx] = useState(null); // index or "new"
+  const [formData, setFormData] = useState({});
+
+  const chemicalFields = [
+    { key: "Description", label: "Description", type: "text" },
+    { key: "ChemicalsIndex", label: "Chemical Index", type: "number" },
+    { key: "QuantityonHand", label: "Quantity on Hand", type: "number" },
+    {
+      key: "UnitofMeasure",
+      label: "Unit of Measure",
+      type: "select",
+      options: ["kilogram (kg)", "litres (ltrs)"],
+    },
+    { key: "CostperKgLt", label: "Cost per Kg/Lt", type: "number" },
+    { key: "SupplierName", label: "Supplier Name", type: "text" },
+    { key: "SupplierItemCode", label: "Supplier Item Code", type: "text" },
+    { key: "SellingUnits", label: "Selling Units", type: "number" },
+    { key: "UnitCost", label: "Unit Cost", type: "number" },
+    { key: "UnitCostgm", label: "Unit Cost (gm)", type: "number" },
+    { key: "VATCostKg", label: "VAT Cost/Kg", type: "number" },
+    { key: "VATCostgm", label: "VAT Cost/gm", type: "number" },
+    { key: "VATUnitCost", label: "VAT Unit Cost", type: "number" },
+  ];
+
+  // Reusable fetch function
+  const fetchChemicals = async () => {
+    try {
+      const res = await fetch("/api/chemicals-stock");
+      if (!res.ok) throw new Error("Failed to fetch chemicals");
+      const data = await res.json();
+      setChemicals(data);
+      setRows(
+        data.map((chem) => ({
+          ...chem,
+          in: "",
+          out: "",
+          balance: "",
+        }))
+      );
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not load chemicals");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load chemicals on mount
+  useEffect(() => {
+    fetchChemicals();
+  }, []);
+
+  const handleChange = (index, field, value) => {
+    setRows((prev) =>
+      prev.map((row, i) => (i === index ? { ...row, [field]: value } : row))
+    );
+  };
+
+  // Save stock updates
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const res = await fetch("/api/chemicals-stock/bulk-update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(rows),
+      });
+
+      if (!res.ok) throw new Error("Failed to update stock");
+      toast.success("Chemicals stock data updated!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not update chemicals stock data");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Add/Edit Chemical
+  const handleSaveChemical = async () => {
+    setSavingChemical(true);
+    try {
+      let res;
+      if (editingIdx === "new") {
+        res = await fetch("/api/chemicals-stock", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+      } else {
+        const chemId = chemicals[editingIdx].ID;
+        res = await fetch(`/api/chemicals-stock/${chemId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+      }
+
+      if (!res.ok) throw new Error("Request failed");
+      toast.success(
+        editingIdx === "new" ? "New chemical added!" : "Chemical updated!"
+      );
+
+      await fetchChemicals(); // Always refresh list
+    } catch (err) {
+      console.error(err);
+      toast.error("Error saving chemical");
+    } finally {
+      setSavingChemical(false);
+      setEditingIdx(null);
+    }
+  };
+
+  // Delete Chemical
+  const confirmDeleteChemical = async () => {
+    if (!confirmDelete) return;
+    try {
+      const chem = chemicals.find((c) => c.Description === confirmDelete);
+      if (!chem) return;
+
+      const res = await fetch(`/api/chemicals-stock/${chem.ID}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete");
+
+      toast.success(`Deleted chemical: ${confirmDelete}`);
+      await fetchChemicals(); // Refresh after delete
+    } catch (err) {
+      console.error(err);
+      toast.error("Error deleting chemical");
+    } finally {
+      setConfirmDelete(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-20">
+        <div className="animate-spin h-7 w-7 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+        <p className="mt-4 text-sm font-medium text-gray-700">
+          Loading Chemicals Stock Data...
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-12"
+    >
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h2 className="font-semibold text-blue-700 text-lg">Update Chemicals</h2>
+
+        {/* Manage Chemicals Modal */}
+        <Dialog open={manageOpen} onOpenChange={setManageOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline">Manage Chemicals</Button>
+          </DialogTrigger>
+
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 mt-2 mb-5 text-center mx-auto text-blue-800">
+                <FlaskConical size={20} className="text-blue-600" />
+                Chemicals Master List
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="border rounded-md overflow-hidden">
+              {chemicals.length === 0 ? (
+                <p className="text-sm text-slate-500 p-3">No chemicals found.</p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-100">
+                    <tr>
+                      <th className="text-left px-2 py-1 font-bold">
+                        Description
+                      </th>
+                      <th className="px-2 py-1 text-right font-bold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {chemicals.map((chem, idx) => (
+                      <tr
+                        key={chem.ID}
+                        className="border-t even:bg-slate-50 hover:bg-slate-100"
+                      >
+                        <td className="px-2 py-1">{chem.Description}</td>
+                        <td className="px-2 py-1 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => {
+                                setEditingIdx(idx);
+                                setFormData(chem);
+                              }}
+                              title="Edit"
+                            >
+                              <Pencil size={16} />
+                            </Button>
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="ghost"
+                              onClick={() =>
+                                setConfirmDelete(chem.Description)
+                              }
+                              title="Delete"
+                            >
+                              <Trash2 size={16} className="text-red-500" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Add New Chemical Button */}
+            <div className="mt-4">
+              <Button
+                onClick={() => {
+                  setEditingIdx("new");
+                  setFormData({});
+                }}
+              >
+                <Plus size={14} className="mr-1" /> Add New Chemical
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Add/Edit Chemical Modal */}
+        <Dialog
+          open={editingIdx !== null}
+          onOpenChange={() => setEditingIdx(null)}
+        >
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIdx === "new" ? "Add New Chemical" : "Edit Chemical"}
+              </DialogTitle>
+            </DialogHeader>
+
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSaveChemical();
+              }}
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {chemicalFields.map((field) => (
+                  <div
+                    key={field.key}
+                    className="flex items-center gap-3 border rounded-md p-2 bg-slate-50"
+                  >
+                    <label className="w-1/3 text-sm font-semibold text-gray-800">
+                      {field.label}
+                    </label>
+                    {field.type === "select" ? (
+                      <select
+                        className="flex-1 border rounded-md px-2 py-1 text-sm bg-slate-300 focus:ring-2 focus:ring-blue-500"
+                        value={formData[field.key] || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]: e.target.value,
+                          })
+                        }
+                        required={field.key === "Description"}
+                      >
+                        <option value="">-- Select --</option>
+                        {field.options.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={field.type}
+                        className="flex-1 border rounded-md px-2 py-1 text-sm bg-slate-300 focus:ring-2 focus:ring-blue-500"
+                        value={formData[field.key] || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]: e.target.value,
+                          })
+                        }
+                        required={field.key === "Description"}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setEditingIdx(null)}
+                  disabled={savingChemical}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={savingChemical}>
+                  {savingChemical ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {editingIdx === "new" ? "Adding..." : "Saving..."}
+                    </>
+                  ) : editingIdx === "new" ? (
+                    "Add Chemical"
+                  ) : (
+                    "Save Changes"
+                  )}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Editable Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border text-sm">
+          <thead className="bg-slate-200">
+            <tr>
+              <th className="border px-2 py-1 text-left">Item Description</th>
+              <th className="border px-2 py-1">Opening</th>
+              <th className="border px-2 py-1">In</th>
+              <th className="border px-2 py-1">Out</th>
+              <th className="border px-2 py-1">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={row.ID || i} className="bg-white even:bg-slate-50">
+                <td className="border px-2 py-1">{row.Description}</td>
+                <td className="border px-2 py-1">
+                  <input
+                    type="number"
+                    value={row.QuantityonHand}
+                    onChange={(e) =>
+                      handleChange(i, "QuantityonHand", e.target.value)
+                    }
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                  />
+                </td>
+                <td className="border px-2 py-1">
+                  <input
+                    type="number"
+                    value={row.in}
+                    onChange={(e) => handleChange(i, "in", e.target.value)}
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                  />
+                </td>
+                <td className="border px-2 py-1">
+                  <input
+                    type="number"
+                    value={row.out}
+                    onChange={(e) => handleChange(i, "out", e.target.value)}
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                  />
+                </td>
+                <td className="border px-2 py-1">
+                  <input
+                    type="number"
+                    value={row.balance}
+                    onChange={(e) => handleChange(i, "balance", e.target.value)}
+                    className="w-full border rounded-md px-2 py-1 text-sm"
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <Button type="submit" disabled={saving}>
+        {saving ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+          </>
+        ) : (
+          "Save Updates"
+        )}
+      </Button>
+
+      {/* Delete Confirmation */}
+      <AlertDialog
+        open={!!confirmDelete}
+        onOpenChange={() => setConfirmDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Chemical</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete{" "}
+              <span className="font-semibold">{confirmDelete}</span>? This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setConfirmDelete(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-500 hover:bg-red-600"
+              onClick={confirmDeleteChemical}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </form>
+  );
+}
