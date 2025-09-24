@@ -19,6 +19,7 @@ const weavingProduction = require('./routes/production/weavingProduction');
 
 // stocks routes
 const chemicalsStock = require('./routes/stocks/chemicalsStock');
+const dyestuffsStock = require('./routes/stocks/dyestuffsStock');
 
 
 
@@ -42,8 +43,9 @@ app.use('/api/chemicals', chemicals);
 app.use('/api/dyestuff', dyestuffs);
 app.use('/api/weaving-production', weavingProduction);
 
-
+// stocks
 app.use("/api/chemicals-stock", chemicalsStock);
+app.use("/api/dyestuffs-stock", dyestuffsStock);
 
 
 const reactBuildPath = path.resolve(__dirname, '../client/dist');

@@ -22,10 +22,6 @@ export default function useSoapingData(scouring, selectedColour, dyeingSystem) {
 
       try {
         // fetch temperature (column 20)
-        
-        
-        
-         
         const soapingGpl1 = await getSoapingChemGPL(dyeingSystem, selectedColour, 2);
         const soapingGpl2 = await getSoapingChemGPL(dyeingSystem, selectedColour, 3);
 

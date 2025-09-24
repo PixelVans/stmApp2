@@ -295,8 +295,8 @@ export default function ChemicalsForm() {
         >
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>
-                {editingIdx === "new" ? "Add New Chemical" : "Edit Chemical"}
+              <DialogTitle className='text-blue-800'>
+                {editingIdx === "new" ? "Add a New Chemical" : "Edit Chemical"}
               </DialogTitle>
             </DialogHeader>
 
@@ -456,7 +456,7 @@ export default function ChemicalsForm() {
         </table>
       </div>
 
-      <Button type="button" disabled={saving}>
+      <Button type="submit" disabled={saving}>
         {saving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...

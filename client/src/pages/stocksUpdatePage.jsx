@@ -7,10 +7,20 @@ import PrintingItemsForm from "@/components/forms/PrintingItemsForm";
 import VatDyeingForm from "@/components/forms/VatDyeingForm";
 
 export default function UpdateStockPage() {
+  
+  const today = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
   return (
     <div className="max-w-5xl mx-auto mt-8 px-4">
       <h1 className="text-xl sm:text-2xl font-bold text-center mb-6">
-        Update Stock
+        Update Stock  
+      </h1>
+      <h1 className="text-xs mt-[-22px] text-gray-500 font-bold text-center mb-4">
+         {today}
       </h1>
 
       <Tabs defaultValue="chemicals" className="w-full">
