@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Pencil, Trash2, Plus, FlaskConical, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Plus, Droplet, Loader2 } from "lucide-react";
 
 export default function DyestuffsForm() {
   const [rows, setRows] = useState([]);
@@ -198,24 +198,36 @@ export default function DyestuffsForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-12"
+      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-5 hidden"
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h2 className="font-semibold text-blue-800 text-lg">
           Update Dyestuffs Stock
         </h2>
+      <div className="flex items-center gap-2">
+          <Button type="submit" disabled={saving}>
+              {saving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                </>
+              ) : (
+                "Save Updates"
+              )}
+            </Button>
 
         <Button type="button" variant="outline" onClick={() => setManageOpen(true)}>
-          Manage Dyestuffs
+                Manage Dyestuffs
         </Button>
+      </div>
+              
 
         {/* Manage Dyestuffs Modal */}
         <Dialog open={manageOpen} onOpenChange={setManageOpen}>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 mt-2 mb-5 text-center mx-auto text-blue-800">
-                <FlaskConical size={20} className="text-blue-600" />
+                <Droplet fill="yellow" size={20} className="text-blue-600" />
                 Dyestuffs Master List
               </DialogTitle>
             </DialogHeader>
@@ -381,90 +393,79 @@ export default function DyestuffsForm() {
         </Dialog>
       </div>
 
-      {/* Editable Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse border text-sm">
-          <thead className="bg-slate-200">
-            <tr>
-              <th className="border px-2 py-1 text-left">Item Description</th>
-              <th className="border px-2 py-1">Current Stock</th>
-              <th className="border px-2 py-1">In</th>
-              <th className="border px-2 py-1">Out</th>
-              <th className="border px-2 py-1">Balance</th>
-            </tr>
-          </thead>
-      <tbody>
-  {rows.map((row, i) => (
-    <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-      <td className="border px-2 py-1">{row.Description}</td>
-
-      {/* Current Stock - only editable + tabbable */}
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={row.QuantityonHand}
-          onChange={(e) =>
-            handleChange(i, "QuantityonHand", e.target.value)
-          }
-          className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={0} // tabbable
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === "Tab") {
-              e.preventDefault();
-              const nextInput = document.querySelector(
-                `#stock-input-${i + 1}`
-              );
-              if (nextInput) nextInput.focus();
-            }
-          }}
-          id={`stock-input-${i}`}
-        />
-      </td>
-
-      {/* Other inputs remain non-tabbable */}
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={row.in}
-          onChange={(e) => handleChange(i, "in", e.target.value)}
-          className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={-1} // skipped on Tab
-        />
-      </td>
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={row.out}
-          onChange={(e) => handleChange(i, "out", e.target.value)}
-          className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={-1}
-        />
-      </td>
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={row.balance}
-          onChange={(e) => handleChange(i, "balance", e.target.value)}
-          className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={-1}
-        />
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-        </table>
+    {/* Editable Table */}
+      <div className="border rounded-md overflow-hidden ">
+        <div className="max-h-[500px] overflow-y-auto ">
+          <table className="w-full border-separate border-spacing-0 text-sm">
+            <thead className="bg-slate-200 sticky top-0 z-30">
+              <tr className="bg-slate-200">
+                <th className="border px-2 py-1 text-left">Item Description</th>
+                <th className="border px-2 py-1">Current Stock</th>
+                <th className="border px-2 py-1">In</th>
+                <th className="border px-2 py-1">Out</th>
+                <th className="border px-2 py-1">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <tr key={row.ID || i} className="bg-white even:bg-slate-50">
+                  <td className="border px-2 py-1">{row.Description}</td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.QuantityonHand}
+                      onChange={(e) =>
+                        handleChange(i, "QuantityonHand", e.target.value)
+                      }
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          const nextInput = document.querySelector(
+                            `#stock-input-${i + 1}`
+                          );
+                          if (nextInput) nextInput.focus();
+                        }
+                      }}
+                      id={`stock-input-${i}`}
+                    />
+                  </td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.in}
+                      onChange={(e) => handleChange(i, "in", e.target.value)}
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.out}
+                      onChange={(e) => handleChange(i, "out", e.target.value)}
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.balance}
+                      onChange={(e) => handleChange(i, "balance", e.target.value)}
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <Button type="submit" disabled={saving}>
-        {saving ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
-          </>
-        ) : (
-          "Save Updates"
-        )}
-      </Button>
+    
 
       {/* Delete Confirmation */}
       <AlertDialog

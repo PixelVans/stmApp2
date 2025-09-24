@@ -72,7 +72,7 @@ router.post("/", async (req, res) => {
 
 // Bulk update chemicals
 router.put("/bulk-update", async (req, res) => {
-  const rows = req.body; // array of chemicals with IDs
+  const rows = req.body; 
 
   console.log('the rows received are:', rows)
   try {

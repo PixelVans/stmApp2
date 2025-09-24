@@ -15,7 +15,7 @@ router.get("/:dyestuff", async (req, res) => {
       return res.status(404).json({ message: "dyestuff not found" });
     }
 
-    res.json(result.recordset[0]); // send the full row (object)
+    res.json(result.recordset[0]); 
   } catch (err) {
     console.error(err);
     res.status(500).send("Error fetching dyeing row");

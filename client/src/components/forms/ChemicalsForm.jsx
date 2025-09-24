@@ -57,19 +57,17 @@ export default function ChemicalsForm() {
     { key: "VATUnitCost", label: "VAT Unit Cost", type: "number" },
   ];
 
-  // Reusable fetch function with sorting
+  // Fetch chemicals
   const fetchChemicals = async () => {
     try {
       const res = await fetch("/api/chemicals-stock");
       if (!res.ok) throw new Error("Failed to fetch chemicals");
       const data = await res.json();
 
-      // Sort alphabetically by Description
       let sorted = [...data].sort((a, b) =>
         a.Description.localeCompare(b.Description)
       );
 
-      // Move "IDO" after "Water" if both exist
       const waterIdx = sorted.findIndex((c) => c.Description === "Water");
       const idoIdx = sorted.findIndex((c) => c.Description === "IDO");
 
@@ -95,7 +93,6 @@ export default function ChemicalsForm() {
     }
   };
 
-  // Load chemicals on mount
   useEffect(() => {
     fetchChemicals();
   }, []);
@@ -106,7 +103,6 @@ export default function ChemicalsForm() {
     );
   };
 
-  // Save stock updates
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -127,7 +123,6 @@ export default function ChemicalsForm() {
     }
   };
 
-  // Add/Edit Chemical
   const handleSaveChemical = async () => {
     setSavingChemical(true);
     try {
@@ -162,7 +157,6 @@ export default function ChemicalsForm() {
     }
   };
 
-  // Delete Chemical
   const confirmDeleteChemical = async () => {
     if (!confirmDelete) return;
     try {
@@ -198,35 +192,64 @@ export default function ChemicalsForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-12"
+      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-5"
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h2 className="font-semibold text-blue-800 text-lg">
           Update Chemicals Stock
         </h2>
-
-        {/* <Button type="button" variant="outline" onClick={() => setManageOpen(true)}> */}
-        <Button type="button" variant="outline" onClick={()=>{}}>
-          Manage Chemicals
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button type="submit" disabled={saving}>
+            {saving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+              </>
+            ) : (
+              "Save Updates"
+            )}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setManageOpen(true)}
+          >
+            Manage Chemicals
+          </Button>
+        </div>
 
         {/* Manage Chemicals Modal */}
         <Dialog open={manageOpen} onOpenChange={setManageOpen}>
-          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 mt-2 mb-5 text-center mx-auto text-blue-800">
-                <FlaskConical size={20} className="text-blue-600" />
+          <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col">
+            {/* Fixed Header Section */}
+            <DialogHeader className="flex justify-between items-center pb-3 border-b">
+              <DialogTitle className="flex items-center gap-2 text-blue-800">
+                <FlaskConical fill="yellow" size={20} className="text-black" />
                 Chemicals Master List
               </DialogTitle>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setEditingIdx("new");
+                  setFormData({});
+                }}
+                className="flex items-center gap-2 mt-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700"
+              >
+                <Plus size={16} className="text-slate-600" />
+                Add New
+              </Button>
+
+
+             
             </DialogHeader>
 
-            <div className="border rounded-md overflow-hidden">
+            {/* Scrollable Table Section */}
+            <div className="flex-1 overflow-y-auto mt-3 border rounded-md">
               {chemicals.length === 0 ? (
                 <p className="text-sm text-slate-500 p-3">No chemicals found.</p>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-100">
+                  <thead className="bg-slate-100 sticky top-0 z-10">
                     <tr>
                       <th className="text-left px-2 py-1 font-bold">
                         Description
@@ -274,29 +297,17 @@ export default function ChemicalsForm() {
                 </table>
               )}
             </div>
-
-            {/* Add New Chemical Button */}
-            <div className="mt-4">
-              <Button
-                onClick={() => {
-                  setEditingIdx("new");
-                  setFormData({});
-                }}
-              >
-                <Plus size={14} className="mr-1" /> Add New Chemical
-              </Button>
-            </div>
           </DialogContent>
         </Dialog>
 
-        {/* Add/Edit Chemical Modal */}
+        {/* Add/Edit Chemical Modal (unchanged) */}
         <Dialog
           open={editingIdx !== null}
           onOpenChange={() => setEditingIdx(null)}
         >
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className='text-blue-800'>
+              <DialogTitle className="text-blue-800">
                 {editingIdx === "new" ? "Add a New Chemical" : "Edit Chemical"}
               </DialogTitle>
             </DialogHeader>
@@ -383,89 +394,78 @@ export default function ChemicalsForm() {
       </div>
 
       {/* Editable Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse border text-sm">
-          <thead className="bg-slate-200">
-            <tr>
-              <th className="border px-2 py-1 text-left">Item Description</th>
-              <th className="border px-2 py-1">Current Stock</th>
-              <th className="border px-2 py-1">In</th>
-              <th className="border px-2 py-1">Out</th>
-              <th className="border px-2 py-1">Balance</th>
-            </tr>
-          </thead>
-      <tbody>
-  {rows.map((row, i) => (
-    <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-      <td className="border px-2 py-1">{row.Description}</td>
-
-      {/* Current Stock - only editable + tabbable */}
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={row.QuantityonHand}
-          onChange={(e) =>
-            handleChange(i, "QuantityonHand", e.target.value)
-          }
-          className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={0} // tabbable
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === "Tab") {
-              e.preventDefault();
-              const nextInput = document.querySelector(
-                `#stock-input-${i + 1}`
-              );
-              if (nextInput) nextInput.focus();
-            }
-          }}
-          id={`stock-input-${i}`}
-        />
-      </td>
-
-      {/* Other inputs remain non-tabbable */}
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={row.in}
-          onChange={(e) => handleChange(i, "in", e.target.value)}
-          className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={-1} 
-        />
-      </td>
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={row.out}
-          onChange={(e) => handleChange(i, "out", e.target.value)}
-          className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={-1}
-        />
-      </td>
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={row.balance}
-          onChange={(e) => handleChange(i, "balance", e.target.value)}
-          className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={-1}
-        />
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-        </table>
+      <div className="border rounded-md overflow-hidden">
+        <div className="max-h-[500px] overflow-y-auto">
+          <table className="w-full border-separate border-spacing-0 text-sm">
+            <thead className="bg-slate-200 sticky top-0 z-30">
+              <tr>
+                <th className="border px-2 py-1 text-left">Item Description</th>
+                <th className="border px-2 py-1">Current Stock</th>
+                <th className="border px-2 py-1">In</th>
+                <th className="border px-2 py-1">Out</th>
+                <th className="border px-2 py-1">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <tr key={row.ID || i} className="bg-white even:bg-slate-50">
+                  <td className="border px-2 py-1">{row.Description}</td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.QuantityonHand}
+                      onChange={(e) =>
+                        handleChange(i, "QuantityonHand", e.target.value)
+                      }
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          const nextInput = document.querySelector(
+                            `#stock-input-${i + 1}`
+                          );
+                          if (nextInput) nextInput.focus();
+                        }
+                      }}
+                      id={`stock-input-${i}`}
+                    />
+                  </td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.in}
+                      onChange={(e) => handleChange(i, "in", e.target.value)}
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.out}
+                      onChange={(e) => handleChange(i, "out", e.target.value)}
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.balance}
+                      onChange={(e) =>
+                        handleChange(i, "balance", e.target.value)
+                      }
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-
-      <Button type="submit" disabled={saving}>
-        {saving ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
-          </>
-        ) : (
-          "Save Updates"
-        )}
-      </Button>
 
       {/* Delete Confirmation */}
       <AlertDialog

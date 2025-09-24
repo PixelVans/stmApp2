@@ -88,7 +88,6 @@ router.put("/bulk-update", async (req, res) => {
 
       // Skip rows with invalid ID or quantity
       if (!id || isNaN(qty)) {
-        console.warn("Skipping row with invalid ID or Quantity:", row);
         continue;
       }
 
