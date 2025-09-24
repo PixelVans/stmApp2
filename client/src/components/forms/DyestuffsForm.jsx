@@ -65,7 +65,7 @@ export default function DyestuffsForm() {
       const data = await res.json();
 
       // Sort alphabetically by Description
-      let sorted = [...data].sort((b, a) =>
+      let sorted = [...data].sort((a, b) =>
         a.Description.localeCompare(b.Description)
       );
 

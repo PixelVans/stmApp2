@@ -37,7 +37,7 @@ router.post("/", async (req, res) => {
 
   try {
     const pool = await connectToDB2();
-
+    
     await pool.request()
       .input("Description", sql.VarChar(255), Description)
       .input("ChemicalsIndex", sql.Int, ChemicalsIndex)

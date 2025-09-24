@@ -206,7 +206,8 @@ export default function ChemicalsForm() {
           Update Chemicals Stock
         </h2>
 
-        <Button type="button" variant="outline" onClick={() => setManageOpen(true)}>
+        {/* <Button type="button" variant="outline" onClick={() => setManageOpen(true)}> */}
+        <Button type="button" variant="outline" onClick={()=>{}}>
           Manage Chemicals
         </Button>
 
@@ -428,7 +429,7 @@ export default function ChemicalsForm() {
           value={row.in}
           onChange={(e) => handleChange(i, "in", e.target.value)}
           className="w-full border rounded-md px-2 py-1 text-sm"
-          tabIndex={-1} // skipped on Tab
+          tabIndex={-1} 
         />
       </td>
       <td className="border px-2 py-1">

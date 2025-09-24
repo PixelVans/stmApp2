@@ -26,7 +26,7 @@ export default function UpdateStockPage() {
       <Tabs defaultValue="chemicals" className="w-full">
         <TabsList className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
           <TabsTrigger value="chemicals">Chemicals</TabsTrigger>
-          <TabsTrigger value="dyestuffs">Dyestuffs</TabsTrigger>
+          <TabsTrigger value="dyestuff">Dyestuffs</TabsTrigger>
           <TabsTrigger value="printing">Printing Items</TabsTrigger>
           <TabsTrigger value="vat">VAT Dyeing</TabsTrigger>
         </TabsList>

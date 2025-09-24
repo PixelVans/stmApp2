@@ -40,10 +40,10 @@ const connectToDB2 = async () => {
 
     const pool = await sql.connect(specialisedSystems);
 
-    console.log("✅ Connected to:", process.env.SPECIALISEDSYSTEMS_DATABASE);
+    console.log("Connected to:", process.env.SPECIALISEDSYSTEMS_DATABASE);
     return pool;
   } catch (err) {
-    console.error("❌ Database connection failed:", err);
+    console.error("Database connection failed:", err);
   }
 };
 

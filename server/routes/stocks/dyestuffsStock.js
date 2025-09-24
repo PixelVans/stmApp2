@@ -73,7 +73,7 @@ router.post("/", async (req, res) => {
 
 // Bulk update Dyestuffs
 router.put("/bulk-update", async (req, res) => {
-  const rows = req.body; // array of Dyestuffs with IDs
+  const rows = req.body; 
 
   console.log('the rows received are:', rows)
   try {

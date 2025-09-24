@@ -63,11 +63,11 @@ app.get('/server-info', (req, res) => {
   res.send(`
     <h2>STM Server Running</h2>
     <ul>
-      <li><strong>📡 LAN Access:</strong> http://${ip}:${PORT}</li>
-      <li><strong>🕒 Current Time:</strong> ${now}</li>
-      <li><strong>🔧 Machine:</strong> HP Proliant ML110 G6 (${hostname})</li>
-      <li><strong>🚀 Uptime:</strong> ${Math.floor(uptime / 60)} minutes</li>
-      <li><strong>📁 Environment:</strong> ${process.env.NODE_ENV || 'development'}</li>
+      <li><strong>LAN Access:</strong> http://${ip}:${PORT}</li>
+      <li><strong>Current Time:</strong> ${now}</li>
+      <li><strong>Machine:</strong> HP Proliant ML110 G6 (${hostname})</li>
+      <li><strong>Uptime:</strong> ${Math.floor(uptime / 60)} minutes</li>
+      <li><strong>Environment:</strong> ${process.env.NODE_ENV || 'development'}</li>
     </ul>
   `);
 });
