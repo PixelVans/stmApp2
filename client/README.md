@@ -1,12 +1,36 @@
-# React + Vite
+STM App - Specialized Towel Manufacturing System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+STM (Specialized Towel Manufacturers) is an end-to-end management system designed to optimize and streamline the entire towel manufacturing process. From weaving and dyeing to labor management and production tracking, STM provides specialized solutions for all stages of manufacturing.
 
-Currently, two official plugins are available:
+This repository contains the frontend (React + Vite) and backend (Node.js + Express) implementation, integrated with a SQL Server database for secure and efficient data management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Features:
 
-## Expanding the ESLint configuration
+Weaving Management – Track, monitor, and optimize weaving operations.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Dyeing System – Manage dyeing processes, recipes, and schedules.
+
+Production Monitoring – Real-time updates on textiles manufacturing workflows.
+
+Labor Management – Assign, track, and monitor human resources.
+
+Data Analytics – Reports and dashboards for efficiency and productivity.
+
+Secure Authentication – Role-based access control for staff and admins.
+
+Tech Stack:
+Frontend
+
+React (with Vite for fast development & build optimization)
+
+Tailwind CSS (styling)
+
+Axios (API communication)
+
+Backend
+
+Node.js
+
+Express.js
+
+MSSQL (SQL Server) – for structured relational data
