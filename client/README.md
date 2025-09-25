@@ -34,3 +34,15 @@ Node.js
 Express.js
 
 MSSQL (SQL Server) – for structured relational data
+
+
+Contributing
+Fork the repo
+Create a new branch (feature/your-feature)
+Commit changes (git commit -m "Add feature")
+Push branch (git push origin feature/your-feature)
+Create a Pull Reques
+
+License:
+
+This project is licensed under the MIT License.
