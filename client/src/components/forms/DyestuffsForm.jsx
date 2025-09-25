@@ -198,7 +198,7 @@ export default function DyestuffsForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-5 hidden"
+      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-5"
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -224,7 +224,7 @@ export default function DyestuffsForm() {
 
         {/* Manage Dyestuffs Modal */}
         <Dialog open={manageOpen} onOpenChange={setManageOpen}>
-          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 mt-2 mb-5 text-center mx-auto text-blue-800">
                 <Droplet fill="yellow" size={20} className="text-blue-600" />
@@ -232,17 +232,17 @@ export default function DyestuffsForm() {
               </DialogTitle>
             </DialogHeader>
 
-            <div className="border rounded-md overflow-hidden">
+            <div className="flex-1 overflow-y-auto mt-3 border rounded-md">
               {dyestuffs.length === 0 ? (
                 <p className="text-sm text-slate-500 p-3">No Dyestuffs found.</p>
               ) : (
-                <table className="w-full text-sm">
-                  <thead className="bg-slate-100">
+                <table className="w-full border-separate border-spacing-0 text-sm">
+                  <thead className="bg-slate-100 sticky top-0 z-10 ">
                     <tr>
-                      <th className="text-left px-2 py-1 font-bold">
+                      <th className="text-left px-2 sm:px-4 py-1 font-bold">
                         Description
                       </th>
-                      <th className="px-2 py-1 text-right font-bold">Actions</th>
+                      <th className="px-2 sm:px-6 py-1 text-right font-bold">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -293,6 +293,7 @@ export default function DyestuffsForm() {
                   setEditingIdx("new");
                   setFormData({});
                 }}
+                className='flex mx-auto items-center gap-2 mt-2 bg-white hover:bg-slate-300 border border-slate-500 text-slate-700'
               >
                 <Plus size={14} className="mr-1" /> Add New Dyestuff
               </Button>

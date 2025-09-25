@@ -136,7 +136,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
             "
           >
             {/* Header */}
-            <div className="flex flex-row justify-between items-center mb-4">
+            <div className="flex-row justify-between items-center mb-4 hidden">
               <div className="text-base font-bold text-gray-900">{today}</div>
               <div className="text-gray-500 text-sm">Lot Year: {currentYear}</div>
             </div>

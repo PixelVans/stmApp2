@@ -210,6 +210,7 @@ export default function ChemicalsForm() {
             )}
           </Button>
           <Button
+            className='hover:bg-slate-200'
             type="button"
             variant="outline"
             onClick={() => setManageOpen(true)}
@@ -227,17 +228,7 @@ export default function ChemicalsForm() {
                 <FlaskConical fill="yellow" size={20} className="text-black" />
                 Chemicals Master List
               </DialogTitle>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setEditingIdx("new");
-                  setFormData({});
-                }}
-                className="flex items-center gap-2 mt-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700"
-              >
-                <Plus size={16} className="text-slate-600" />
-                Add New
-              </Button>
+            
 
 
              
@@ -251,10 +242,10 @@ export default function ChemicalsForm() {
                 <table className="w-full text-sm">
                   <thead className="bg-slate-100 sticky top-0 z-10">
                     <tr>
-                      <th className="text-left px-2 py-1 font-bold">
+                      <th className="text-left px-2 sm:px-4 py-1 font-bold">
                         Description
                       </th>
-                      <th className="px-2 py-1 text-right font-bold">Actions</th>
+                      <th className="px-2 sm:px-6 py-1 text-right font-bold">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -297,6 +288,21 @@ export default function ChemicalsForm() {
                 </table>
               )}
             </div>
+           {/* Add New Chemical Button */}
+            <div className="mt-4">
+                <Button
+                variant="outline"
+                onClick={() => {
+                  setEditingIdx("new");
+                  setFormData({});
+                }}
+                className="flex mx-auto items-center gap-2 mt-2 bg-white hover:bg-slate-300 border border-slate-500 text-slate-700"
+              >
+                <Plus size={16} className="text-slate-600" />
+                Add New Chemical
+              </Button>
+            </div>
+            
           </DialogContent>
         </Dialog>
 

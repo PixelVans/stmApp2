@@ -79,7 +79,7 @@ const MainLayout = ({ printRef }) => {
         {/* Main content */}
         <main
           className={`flex-1 lg:ml-64  px-2 sm:px-6 lg:px-6 max-w-full overflow-x-hidden ${
-            isDyeingPage && controlPanelOpen ? "lg:mt-[250px]" : "mt-0"
+            isDyeingPage && controlPanelOpen ? "lg:mt-[230px]" : "mt-0"
           }`}
         >
           {isDyeingPage && controlPanelOpen && (
