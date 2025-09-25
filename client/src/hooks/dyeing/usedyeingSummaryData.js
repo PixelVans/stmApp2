@@ -12,6 +12,7 @@ export default function useChemicalsinHandData(
   chemical6, chemical7, chemical8, chemical9, chemical10,
   dyeStuff1, dyeStuff2, dyeStuff3, dyeStuff4, dyeingchem5,
   finishingchemical1, finishingchemical2, finishingchemical3,
+  
 ) {
   // helpers
   const formatCost = (value) => {
@@ -31,7 +32,7 @@ export default function useChemicalsinHandData(
   const [chem8AmtinHand, setChem8AmtinHand] = useState(null);
   const [chem9AmtinHand, setChem9AmtinHand] = useState(null);
   const [chem10AmtinHand, setChem10AmtinHand] = useState(null);
-  const [dye5AmtinHand, setDye5AmtinHand] = useState(null); // dyeingchem5
+  const [dye5AmtinHand, setDye5AmtinHand] = useState(null); 
 
   // chemicals cost per L/Kg
   const [chem1Cost, setChem1Cost] = useState(null);

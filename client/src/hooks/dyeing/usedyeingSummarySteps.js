@@ -295,14 +295,14 @@ const finishingchem2 = getFinishingChem3(scouring, liqRatio8);
     finishingChem2AmtinHand,
     finishingChem3AmtinHand,
       // costs
-    chem1Cost, chem2Cost, chem3Cost, chem4Cost, chem5Cost,
+    chem1Cost, chem2Cost, chem3Cost, chem4Cost, chem5Cost, 
     chem6Cost, chem7Cost, chem8Cost, chem9Cost, chem10Cost,
     dye1Cost, dye2Cost, dye3Cost, dye4Cost,
     dye5Cost, 
     finishingChem1Cost, finishingChem2Cost, finishingChem3Cost,
     } = useChemicalsinHandData(
   scouringChemical2, scouringChemical3, scouringChemical4, scouringChemical5, scouringChemical6,
-  scouringChemical6, prepareToDyechem1, prepareToDyechem2, prepareToDyechem3, prepareToDyechem4, dyeingchem1,
+  scouringChemical7, prepareToDyechem1, prepareToDyechem2, prepareToDyechem3, prepareToDyechem4, dyeingchem1,
   dyeingchem2,dyeingchem3,dyeingchem4,dyeingchem5,finishingchem1,finishingchem2, "Water",
 )  
 
