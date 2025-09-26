@@ -47,14 +47,10 @@ export default function ChemicalsForm() {
       options: ["kilogram (kg)", "litres (ltrs)"],
     },
     { key: "CostperKgLt", label: "Cost per Kg/Lt", type: "number" },
+    { key: "SellingUnits", label: "Selling Units", type: "number" },
     { key: "SupplierName", label: "Supplier Name", type: "text" },
     { key: "SupplierItemCode", label: "Supplier Item Code", type: "text" },
-    { key: "SellingUnits", label: "Selling Units", type: "number" },
-    { key: "UnitCost", label: "Unit Cost", type: "number" },
-    { key: "UnitCostgm", label: "Unit Cost (gm)", type: "number" },
-    { key: "VATCostKg", label: "VAT Cost/Kg", type: "number" },
-    { key: "VATCostgm", label: "VAT Cost/gm", type: "number" },
-    { key: "VATUnitCost", label: "VAT Unit Cost", type: "number" },
+    
   ];
 
   // Fetch chemicals
@@ -93,9 +89,33 @@ export default function ChemicalsForm() {
     }
   };
 
+  // fetch chemicals on mount
   useEffect(() => {
     fetchChemicals();
   }, []);
+
+// auto calculate vat and other auto fields,
+useEffect(() => {
+  const cost = parseFloat(formData.CostperKgLt) || 0;
+  const units = parseFloat(formData.SellingUnits) || 0;
+
+const round4 = (num) => Number(num.toFixed(4));
+const UnitCost = round4(cost * units);
+const UnitCostgm = round4(cost / 1000);
+const VATCostKg = round4(cost + cost * 0.16);
+const VATCostgm = round4(VATCostKg / 1000);
+const VATUnitCost = round4(UnitCost + UnitCost * 0.16);
+
+
+  setFormData((prev) => ({
+    ...prev,
+    UnitCost,
+    UnitCostgm,
+    VATCostKg,
+    VATCostgm,
+    VATUnitCost,
+  }));
+}, [formData.CostperKgLt, formData.SellingUnits]);
 
   const handleChange = (index, field, value) => {
     setRows((prev) =>
@@ -228,11 +248,7 @@ export default function ChemicalsForm() {
                 <FlaskConical fill="yellow" size={20} className="text-black" />
                 Chemicals Master List
               </DialogTitle>
-            
-
-
-             
-            </DialogHeader>
+             </DialogHeader>
 
             {/* Scrollable Table Section */}
             <div className="flex-1 overflow-y-auto mt-3 border rounded-md">
@@ -400,77 +416,77 @@ export default function ChemicalsForm() {
       </div>
 
     
-{/* Editable Table */}
-<div className="border rounded-md overflow-hidden">
-  <div className="max-h-[500px] overflow-y-auto">
-    <table className="w-full border-separate border-spacing-0 text-sm">
-      <thead className="bg-slate-200 sticky top-0 z-30">
-        <tr>
-          <th className="border px-2 py-1 text-left">Item Description</th>
-          <th className="border px-2 py-1">Current Stock</th>
-          <th className="border px-2 py-1 hidden md:table-cell">In</th>
-          <th className="border px-2 py-1 hidden md:table-cell">Out</th>
-          <th className="border px-2 py-1 hidden md:table-cell">Balance</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, i) => (
-          <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-            <td className="border px-2 py-1">{row.Description}</td>
-            <td className="border px-2 py-1">
-              <input
-                type="number"
-                value={row.QuantityonHand}
-                onChange={(e) =>
-                  handleChange(i, "QuantityonHand", e.target.value)
-                }
-                className="w-full border rounded-md px-2 py-1 text-sm"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === "Tab") {
-                    e.preventDefault();
-                    const nextInput = document.querySelector(
-                      `#stock-input-${i + 1}`
-                    );
-                    if (nextInput) nextInput.focus();
-                  }
-                }}
-                id={`stock-input-${i}`}
-              />
-            </td>
-            <td className="border px-2 py-1 hidden md:table-cell">
-              <input
-                type="number"
-                value={row.in}
-                onChange={(e) => handleChange(i, "in", e.target.value)}
-                className="w-full border rounded-md px-2 py-1 text-sm"
-                tabIndex={-1}
-              />
-            </td>
-            <td className="border px-2 py-1 hidden md:table-cell">
-              <input
-                type="number"
-                value={row.out}
-                onChange={(e) => handleChange(i, "out", e.target.value)}
-                className="w-full border rounded-md px-2 py-1 text-sm"
-                tabIndex={-1}
-              />
-            </td>
-            <td className="border px-2 py-1 hidden md:table-cell">
-              <input
-                type="number"
-                value={row.balance}
-                onChange={(e) => handleChange(i, "balance", e.target.value)}
-                className="w-full border rounded-md px-2 py-1 text-sm"
-                tabIndex={-1}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
+      {/* Editable Table */}
+      <div className="border rounded-md overflow-hidden">
+        <div className="max-h-[500px] overflow-y-auto">
+          <table className="w-full border-separate border-spacing-0 text-sm">
+            <thead className="bg-slate-200 sticky top-0 z-30">
+              <tr>
+                <th className="border px-2 py-1 text-left">Item Description</th>
+                <th className="border px-2 py-1">Current Stock</th>
+                <th className="border px-2 py-1 hidden md:table-cell">In</th>
+                <th className="border px-2 py-1 hidden md:table-cell">Out</th>
+                <th className="border px-2 py-1 hidden md:table-cell">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <tr key={row.ID || i} className="bg-white even:bg-slate-50">
+                  <td className="border px-2 py-1">{row.Description}</td>
+                  <td className="border px-2 py-1">
+                    <input
+                      type="number"
+                      value={row.QuantityonHand}
+                      onChange={(e) =>
+                        handleChange(i, "QuantityonHand", e.target.value)
+                      }
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === "Tab") {
+                          e.preventDefault();
+                          const nextInput = document.querySelector(
+                            `#stock-input-${i + 1}`
+                          );
+                          if (nextInput) nextInput.focus();
+                        }
+                      }}
+                      id={`stock-input-${i}`}
+                    />
+                  </td>
+                  <td className="border px-2 py-1 hidden md:table-cell">
+                    <input
+                      type="number"
+                      value={row.in}
+                      onChange={(e) => handleChange(i, "in", e.target.value)}
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                  <td className="border px-2 py-1 hidden md:table-cell">
+                    <input
+                      type="number"
+                      value={row.out}
+                      onChange={(e) => handleChange(i, "out", e.target.value)}
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                  <td className="border px-2 py-1 hidden md:table-cell">
+                    <input
+                      type="number"
+                      value={row.balance}
+                      onChange={(e) => handleChange(i, "balance", e.target.value)}
+                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      tabIndex={-1}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
 
       {/* Delete Confirmation */}
@@ -494,7 +510,7 @@ export default function ChemicalsForm() {
             <AlertDialogAction
               className="bg-red-500 hover:bg-red-600"
               onClick={confirmDeleteChemical}
-            >
+             >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

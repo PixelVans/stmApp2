@@ -47,14 +47,10 @@ export default function DyestuffsForm() {
       options: ["kilogram (kg)", "litres (ltrs)"],
     },
     { key: "CostperKgLt", label: "Cost per Kg/Lt", type: "number" },
+    { key: "SellingUnits", label: "Selling Units", type: "number" }, 
     { key: "SupplierName", label: "Supplier Name", type: "text" },
     { key: "SupplierItemCode", label: "Supplier Item Code", type: "text" },
-    { key: "SellingUnits", label: "Selling Units", type: "number" },
-    { key: "UnitCost", label: "Unit Cost", type: "number" },
-    { key: "UnitCostgm", label: "Unit Cost (gm)", type: "number" },
-    { key: "VATCostKg", label: "VAT Cost/Kg", type: "number" },
-    { key: "VATCostgm", label: "VAT Cost/gm", type: "number" },
-    { key: "VATUnitCost", label: "VAT Unit Cost", type: "number" },
+    
   ];
 
   // Reusable fetch function with sorting
@@ -99,6 +95,32 @@ export default function DyestuffsForm() {
   useEffect(() => {
     fetchDyestuffs();
   }, []);
+
+
+  // auto calculate vat and other auto fields,
+  useEffect(() => {
+    const cost = parseFloat(formData.CostperKgLt) || 0;
+    const units = parseFloat(formData.SellingUnits) || 0;
+  
+  const round4 = (num) => Number(num.toFixed(4));
+  const UnitCost = round4(cost * units);
+  const UnitCostgm = round4(cost / 1000);
+  const VATCostKg = round4(cost + cost * 0.16);
+  const VATCostgm = round4(VATCostKg / 1000);
+  const VATUnitCost = round4(UnitCost + UnitCost * 0.16);
+  
+  
+    setFormData((prev) => ({
+      ...prev,
+      UnitCost,
+      UnitCostgm,
+      VATCostKg,
+      VATCostgm,
+      VATUnitCost,
+    }));
+  }, [formData.CostperKgLt, formData.SellingUnits]);
+
+
 
   const handleChange = (index, field, value) => {
     setRows((prev) =>
