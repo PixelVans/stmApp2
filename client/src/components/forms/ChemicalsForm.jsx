@@ -299,7 +299,7 @@ export default function ChemicalsForm() {
                 className="flex mx-auto items-center gap-2 mt-2 bg-white hover:bg-slate-300 border border-slate-500 text-slate-700"
               >
                 <Plus size={16} className="text-slate-600" />
-                Add New Chemical
+                New Chemical
               </Button>
             </div>
             

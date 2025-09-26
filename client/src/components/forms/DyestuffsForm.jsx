@@ -295,7 +295,7 @@ export default function DyestuffsForm() {
                 }}
                 className='flex mx-auto items-center gap-2 mt-2 bg-white hover:bg-slate-300 border border-slate-500 text-slate-700'
               >
-                <Plus size={14} className="mr-1" /> Add New Dyestuff
+                <Plus size={14} className="mr-1" /> New Dyestuff
               </Button>
             </div>
           </DialogContent>
@@ -395,79 +395,77 @@ export default function DyestuffsForm() {
       </div>
 
   {/* Editable Table */}
-<div className="border rounded-md overflow-hidden">
-  <div className="max-h-[500px] overflow-y-auto">
-    <table className="w-full border-separate border-spacing-0 text-sm">
-      <thead className="bg-slate-200 sticky top-0 z-30">
-        <tr>
-          <th className="border px-2 py-1 text-left">Item Description</th>
-          <th className="border px-2 py-1">Current Stock</th>
-          <th className="border px-2 py-1 hidden md:table-cell">In</th>
-          <th className="border px-2 py-1 hidden md:table-cell">Out</th>
-          <th className="border px-2 py-1 hidden md:table-cell">Balance</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, i) => (
-          <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-            <td className="border px-2 py-1">{row.Description}</td>
-            <td className="border px-2 py-1">
-              <input
-                type="number"
-                value={row.QuantityonHand}
-                onChange={(e) =>
-                  handleChange(i, "QuantityonHand", e.target.value)
-                }
-                className="w-full border rounded-md px-2 py-1 text-sm"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === "Tab") {
-                    e.preventDefault();
-                    const nextInput = document.querySelector(
-                      `#stock-input-${i + 1}`
-                    );
-                    if (nextInput) nextInput.focus();
-                  }
-                }}
-                id={`stock-input-${i}`}
-              />
-            </td>
-            <td className="border px-2 py-1 hidden md:table-cell">
-              <input
-                type="number"
-                value={row.in}
-                onChange={(e) => handleChange(i, "in", e.target.value)}
-                className="w-full border rounded-md px-2 py-1 text-sm"
-                tabIndex={-1}
-              />
-            </td>
-            <td className="border px-2 py-1 hidden md:table-cell">
-              <input
-                type="number"
-                value={row.out}
-                onChange={(e) => handleChange(i, "out", e.target.value)}
-                className="w-full border rounded-md px-2 py-1 text-sm"
-                tabIndex={-1}
-              />
-            </td>
-            <td className="border px-2 py-1 hidden md:table-cell">
-              <input
-                type="number"
-                value={row.balance}
-                onChange={(e) => handleChange(i, "balance", e.target.value)}
-                className="w-full border rounded-md px-2 py-1 text-sm"
-                tabIndex={-1}
-              />
-            </td>
+  <div className="border rounded-md overflow-hidden">
+    <div className="max-h-[500px] overflow-y-auto">
+      <table className="w-full border-separate border-spacing-0 text-sm">
+        <thead className="bg-slate-200 sticky top-0 z-30">
+          <tr>
+            <th className="border px-2 py-1 text-left">Item Description</th>
+            <th className="border px-2 py-1">Current Stock</th>
+            <th className="border px-2 py-1 hidden md:table-cell">In</th>
+            <th className="border px-2 py-1 hidden md:table-cell">Out</th>
+            <th className="border px-2 py-1 hidden md:table-cell">Balance</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={row.ID || i} className="bg-white even:bg-slate-50">
+              <td className="border px-2 py-1">{row.Description}</td>
+              <td className="border px-2 py-1">
+                <input
+                  type="number"
+                  value={row.QuantityonHand}
+                  onChange={(e) =>
+                    handleChange(i, "QuantityonHand", e.target.value)
+                  }
+                  className="w-full border rounded-md px-2 py-1 text-sm"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === "Tab") {
+                      e.preventDefault();
+                      const nextInput = document.querySelector(
+                        `#stock-input-${i + 1}`
+                      );
+                      if (nextInput) nextInput.focus();
+                    }
+                  }}
+                  id={`stock-input-${i}`}
+                />
+              </td>
+              <td className="border px-2 py-1 hidden md:table-cell">
+                <input
+                  type="number"
+                  value={row.in}
+                  onChange={(e) => handleChange(i, "in", e.target.value)}
+                  className="w-full border rounded-md px-2 py-1 text-sm"
+                  tabIndex={-1}
+                />
+              </td>
+              <td className="border px-2 py-1 hidden md:table-cell">
+                <input
+                  type="number"
+                  value={row.out}
+                  onChange={(e) => handleChange(i, "out", e.target.value)}
+                  className="w-full border rounded-md px-2 py-1 text-sm"
+                  tabIndex={-1}
+                />
+              </td>
+              <td className="border px-2 py-1 hidden md:table-cell">
+                <input
+                  type="number"
+                  value={row.balance}
+                  onChange={(e) => handleChange(i, "balance", e.target.value)}
+                  className="w-full border rounded-md px-2 py-1 text-sm"
+                  tabIndex={-1}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 
-
-    
 
       {/* Delete Confirmation */}
       <AlertDialog
