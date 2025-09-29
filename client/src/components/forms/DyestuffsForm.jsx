@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Pencil, Trash2, Plus, Droplet, Loader2, AlertTriangle } from "lucide-react";
+import { FiPrinter } from "react-icons/fi";
 
 export default function DyestuffsForm() {
   const [rows, setRows] = useState([]);
@@ -62,19 +63,8 @@ export default function DyestuffsForm() {
       if (!res.ok) throw new Error("Failed to fetch Dyestuff");
       const data = await res.json();
 
-      // Sort alphabetically by Description
-      let sorted = [...data].sort((a, b) =>
-        a.Description.localeCompare(b.Description)
-      );
-
-      // Move "IDO" after "Water" if both exist
-      const waterIdx = sorted.findIndex((c) => c.Description === "Water");
-      const idoIdx = sorted.findIndex((c) => c.Description === "IDO");
-
-      if (waterIdx !== -1 && idoIdx !== -1) {
-        const [ido] = sorted.splice(idoIdx, 1);
-        sorted.splice(waterIdx + 1, 0, ido);
-      }
+      // Sort alphabetically by DyestuffsIndex
+      let sorted = [...data].sort((a, b) => a.DyestuffsIndex - b.DyestuffsIndex);
 
       setDyestuffs(sorted);
       setRows(
@@ -259,10 +249,21 @@ export default function DyestuffsForm() {
                 "Save Updates"
               )}
             </Button>
+         
 
         <Button type="button" variant="outline" onClick={() => setManageOpen(true)}>
                 Manage Dyestuffs
         </Button>
+
+         <button
+           type="button"
+           className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+                      >
+           <FiPrinter className="w-4 h-4" />
+            Print
+        
+        </button>
+
       </div>
               
 

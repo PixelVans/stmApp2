@@ -10,6 +10,8 @@ import UpdateWeavingProductionPage from "./pages/updateWeavingProduction";
 import UpdateWarpingData from "./pages/updateWarpingData";
 import Countdown from "./pages/err";
 import UpdateStockPage from "./pages/stocksUpdatePage";
+import ChemicalsStockPrintoutPage from "./customPrintouts/chemicalsStockPrintout";
+import DyestuffsStockPrintoutPage from "./customPrintouts/dyestuffsStockPrintout";
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
         {/* Standalone routes without layout */}
         <Route path="/dyeing/print" element={<DyeingCardCustomPrint />} />
         <Route path="/weaving-production/print" element={<WeavingProductionPrintout />} />
+        <Route path="/prc" element={<ChemicalsStockPrintoutPage />} />
+        <Route path="/prd" element={<DyestuffsStockPrintoutPage />} />
       </Routes>
     </Router>
   );

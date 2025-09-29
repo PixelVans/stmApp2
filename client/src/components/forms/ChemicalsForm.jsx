@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Pencil, Trash2, Plus, FlaskConical, Loader2, AlertTriangle } from "lucide-react";
+import { FiPrinter } from "react-icons/fi";
 
 export default function ChemicalsForm() {
   const [rows, setRows] = useState([]);
@@ -62,17 +63,7 @@ export default function ChemicalsForm() {
       if (!res.ok) throw new Error("Failed to fetch chemicals");
       const data = await res.json();
 
-      let sorted = [...data].sort((a, b) =>
-        a.Description.localeCompare(b.Description)
-      );
-
-      const waterIdx = sorted.findIndex((c) => c.Description === "Water");
-      const idoIdx = sorted.findIndex((c) => c.Description === "IDO");
-
-      if (waterIdx !== -1 && idoIdx !== -1) {
-        const [ido] = sorted.splice(idoIdx, 1);
-        sorted.splice(waterIdx + 1, 0, ido);
-      }
+      let sorted = [...data].sort((a, b) => a.ChemicalsIndex - b.ChemicalsIndex);
 
       setChemicals(sorted);
       setRows(
@@ -259,6 +250,15 @@ const VATUnitCost = round4(UnitCost + UnitCost * 0.16);
           >
             Manage Chemicals
           </Button>
+
+          <button
+              type="button"
+              className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+              >
+               <FiPrinter className="w-4 h-4" />
+                Print
+             </button>
+
         </div>
 
         {/* Manage Chemicals Modal */}

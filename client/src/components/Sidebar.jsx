@@ -49,10 +49,10 @@ const navItems = [
     </div>
 
     {/* */}
-  <div className="mb-10 flex items-center justify-center">
-  <div className="text-lg md:text-xl lg:text-[22px] font-bold tracking-wide text-center">
+  <div className="mb-5 flex items-center justify-center">
+  <div className="text-lg md:text-xl lg:text-[20px] font-bold tracking-wide text-center">
     Specialised <span className="text-blue-400">Systems</span>
-    <div className="mt-4 mx-auto w-full border-b border-gray-500"></div>
+    <div className="mt-3 mx-auto w-full border-b border-gray-600"></div>
   </div>
 </div>
 
