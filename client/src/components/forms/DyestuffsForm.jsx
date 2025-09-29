@@ -193,7 +193,7 @@ export default function DyestuffsForm() {
       const dye = dyestuffs.find((c) => c.Description === confirmDelete);
       if (!dye) return;
 
-      const res = await fetch(`/api/dyestuffs-stock/${chem.ID}`, {
+      const res = await fetch(`/api/dyestuffs-stock/${dye.ID}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete");
@@ -212,7 +212,7 @@ export default function DyestuffsForm() {
   // loading state
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center mt-20">
+      <div className="flex flex-col items-center justify-center mt-48">
         <div className="animate-spin h-7 w-7 border-4 border-blue-500 border-t-transparent rounded-full"></div>
         <p className="mt-4 text-sm font-medium text-gray-700">
           Loading Dyestuffs Stock Data...

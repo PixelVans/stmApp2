@@ -7,13 +7,13 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'), // 👈 this maps @ to /src
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000', // Node backend
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },

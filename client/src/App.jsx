@@ -25,7 +25,7 @@ function App() {
           <Route path="/weaving-production" element={<WeavingProductionTable />} />
           <Route path="/update-weaving-production" element={<UpdateWeavingProductionPage />} />
           <Route path="/update-warping-data" element={<UpdateWarpingData />} />
-          <Route path="/err" element={<Countdown />} />
+          <Route path="/htg" element={<Countdown />} />
           <Route path="/update-stock" element={<UpdateStockPage />} />
         </Route>
 

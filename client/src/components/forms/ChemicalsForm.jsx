@@ -204,7 +204,7 @@ const VATUnitCost = round4(UnitCost + UnitCost * 0.16);
   // render loading state
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center mt-20">
+      <div className="flex flex-col items-center justify-center mt-48">
         <div className="animate-spin h-7 w-7 border-4 border-blue-500 border-t-transparent rounded-full"></div>
         <p className="mt-4 text-sm font-medium text-gray-700">
           Loading Chemicals Stock Data...

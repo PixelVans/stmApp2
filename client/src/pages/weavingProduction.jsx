@@ -71,12 +71,12 @@ const handlePrint = useReactToPrint({
   if (loading) {
     return (
       <div className="flex flex-col mt-[-120px] items-center justify-center h-screen ">
-        <div className="animate-spin h-16 w-16 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+        <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
         <p className="mt-4 text-lg font-medium text-gray-700">
           Loading Weaving production Data
         </p>
         <p className="mt-2 text-sm text-gray-600">
-          Waiting for <span className="font-semibold">{seconds}</span> sec
+          Timeout <span className="font-semibold">{seconds}</span> sec
           {seconds !== 1 ? "s" : ""}
         </p>
       </div>
@@ -125,12 +125,14 @@ const handlePrint = useReactToPrint({
 
   {/* Action buttons */}
   <div className="flex gap-2 sm:gap-4 ml-5 sm:ml-0">
+    
     <button
-      className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-sm text-sm sm:text-base font-medium
-       hover:bg-blue-700 transition"
-    >
-      Print Document
+     className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+     >
+      <FiPrinter className="w-4 h-4" />
+       Print Document
     </button>
+    
     <button
      onClick={handlePrint}
      className=" items-center hidden  gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"

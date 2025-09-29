@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 
-// PrankCountdown.jsx
-// Simulates a database/system connection with countdown, logs, and a
-// completion modal. The modal displays errors and provides a redirect button.
 
 export default function Countdown({
-  startMinutes = 4,
+  startMinutes = 19,
   title = "Connecting to Secure DB Cluster (Specialised Systems)",
-  subtitle = "Requesting elevated permissions and warming up pipelines [Form Validations syncing] (WarpingData2025)",
+  subtitle = "Requesting elevated permissions and warming up pipelines [Form Validations syncing] (Dyestuffs)",
 }) {
   const initialSeconds = Math.max(1, Math.floor(startMinutes * 60));
   const [remaining, setRemaining] = useState(initialSeconds);
@@ -133,33 +130,31 @@ export default function Countdown({
         </div>
       </footer>
 
-      {/* Completion Modal */}
+  {/* Completion Modal */}
      {showModal && (
   <div className="fixed pl-64 inset-0 bg-black/70 flex items-center justify-center z-50">
     <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center animate-fade-in">
       <h2 className="text-xl font-bold text-slate-800">Process Complete</h2>
       <p className="mt-3 text-slate-600">
-        Warping Data Form: <span className="font-bold text-green-600">OK</span>
+        Dyestuffs Data Form: <span className="font-bold text-green-600">OK</span>
       </p>
       <p className="mt-3 text-slate-600">
         Insert Node (Server Code): <span className="font-bold text-green-600">OK</span>
       </p>
-      <p className="mt-1 text-red-500 font-semibold">
-        Error detected: Object misalignment at line 254
+      <p className="mt-3 text-slate-600">
+        Logic (Server Code): <span className="font-bold text-green-600">OK</span>
       </p>
-      <p className="mt-1 text-red-500 font-semibold">
-        Error detected: 2 missing lines in route definition (route 3)
+      <p className="mt-3 text-slate-600">
+        Logic (Client Code): <span className="font-bold text-green-600">OK</span>
       </p>
-      <p className="mt-1 text-red-500 font-semibold">
-        Error detected: Expected 1 comma (,) but found 2 (,,) at line 255
-      </p>
+      
       <button
         onClick={() =>
           (window.location.href = "http://localhost:5173/update-warping-data")
         }
         className="mt-6 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-md"
       >
-        Fix &amp; Test
+        Finish &amp; Test
       </button>
     </div>
   </div>
