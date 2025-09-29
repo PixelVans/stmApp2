@@ -43,13 +43,13 @@ export default function UpdateWeavingProductionPage() {
   const [formData, setFormData] = useState({
     weekNo: getISOWeek(),
     day: "",
-    machineNo: "1", // default machine
+    machineNo: "1", 
     machineReadingShiftA: "",
     machineReadingShiftB: "",
     stopReasonShiftA: "",
     stopReasonShiftB: "",
     counter: "",
-    article: "Cellular", // default article
+    article: "Cellular",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -255,6 +255,7 @@ export default function UpdateWeavingProductionPage() {
             <div>
               <label className="text-xs font-medium">Meter Reading</label>
               <input
+                required
                 type="number"
                 value={formData.machineReadingShiftA}
                 onChange={(e) =>
@@ -287,6 +288,7 @@ export default function UpdateWeavingProductionPage() {
             <div>
               <label className="text-xs font-medium">Meter Reading</label>
               <input
+                required
                 type="number"
                 value={formData.machineReadingShiftB}
                 onChange={(e) =>
@@ -318,6 +320,7 @@ export default function UpdateWeavingProductionPage() {
         <div className="mt-5 text-center">
           <label className="text-sm font-medium block mb-1">Counter</label>
           <input
+            required
             type="number"
             value={formData.counter}
             onChange={(e) =>

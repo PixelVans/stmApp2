@@ -34,6 +34,8 @@ const WeavingProductionTable = forwardRef((props, ref) => {
   const [seconds, setSeconds] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
 
+ 
+
   // LOading Helper 
   useEffect(() => {
     if (!loading) return;
@@ -68,7 +70,7 @@ const handlePrint = useReactToPrint({
   // Loading UI
   if (loading) {
     return (
-      <div className="flex flex-col mt-[-100px] items-center justify-center h-screen ">
+      <div className="flex flex-col mt-[-120px] items-center justify-center h-screen ">
         <div className="animate-spin h-16 w-16 border-4 border-blue-500 border-t-transparent rounded-full"></div>
         <p className="mt-4 text-lg font-medium text-gray-700">
           Loading Weaving production Data
@@ -84,8 +86,8 @@ const handlePrint = useReactToPrint({
   
   if (error) {
     return (
-      <div className="flex flex-col mt-[-100px] items-center justify-center h-screen text-red-600">
-        <Server className="h-16 w-16 mb-4" />
+      <div className="flex flex-col mt-[-120px] items-center justify-center h-screen text-red-600">
+        <Server className="h-10 w-10 mb-4" />
         <p className="text-xl font-semibold">Server Error</p>
         <p className="mt-2 text-gray-700">
           {"The server did not respond. Please try again later."}
@@ -186,10 +188,7 @@ const handlePrint = useReactToPrint({
       </div>
     )}
     
-  
-
-
-    </div>
+  </div>
   );
 });
 

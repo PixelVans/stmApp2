@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Pencil, Trash2, Plus, Droplet, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Plus, Droplet, Loader2, AlertTriangle } from "lucide-react";
 
 export default function DyestuffsForm() {
   const [rows, setRows] = useState([]);
@@ -27,6 +27,7 @@ export default function DyestuffsForm() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingDyestuff, setSavingDyestuff] = useState(false);
+  const [error, setError] = useState(false);
 
   // Manage modal state
   const [manageOpen, setManageOpen] = useState(false);
@@ -55,6 +56,7 @@ export default function DyestuffsForm() {
 
   // Reusable fetch function with sorting
   const fetchDyestuffs = async () => {
+    setError(false);
     try {
       const res = await fetch("/api/dyestuffs-stock");
       if (!res.ok) throw new Error("Failed to fetch Dyestuff");
@@ -85,7 +87,7 @@ export default function DyestuffsForm() {
       );
     } catch (err) {
       console.error(err);
-      toast.error("Could not load Dyestuffs");
+      setError(true); 
     } finally {
       setLoading(false);
     }
@@ -206,6 +208,8 @@ export default function DyestuffsForm() {
     }
   };
 
+
+  // loading state
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center mt-20">
@@ -217,10 +221,28 @@ export default function DyestuffsForm() {
     );
   }
 
+ // Error state
+   if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-36 text-center">
+        <AlertTriangle className="h-12 w-12 text-red-500 mb-3" />
+        <p className="text-gray-700 font-medium mb-2">
+          Failed to load Dyestuffs Stock Data.
+        </p>
+        <p className="text-sm text-gray-500 mb-4">
+          The server did not respond or returned no data.
+        </p>
+        <Button onClick={fetchDyestuffs} variant="outline">
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-5 hidden"
+      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-5"
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

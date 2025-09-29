@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Pencil, Trash2, Plus, FlaskConical, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Plus, FlaskConical, Loader2, AlertTriangle } from "lucide-react";
 
 export default function ChemicalsForm() {
   const [rows, setRows] = useState([]);
@@ -27,6 +27,7 @@ export default function ChemicalsForm() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingChemical, setSavingChemical] = useState(false);
+   const [error, setError] = useState(false);
 
   // Manage modal state
   const [manageOpen, setManageOpen] = useState(false);
@@ -55,6 +56,7 @@ export default function ChemicalsForm() {
 
   // Fetch chemicals
   const fetchChemicals = async () => {
+    setError(false);
     try {
       const res = await fetch("/api/chemicals-stock");
       if (!res.ok) throw new Error("Failed to fetch chemicals");
@@ -83,7 +85,7 @@ export default function ChemicalsForm() {
       );
     } catch (err) {
       console.error(err);
-      toast.error("Could not load chemicals");
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -198,6 +200,8 @@ const VATUnitCost = round4(UnitCost + UnitCost * 0.16);
     }
   };
 
+
+  // render loading state
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center mt-20">
@@ -205,6 +209,24 @@ const VATUnitCost = round4(UnitCost + UnitCost * 0.16);
         <p className="mt-4 text-sm font-medium text-gray-700">
           Loading Chemicals Stock Data...
         </p>
+      </div>
+    );
+  }
+
+  // render error state
+   if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-36 text-center">
+        <AlertTriangle className="h-10 w-10 text-red-500 mb-3" />
+        <p className="text-gray-700 font-medium mb-2">
+          Failed to load Chemicals Stock Data.
+        </p>
+        <p className="text-sm text-gray-500 mb-4">
+          The server did not respond or returned no data.
+        </p>
+        <Button onClick={fetchChemicals} variant="outline">
+          Retry
+        </Button>
       </div>
     );
   }
