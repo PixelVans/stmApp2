@@ -24,7 +24,7 @@ export default function StmHome() {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-3xl sm:text-3xl font-light tracking-tight text-slate-800 "
+          className="text-3xl sm:text-3xl font-bold tracking-tight text-slate-800 "
         >
           Welcome to STM Home
         </motion.h1>
@@ -33,7 +33,7 @@ export default function StmHome() {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
-          className="text-base font-extralight  text-slate-700 max-w-xl"
+          className="text-base font-semibold  text-slate-800 max-w-xl"
         >
           Specialised Towel Manufacturers Limited
         </motion.p>

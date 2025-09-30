@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +21,8 @@ import {
 import { toast } from "sonner";
 import { Pencil, Trash2, Plus, Droplet, Loader2, AlertTriangle } from "lucide-react";
 import { FiPrinter } from "react-icons/fi";
+import { useReactToPrint } from "react-to-print";
+import DyestuffsStockPrintoutPage from "@/customPrintouts/dyestuffsStockPrintout";
 
 export default function DyestuffsForm() {
   const [rows, setRows] = useState([]);
@@ -120,6 +122,23 @@ export default function DyestuffsForm() {
     );
   };
 
+  const componentRef = useRef(null);
+    // react to print
+  const handlePrint = useReactToPrint({
+      contentRef: componentRef, 
+      documentTitle: ".",
+      pageStyle: `
+        @page {
+          size: A4;
+          margin: 12mm;
+        }
+        body {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      `,
+    });
+  
   // Save stock updates
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -252,17 +271,21 @@ export default function DyestuffsForm() {
          
 
         <Button type="button" variant="outline" onClick={() => setManageOpen(true)}>
-                Manage Dyestuffs
+          Manage Dyestuffs
         </Button>
 
          <button
+          onClick={handlePrint}
            type="button"
            className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
-                      >
+            >
            <FiPrinter className="w-4 h-4" />
-            Print
-        
+            Print report
         </button>
+
+        <div className="absolute -left-[9999px] top-0">
+          <DyestuffsStockPrintoutPage ref={componentRef} />
+        </div>
 
       </div>
               

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 
@@ -10,8 +10,8 @@ const formatDate = () => {
   return today.toLocaleDateString("en-GB"); 
 };
 
-export default function DyestuffsStockPrintoutPage() {
-  const [rows, setRows] = useState([]);
+const DyestuffsStockPrintoutPage = forwardRef((props, ref) => {
+const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -73,13 +73,15 @@ export default function DyestuffsStockPrintoutPage() {
   }
 
   return (
-    <div className="p-6 bg-white text-black max-w-[794px] mx-auto">
+    <div
+    ref={ref}
+    className="p-6 bg-white text-black max-w-[794px] mx-auto">
       {/* Header */}
       <div className="text-center mb-2">
         <h2 className="font-semibold text-xl text-blue-900">
           Dyestuffs Stock Report
         </h2>
-        <p className="text-sm text-gray-600">As of {formatDate()}</p>
+        <p className="text-sm p-2 text-gray-600">As of {formatDate()}</p>
       </div>
 
       {/* Table */}
@@ -129,4 +131,7 @@ export default function DyestuffsStockPrintoutPage() {
       </div>
     </div>
   );
-}
+})
+export default DyestuffsStockPrintoutPage;
+  
+
