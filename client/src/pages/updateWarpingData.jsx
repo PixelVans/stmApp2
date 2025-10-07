@@ -91,7 +91,7 @@ export default function UpdateWarpingData() {
     "w-full border border-slate-400 bg-slate-50 text-slate-800 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
 
   return (
-    <div className="relative flex sm:block max-w-4xl mx-auto py-5 px-5 md:px-8 mt-5 shadow-md shadow-slate-500 rounded-lg bg-white">
+    <div className="relative  max-w-4xl mx-auto py-5 px-5 md:px-8 mt-5 shadow-md shadow-slate-500 rounded-lg bg-white">
       {/* Today date top-right */}
       <div className="absolute top-3 right-4 text-xs font-medium text-slate-600">
         {formatTodayDate()}

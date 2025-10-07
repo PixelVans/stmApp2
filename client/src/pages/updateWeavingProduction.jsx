@@ -150,7 +150,7 @@ export default function UpdateWeavingProductionPage() {
     "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
 
   return (
-    <div className="flex lg:block lg:relative max-w-xl mx-auto py-3 px-3 md:px-6 mt-5 shadow-md shadow-slate-500 rounded-lg">
+    <div className=" lg:relative max-w-xl mx-auto py-3 px-3 md:px-6 mt-5 shadow-md shadow-slate-500 rounded-lg">
       {/* Today date top-right */}
       <div className="absolute top-3 right-4 text-xs font-medium text-slate-500">
         {formatTodayDate()}

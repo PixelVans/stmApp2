@@ -251,7 +251,7 @@ export default function DyestuffsForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-5"
+      className="space-y-4 border rounded-xl bg-slate-50 p-2 sm:p-5 shadow-md mb-5"
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -277,7 +277,7 @@ export default function DyestuffsForm() {
          <button
           onClick={handlePrint}
            type="button"
-           className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+           className=" items-center hidden gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
             >
            <FiPrinter className="w-4 h-4" />
             Print report

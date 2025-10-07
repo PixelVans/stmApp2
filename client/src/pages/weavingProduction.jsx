@@ -102,10 +102,10 @@ const handlePrint = useReactToPrint({
 
  {/* control panel */}
 <div className="fixed top-16 right-5 left-5 bg-blue-100 rounded-b-md shadow-md px-4 py-3 
-  flex flex-col  sm:flex-row items-center justify-between gap-3 z-30 lg:ml-[270px]">
+  flex   sm:flex-row items-center justify-between gap-3 z-30 lg:ml-[270px]">
 
   {/* Dropdown control */}
-  <div className="flex items-center gap-2 w-full sm:w-auto">
+  <div className="flex items-center gap-2 w-auto">
     <label className="font-medium hidden lg:block text-gray-700 text-md sm:text-base whitespace-nowrap ">
       Select Week:
     </label>
@@ -113,7 +113,7 @@ const handlePrint = useReactToPrint({
       value={selectedWeek || getISOWeek()}
       onChange={(e) => setSelectedWeek(Number(e.target.value))}
       className="rounded-lg bg-green-100 border-gray-300 text-sm sm:text-base font-semibold shadow-sm 
-        focus:ring-2 focus:ring-blue-400 focus:border-blue-400 px-3 py-2 w-44 sm:w-44 "
+        focus:ring-2 focus:ring-blue-400 focus:border-blue-400 px-3 py-2 w-32 sm:w-44 "
     >
       {weekNumbers.map((w) => (
         <option key={w} value={w}>
@@ -127,15 +127,8 @@ const handlePrint = useReactToPrint({
   <div className="flex gap-2 sm:gap-4 ml-5 sm:ml-0">
     
     <button
-     className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
-     >
-      <FiPrinter className="w-4 h-4" />
-       Print Document
-    </button>
-    
-    <button
      onClick={handlePrint}
-     className=" items-center hidden  gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+     className=" items-center flex  gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
      >
       <FiPrinter className="w-4 h-4" />
        Print Document
@@ -148,7 +141,7 @@ const handlePrint = useReactToPrint({
   </div>
 
 
-      <h1 className="mx-auto text-center font-semibold mt-10 text-xs sm:text-lg">
+      <h1 className="mx-auto text-center font-semibold mt-2 sm:mt-10 text-xs sm:text-lg">
         Weaving Production for Week {selectedWeek}
       </h1>
      
