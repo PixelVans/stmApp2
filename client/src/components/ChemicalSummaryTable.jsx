@@ -33,14 +33,14 @@ export default function ChemicalSummaryTable({ rows, stepTitle }) {
             </td>
             <td
               className={`border border-gray-600 px-2 py-1 ${
-                isShortfall ? "bg-yellow-300 font-semibold" : ""
+                isShortfall ? "bg-yellow-200 font-semibold" : ""
               }`}
             >
               {r.amt_on_hand || NBSP}
             </td>
             <td
               className={`border border-gray-600 px-2 py-1 ${
-                isShortfall ? "bg-yellow-300 font-semibold" : ""
+                isShortfall ? "bg-yellow-200 font-semibold" : ""
               }`}
             >
               {r.summary || NBSP}
