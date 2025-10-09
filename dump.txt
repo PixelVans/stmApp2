@@ -1,400 +1,219 @@
-when editting or creating a new chemical, below are all the fields we will need,
-during edits, the default value from the database should be poining from these as well,
+here, there is a proble, if someone comes in at 4am and leaves at 5am, we wil not beable to know its night shift unless
+we write in 24hrs format, so, can we use a time format that has pm or am, and then auto converts for us?
+instead of the curent opne we arte using? 
+import React, { useEffect, useState } from "react";
 
-or update opening fieds is correctly pointing correctly and its what we edit and save accordingly, 
-sothis form rerquires to be updated and point correctly, 
-[ChemicalsIndex
-: 
-"10"
-CostperKgLt
-: 
-100
-Description
-: 
-"AntiFoam"
-ID
-: 
-1
-QuantityonHand
-: 
-29
-SSMA_TimeStamp
-: 
-{type: 'Buffer', data: Array(8)}
-SellingUnits
-: 
-20
-SupplierItemCode
-: 
-"33078387"
-SupplierName
-: 
-"Brenntag"
-UnitCost
-: 
-2000
-UnitCostgm
-: 
-0.1
-UnitofMeasure
-: 
-"kilogram (kg)"
-VATCostKg
-: 
-116
-VATCostgm
-: 
-0.116
-VATUnitCost
-: 
-2320]
+export default function UpdateMusterRoll() {
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [attendanceData, setAttendanceData] = useState([]);
 
+  // Generate dates from 25th of current month to 26th of next month
+  const generateDateRange = () => {
+    const today = new Date();
+    const startDate = new Date(today.getFullYear(), today.getMonth(), 26);
+    const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 27);
 
+    const dates = [];
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+      dates.push(new Date(d));
+    }
+    return dates;
+  };
 
-here isa the form that we need to update, 
-"use client";
+  const dateRange = generateDateRange();
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
-import { Pencil, Trash2, Plus } from "lucide-react";
-
-export default function ChemicalsForm() {
-  const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-
-  // Manage modal state
-  const [manageOpen, setManageOpen] = useState(false);
-  const [chemicals, setChemicals] = useState([]);
-  const [confirmDelete, setConfirmDelete] = useState(null);
-
-  // Add/Edit modal state
-  const [editingIdx, setEditingIdx] = useState(null); // index or "new"
-  const [formData, setFormData] = useState({});
-
-  // 🔹 Define all the editable columns in the Chemicals table
-  const chemicalFields = [
-    { key: "Description", label: "Description", type: "text" },
-    { key: "QuantityOnHand", label: "Quantity on Hand", type: "number" },
-    { key: "UnitOfMeasure", label: "Unit of Measure", type: "text" },
-    { key: "CostPerKgLt", label: "Cost per Kg/Lt", type: "number" },
-    { key: "Supplier", label: "Supplier", type: "text" },
-    { key: "ReorderLevel", label: "Reorder Level", type: "number" },
-    { key: "ReorderQuantity", label: "Reorder Quantity", type: "number" },
-    // 🔹 add more fields based on SSMS output
-  ];
-
-  // Fetch chemicals
+  // Fetch all employees
   useEffect(() => {
-    async function fetchChemicals() {
+    async function fetchEmployees() {
       try {
-        const res = await fetch("/api/chemicals-stock");
-        if (!res.ok) throw new Error("Failed to fetch chemicals");
+        const res = await fetch("/api/employees");
+        if (!res.ok) throw new Error("Failed to fetch employees");
         const data = await res.json();
-
-        setChemicals(data);
-        console.log(data)
-        // Keep QuantityOnHand so Opening shows correctly
-        setRows(
-          data.map((chem) => ({
-            ...chem,
-            in: "",
-            out: "",
-            balance: "",
-          }))
-        );
+        setEmployees(data);
       } catch (err) {
         console.error(err);
-        toast.error("Could not load chemicals");
-      } finally {
-        setLoading(false);
       }
     }
-
-    fetchChemicals();
+    fetchEmployees();
   }, []);
 
-  const handleChange = (index, field, value) => {
-    setRows((prev) =>
-      prev.map((row, i) => (i === index ? { ...row, [field]: value } : row))
-    );
+  // Handle time changes
+  const handleTimeChange = (index, field, value) => {
+    const updated = [...attendanceData];
+    updated[index] = { ...updated[index], [field]: value };
+    setAttendanceData(updated);
   };
 
-  // Save stock updates
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      toast.success("Chemicals Stock data updated (frontend only).");
-    } catch (err) {
-      console.error(err);
-      toast.error("Could not update chemicals stock data");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  // Delete
-  const confirmDeleteChemical = async () => {
-    if (!confirmDelete) return;
-    setChemicals((prev) =>
-      prev.filter((c) => c.Description !== confirmDelete)
-    );
-    setRows((prev) => prev.filter((r) => r.Description !== confirmDelete));
-    toast.success(`Deleted chemical: ${confirmDelete}`);
-    setConfirmDelete(null);
-  };
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center mt-20 ">
-        <div className="animate-spin h-7 w-7 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-        <p className="mt-4 text-sm font-medium text-gray-700">
-          Loading Chemicals Stock Data...
-        </p>
-      </div>
-    );
-  }
+  // Helper: check if date is Sunday to insert week break
+  const isSunday = (date) => date.getDay() === 0; 
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4 border rounded-xl bg-slate-50 p-5 shadow-md mb-12"
-    >
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="font-semibold text-blue-700 text-lg">
-          Update Chemicals
-        </h2>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-3xl  text-center mx-auto font-semibold text-gray-800 mb-6">
+        Update Muster Roll
+      </h1>
 
-        {/* Manage Chemicals Modal */}
-        <Dialog open={manageOpen} onOpenChange={setManageOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline">Manage Chemicals</Button>
-          </DialogTrigger>
-
-          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Chemicals Master List</DialogTitle>
-            </DialogHeader>
-
-            <div className="space-y-3">
-              {chemicals.length === 0 && (
-                <p className="text-sm text-slate-500">No chemicals found.</p>
-              )}
-
-              {chemicals.map((chem, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between gap-3 border rounded-md p-2 bg-white"
-                >
-                  <span className="text-sm">{chem.Description}</span>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => {
-                        setEditingIdx(idx);
-                        setFormData(chem);
-                      }}
-                      title="Edit"
-                    >
-                      <Pencil size={16} />
-                    </Button>
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => setConfirmDelete(chem.Description)}
-                      title="Delete"
-                    >
-                      <Trash2 size={16} className="text-red-500" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Add New Chemical Button */}
-            <div className="mt-4">
-              <Button
-                onClick={() => {
-                  setEditingIdx("new");
-                  setFormData({});
-                }}
-              >
-                <Plus size={14} className="mr-1" /> Add New Chemical
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Add/Edit Chemical Modal */}
-        <Dialog open={editingIdx !== null} onOpenChange={() => setEditingIdx(null)}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingIdx === "new" ? "Add New Chemical" : "Edit Chemical"}
-              </DialogTitle>
-            </DialogHeader>
-
-            <form
-              className="space-y-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (editingIdx === "new") {
-                  setChemicals((prev) => [...prev, formData]);
-                  setRows((prev) => [...prev, { ...formData, in: "", out: "", balance: "" }]);
-                  toast.success("New chemical added (frontend only).");
-                } else {
-                  setChemicals((prev) =>
-                    prev.map((c, i) => (i === editingIdx ? formData : c))
-                  );
-                  setRows((prev) =>
-                    prev.map((r, i) => (i === editingIdx ? { ...formData, in: r.in, out: r.out, balance: r.balance } : r))
-                  );
-                  toast.success("Chemical updated (frontend only).");
-                }
-                setEditingIdx(null);
-              }}
-            >
-              {chemicalFields.map((field) => (
-                <div key={field.key}>
-                  <label className="block text-sm font-medium">
-                    {field.label}
-                  </label>
-                  <input
-                    type={field.type}
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                    value={formData[field.key] || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, [field.key]: e.target.value })
-                    }
-                  />
-                </div>
-              ))}
-
-              <div className="flex justify-end gap-2 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setEditingIdx(null)}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  {editingIdx === "new" ? "Add Chemical" : "Save Changes"}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+      {/* Employee Selector */}
+      <div className="flex items-center mx-auto gap-3 mb-6">
+        <label className="font-medium  text-gray-700">Select Employee:</label>
+        <select
+          className="border border-gray-300 px-3 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          value={selectedEmployee}
+          onChange={(e) => setSelectedEmployee(e.target.value)}
+        >
+          <option value="">-- Select Employee --</option>
+          {employees.map((emp) => (
+            <option key={emp.ID} value={emp.ID}>
+              {emp.FirstName} {emp.LastName}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Editable Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse border text-sm">
-          <thead className="bg-slate-200">
+      {/* Attendance Table */}
+      <div className="bg-white max-w-xl rounded-xl shadow-lg overflow-hidden border border-gray-200">
+        <table className="w-full text-sm">
+          <thead className="bg-blue-100 text-gray-700 uppercase">
             <tr>
-              <th className="border px-2 py-1 text-left">Item Description</th>
-              <th className="border px-2 py-1">Opening</th>
-              <th className="border px-2 py-1">In</th>
-              <th className="border px-2 py-1">Out</th>
-              <th className="border px-2 py-1">Balance</th>
+              <th className="px-3 py-2 text-left w-24">Day</th>
+              <th className="px-3 py-2 text-left w-32">Date</th>
+              <th className="px-3 py-2 text-left">Time In</th>
+              <th className="px-3 py-2 text-left">Time Out</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => (
-              <tr key={i} className="bg-white even:bg-slate-50">
-                <td className="border px-2 py-1">{row.Description}</td>
-                <td className="border px-2 py-1">
-                  <input
-                    type="number"
-                    value={row.QuantityonHand}
-                    onChange={(e) => handleChange(i, "in", e.target.value)}
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                </td>
-                <td className="border px-2 py-1">
-                  <input
-                    type="number"
-                    value={row.in}
-                    onChange={(e) => handleChange(i, "in", e.target.value)}
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                </td>
-                <td className="border px-2 py-1">
-                  <input
-                    type="number"
-                    value={row.out}
-                    onChange={(e) => handleChange(i, "out", e.target.value)}
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                </td>
-                <td className="border px-2 py-1">
-                  <input
-                    type="number"
-                    value={row.balance}
-                    onChange={(e) => handleChange(i, "balance", e.target.value)}
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                </td>
-              </tr>
+            {dateRange.map((date, index) => (
+              <React.Fragment key={index}>
+                <tr
+                  className={`${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  } hover:bg-blue-50 transition`}
+                >
+                  <td className="border-t px-3 py-2 font-medium text-gray-800">
+                    {date.toLocaleDateString("en-US", { weekday: "short" })}
+                  </td>
+                  <td className="border-t px-3 py-2 text-gray-700">
+                    {date.toISOString().split("T")[0]}
+                  </td>
+                  <td className="border-t px-3 py-2">
+                    <input
+                      type="time"
+                      className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
+                      onChange={(e) =>
+                        handleTimeChange(index, "TimeIn", e.target.value)
+                      }
+                    />
+                  </td>
+                  <td className="border-t px-3 py-2">
+                    <input
+                      type="time"
+                      className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
+                      onChange={(e) =>
+                        handleTimeChange(index, "TimeOut", e.target.value)
+                      }
+                    />
+                  </td>
+                </tr>
+
+                {/* Week Break */}
+                {isSunday(date) && (
+                  <tr>
+                    <td colSpan="4" className="bg-gray-200 h-2"></td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
       </div>
 
-      <Button type="submit" disabled={saving}>
-        {saving ? "Saving..." : "Save Updates"}
-      </Button>
-
-      {/* Delete Confirmation */}
-      <AlertDialog
-        open={!!confirmDelete}
-        onOpenChange={() => setConfirmDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Chemical</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete{" "}
-              <span className="font-semibold">{confirmDelete}</span>? This action
-              cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setConfirmDelete(null)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-red-500 hover:bg-red-600"
-              onClick={confirmDeleteChemical}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </form>
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={() => console.log("Save attendance", attendanceData)}
+          className="bg-blue-600 text-white font-medium px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+        >
+          Save Attendance
+        </button>
+      </div>
+    </div>
   );
 }
+
+
+our sCHEMA LOOKS LIKE THIS, SO SETTING THE PM OR AM, IS WHAT WE WILL USE TO KNOW THE 24HRS,
+an update
+ALTER TABLE Attendance
+ADD TimeInFull DATETIME NULL,
+    TimeOutFull DATETIME NULL;
+
+
+previous versions
+-- Create the Employees table
+CREATE TABLE Employees (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployerID VARCHAR(50) UNIQUE NOT NULL,
+    FirstName NVARCHAR(100),
+    LastName NVARCHAR(100),
+    RegularHours DECIMAL(10,2) DEFAULT 0,
+    DirectOverTime DECIMAL(10,2) DEFAULT 0,
+    SundayHours DECIMAL(10,2) DEFAULT 0,
+    LeaveHours DECIMAL(10,2) DEFAULT 0,
+    SickHours DECIMAL(10,2) DEFAULT 0,
+    HolidayHours DECIMAL(10,2) DEFAULT 0,
+    NightshiftAllowance DECIMAL(10,2) DEFAULT 0,
+    CompanyLoan DECIMAL(10,2) DEFAULT 0,
+    ProductDeductions DECIMAL(10,2) DEFAULT 0,
+    SalaryDeduction DECIMAL(10,2) DEFAULT 0,
+    LoanRepayment DECIMAL(10,2) DEFAULT 0,
+    TotalHours DECIMAL(10,2) DEFAULT 0,
+    SalaryAdvance1 DECIMAL(10,2) DEFAULT 0,
+    SalaryAdvance2 DECIMAL(10,2) DEFAULT 0,
+    SalaryAdvance3 DECIMAL(10,2) DEFAULT 0,
+    SalaryAdvance4 DECIMAL(10,2) DEFAULT 0,
+    SalaryAdvance5 DECIMAL(10,2) DEFAULT 0,
+    SalaryAdvance6 DECIMAL(10,2) DEFAULT 0,
+    SalaryAdvance7 DECIMAL(10,2) DEFAULT 0,
+    TotalAdvances DECIMAL(10,2) DEFAULT 0,
+    Advance1 DECIMAL(10,2) DEFAULT 0,
+    Advance2 DECIMAL(10,2) DEFAULT 0,
+    Advance3 DECIMAL(10,2) DEFAULT 0,
+    Advance4 DECIMAL(10,2) DEFAULT 0,
+    Advance5 DECIMAL(10,2) DEFAULT 0,
+    Advance6 DECIMAL(10,2) DEFAULT 0,
+    Advance7 DECIMAL(10,2) DEFAULT 0,
+    SSMA_TimeStamp ROWVERSION,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE()
+);
+GO
+
+-- Create the Attendance table
+CREATE TABLE Attendance (
+    AttendanceID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeeID INT NOT NULL,
+    AttendanceDate DATE NOT NULL,
+    TimeIn TIME,
+    TimeOut TIME,
+    TotalHoursWorked AS 
+        CASE 
+            WHEN TimeIn IS NOT NULL AND TimeOut IS NOT NULL 
+            THEN CAST(DATEDIFF(MINUTE, TimeIn, TimeOut) / 60.0 AS DECIMAL(5,2))
+            ELSE 0 
+        END,
+    Status VARCHAR(20) DEFAULT 'Present',
+    SickLeave BIT DEFAULT 0,
+    Leave BIT DEFAULT 0,
+    MaternityLeave BIT DEFAULT 0,
+    IsHoliday BIT DEFAULT 0,
+    HolidayName NVARCHAR(100) NULL,
+    Remarks NVARCHAR(255),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (EmployeeID) REFERENCES Employees(ID)
+);
+GO
+
+
+
+

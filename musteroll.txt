@@ -1,0 +1,118 @@
+an update
+ALTER TABLE Attendance
+ADD TimeInFull DATETIME NULL,
+    TimeOutFull DATETIME NULL;
+
+
+
+-- Create the Employees table
+CREATE TABLE Employees (
+                    ID INT IDENTITY(1,1) PRIMARY KEY,
+                    EmployerID VARCHAR(50) UNIQUE NOT NULL,
+                    FirstName NVARCHAR(100),
+                    LastName NVARCHAR(100),
+
+    RegularHours DECIMAL(10,2) DEFAULT 0,
+    DirectOverTime DECIMAL(10,2) DEFAULT 0,
+    SundayHours DECIMAL(10,2) DEFAULT 0,
+    LeaveHours DECIMAL(10,2) DEFAULT 0,
+    SickHours DECIMAL(10,2) DEFAULT 0,
+    HolidayHours DECIMAL(10,2) DEFAULT 0,
+    TotalHours DECIMAL(10,2) DEFAULT 0,
+
+            NightshiftAllowance DECIMAL(10,2) DEFAULT 0,
+            CompanyLoan DECIMAL(10,2) DEFAULT 0,
+            ProductDeductions DECIMAL(10,2) DEFAULT 0,
+            SalaryDeduction DECIMAL(10,2) DEFAULT 0,
+            LoanRepayment DECIMAL(10,2) DEFAULT 0,
+   
+                    SalaryAdvance1 DECIMAL(10,2) DEFAULT 0,
+                    SalaryAdvance2 DECIMAL(10,2) DEFAULT 0,
+                    SalaryAdvance3 DECIMAL(10,2) DEFAULT 0,
+                    SalaryAdvance4 DECIMAL(10,2) DEFAULT 0,
+                    SalaryAdvance5 DECIMAL(10,2) DEFAULT 0,
+                    SalaryAdvance6 DECIMAL(10,2) DEFAULT 0,
+                    SalaryAdvance7 DECIMAL(10,2) DEFAULT 0,
+                    TotalAdvances DECIMAL(10,2) DEFAULT 0,
+                    Advance1 DECIMAL(10,2) DEFAULT 0,
+                    Advance2 DECIMAL(10,2) DEFAULT 0,
+                    Advance3 DECIMAL(10,2) DEFAULT 0,
+                    Advance4 DECIMAL(10,2) DEFAULT 0,
+                    Advance5 DECIMAL(10,2) DEFAULT 0,
+                    Advance6 DECIMAL(10,2) DEFAULT 0,
+                    Advance7 DECIMAL(10,2) DEFAULT 0,
+
+    SSMA_TimeStamp ROWVERSION,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE()
+);
+GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Create the Attendance table
+CREATE TABLE Attendance (
+    AttendanceID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeeID INT NOT NULL,
+    AttendanceDate DATE NOT NULL,
+    TimeIn TIME,
+    TimeOut TIME,
+    TotalHoursWorked AS 
+        CASE 
+            WHEN TimeIn IS NOT NULL AND TimeOut IS NOT NULL 
+            THEN CAST(DATEDIFF(MINUTE, TimeIn, TimeOut) / 60.0 AS DECIMAL(5,2))
+            ELSE 0 
+        END,
+
+    SickLeave BIT DEFAULT 0,
+    Leave BIT DEFAULT 0,
+    MaternityLeave BIT DEFAULT 0,
+    Remarks NVARCHAR(255),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (EmployeeID) REFERENCES Employees(ID)
+);
+GO
+
+
+
+
+
+
+
+added the Employees
+INSERT INTO Employees (EmployerID, FirstName, LastName)
+VALUES
+('STM1020', 'Nancy', 'Njoroge'),
+('STM1060', 'Timothy', 'Mwaura'),
+('STM2010', 'Edward', 'Bukhaya'),
+('STM2030', 'Michael', 'Muiruri'),
+('STM3010', 'John', 'Malandi'),
+('STM4010', 'Veronica', 'Muli'),
+('STM4030', 'Mackin', 'Barasa'),
+('STM5070', 'Morrice', 'Amakobe'),
+('STM5090', 'Sammy', 'Mugo'),
+('STM5140', 'Catherine', 'Nyoko'),
+('STM5150', 'Cecilia', 'Molo'),
+('STM8000', 'Oscar', 'Sambili'),
+('STM9000', 'Douglas', 'Mutugi'),
+('STM8020', 'Hillary', 'Lumumba');
+GO
+
+
+
+
+
+
+
+

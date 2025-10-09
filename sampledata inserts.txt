@@ -1,0 +1,40 @@
+-- =====================================
+-- SAMPLE DATA INSERTS
+-- =====================================
+
+-- Insert Employees
+INSERT INTO Employees (EmployerCode, FirstName, LastName)
+VALUES 
+('EMP001', 'Alice', 'Johnson'),
+('EMP002', 'Brian', 'Kariuki'),
+('EMP003', 'Chloe', 'Okello');
+GO
+
+-- Insert Attendance Records (October 2025)
+INSERT INTO Attendance (EmployeeID, AttendanceDate, TimeIn, TimeOut, TotalHours, ShiftType)
+VALUES
+(1, '2025-10-01', '07:30', '17:00', 9.5, 'Day'),
+(1, '2025-10-02', '07:30', '17:00', 9.5, 'Day'),
+(2, '2025-10-01', '22:00', '06:00', 8.0, 'Night'),
+(2, '2025-10-02', '22:00', '06:00', 8.0, 'Night'),
+(3, '2025-10-01', '08:00', '17:30', 9.5, 'Day'),
+(3, '2025-10-02', NULL, NULL, 0, NULL); -- Absent
+GO
+
+-- Insert Payroll for October 2025
+INSERT INTO EmployeePayrolls (
+    EmployeeID, PayrollMonth, RegularHours, TotalHours, DirectOverTime, NightshiftAllowance, LeaveHours, SickHours
+)
+VALUES
+(1, '2025-10-01', 160, 160, 10, 0, 0, 0),
+(2, '2025-10-01', 140, 140, 0, 500, 0, 0),
+(3, '2025-10-01', 150, 150, 5, 0, 8, 0);
+GO
+
+-- Insert Salary Advances
+INSERT INTO SalaryAdvances (EmployeePayrollID, AdvanceAmount, AdvanceDate)
+VALUES
+(1, 200.00, '2025-10-05'),
+(2, 300.00, '2025-10-10'),
+(3, 150.00, '2025-10-07');
+GO

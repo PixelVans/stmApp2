@@ -84,3 +84,4 @@ CREATE TABLE Attendance (
     CONSTRAINT UQ_Attendance_EmployeeDate UNIQUE (EmployeeID, AttendanceDate)
 );
 GO
+
