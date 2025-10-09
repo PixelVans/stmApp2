@@ -21,7 +21,8 @@ const weavingProduction = require('./routes/production/weavingProduction');
 const chemicalsStock = require('./routes/stocks/chemicalsStock');
 const dyestuffsStock = require('./routes/stocks/dyestuffsStock');
 
-
+// employees route
+const employeeRoutes = require("./routes/employees");
 
 const app = express();
 const PORT = 3000;
@@ -47,6 +48,8 @@ app.use('/api/weaving-production', weavingProduction);
 app.use("/api/chemicals-stock", chemicalsStock);
 app.use("/api/dyestuffs-stock", dyestuffsStock);
 
+// employees
+app.use("/api/employees", employeeRoutes);
 
 const reactBuildPath = path.resolve(__dirname, '../client/dist');
 app.use(express.static(reactBuildPath));

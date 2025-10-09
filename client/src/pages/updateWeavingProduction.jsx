@@ -150,13 +150,13 @@ export default function UpdateWeavingProductionPage() {
     "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
 
   return (
-    <div className=" lg:relative max-w-xl mx-auto py-3 px-3 md:px-6 mt-5 shadow-md shadow-slate-500 rounded-lg">
+    <div className=" lg:relative max-w-xl mx-auto py-3 px-3 md:px-6 2xl:mt-5  shadow-md shadow-slate-500 rounded-lg">
       {/* Today date top-right */}
       <div className="absolute top-3 right-4 text-xs font-medium text-slate-500">
         {formatTodayDate()}
       </div>
 
-      <h1 className="text-lg sm:text-xl mt-7 font-bold text-center mb-4">
+      <h1 className="text-lg 2xl:text-xl  2xl:mt-7 font-bold text-center mb-5">
         Update Weaving Production
       </h1>
 
@@ -199,7 +199,7 @@ export default function UpdateWeavingProductionPage() {
 
       {/* Machine number with status */}
       {formData.machineNo && (
-        <p className="text-lg font-semibold text-center mb-2 flex items-center justify-center gap-2">
+        <p className="text-md xl:text-lg font-semibold text-center 2xl:mb-2 flex items-center justify-center gap-2">
           Machine No: {formData.machineNo}
           {machineStatus === "success" && (
             <CheckCircle className="w-5 h-5 text-green-500" />
@@ -211,7 +211,7 @@ export default function UpdateWeavingProductionPage() {
       )}
 
       {/* Form */}
-      <form className="space-y-3" onSubmit={handleSubmit}>
+      <form className="space-y-1 2xl:space-y-3" onSubmit={handleSubmit}>
         {/* Machine Dropdown */}
         <div>
           <label className="text-sm font-medium">Select Machine:</label>
@@ -317,7 +317,7 @@ export default function UpdateWeavingProductionPage() {
         </div>
 
         {/* Counter */}
-        <div className="mt-5 text-center">
+        <div className="mt-3 2xl:mt-5 text-center">
           <label className="text-sm font-medium block mb-1">Counter</label>
           <input
             required
@@ -331,7 +331,7 @@ export default function UpdateWeavingProductionPage() {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-center mb-4 mt-5 md:mt-7 sm:mb-2 gap-4">
+        <div className="flex justify-center mb-2 mt-5 lg:mt-4 sm:mb-2 gap-4">
           <Button
             type="button"
             variant="destructive"

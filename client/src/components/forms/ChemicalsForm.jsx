@@ -248,7 +248,7 @@ const handlePrint = useReactToPrint({
       className="space-y-4 border rounded-xl bg-slate-50 p-2 sm:p-5 shadow-md mb-5"
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="flex  flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h2 className="font-semibold text-blue-800 text-lg">
           Update Chemicals Stock
         </h2>
@@ -464,8 +464,8 @@ const handlePrint = useReactToPrint({
 
     
       {/* Editable Table */}
-      <div className="border rounded-md overflow-hidden">
-        <div className="max-h-[500px] overflow-y-auto">
+      <div className="border  rounded-md overflow-hidden">
+        <div className="max-h-[400px] 2xl:max-h-[500px] overflow-y-auto">
           <table className="w-full border-separate border-spacing-0 text-sm">
             <thead className="bg-slate-200 sticky top-0 z-30">
               <tr>

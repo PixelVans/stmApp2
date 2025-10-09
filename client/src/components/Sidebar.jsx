@@ -1,5 +1,5 @@
 
-import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3, FiBox,  } from "react-icons/fi";
+import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3, FiBox, FiClipboard,  } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -22,6 +22,11 @@ const navItems = [
     icon: <FiBox size={18} className="text-green-400" />, 
     href: "/update-stock" 
   },
+  { 
+    name: "Update Muster Roll", 
+    icon: <FiClipboard size={18} className="text-orange-400" />, 
+    href: "/update-muster-roll" 
+  },
 ];
 
 
@@ -32,7 +37,7 @@ const navItems = [
   className={`
     fixed top-0 left-0 h-full z-40 bg-slate-800 text-white p-4 md:p-6 
     flex flex-col justify-between
-    w-2/3 sm:w-1/3 lg:w-1/6 lg:max-w-none transition-transform duration-300
+    w-2/3 sm:w-1/3 lg:w-[250px] 2xl:w-1/6 lg:max-w-none transition-transform duration-300
     ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
   `}
 >
@@ -50,7 +55,7 @@ const navItems = [
 
     {/* */}
   <div className="mb-5 flex items-center justify-center">
-  <div className="text-lg md:text-xl lg:text-[20px] font-bold tracking-wide text-center">
+  <div className="text-lg md:text-xl xl:text-[17px] 2xl:text-[20px] font-bold tracking-wide text-center">
     Specialised <span className="text-blue-400">Systems</span>
     <div className="mt-3 mx-auto w-full border-b border-gray-600"></div>
   </div>
@@ -68,7 +73,7 @@ const navItems = [
           className="flex items-center gap-3 px-2 py-3 rounded-lg hover:bg-gray-700 transition"
         >
           {item.icon}
-          <span className="font-medium text-sm">{item.name}</span>
+          <span className="font-medium text-[13px] xl:text-sm">{item.name}</span>
         </Link>
       ))}
     </nav>

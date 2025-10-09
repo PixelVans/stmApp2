@@ -91,14 +91,14 @@ export default function UpdateWarpingData() {
     "w-full border border-slate-400 bg-slate-50 text-slate-800 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
 
   return (
-    <div className="relative  max-w-4xl mx-auto py-5 px-5 md:px-8 mt-5 shadow-md shadow-slate-500 rounded-lg bg-white">
+    <div className="relative  max-w-4xl mx-auto py-5 px-5 md:px-8 mt-2 2xl:mt-5 shadow-md shadow-slate-500 rounded-lg bg-white">
       {/* Today date top-right */}
       <div className="absolute top-3 right-4 text-xs font-medium text-slate-600">
         {formatTodayDate()}
       </div>
 
       {/* Title */}
-      <h1 className="text-lg sm:text-xl mt-7 font-bold text-center md:mb-7">
+      <h1 className="text-lg sm:text-xl 2xl:mt-7 font-bold text-center mb-4 2xl:mb-7">
         Update Warping Data for: <span className="text-blue-600 font-bold hidden md:inline"> 
            Machine No: {formData.machineNumber ? formData.machineNumber:"-" }</span>
       </h1>
@@ -111,7 +111,7 @@ export default function UpdateWarpingData() {
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left column */}
-          <div className="space-y-2 sm:space-y-4">
+          <div className="space-y-2  2xl:space-y-4">
 
             <div>
               <label className="text-sm font-medium">Date</label>
@@ -214,7 +214,7 @@ export default function UpdateWarpingData() {
           </div>
 
           {/* Right column */}
-          <div className="space-y-4">
+          <div className="space-y-2  2xl:space-y-4">
             <div>
               <label className="text-sm font-medium">Yarn Count 1</label>
               <select

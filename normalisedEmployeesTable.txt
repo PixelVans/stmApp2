@@ -1,0 +1,65 @@
+CREATE TABLE Employees (
+    EmployeeID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployerCode VARCHAR(50) UNIQUE NOT NULL,
+    FirstName NVARCHAR(100),
+    LastName NVARCHAR(100),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE PayrollPeriods (
+    PayrollID INT IDENTITY(1,1) PRIMARY KEY,
+    PeriodStart DATE NOT NULL,
+    PeriodEnd DATE NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE EmployeePayrolls (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeeID INT NOT NULL FOREIGN KEY REFERENCES Employees(EmployeeID),
+    PayrollID INT NOT NULL FOREIGN KEY REFERENCES PayrollPeriods(PayrollID),
+
+    RegularHours DECIMAL(10,2) DEFAULT 0,
+    DirectOverTime DECIMAL(10,2) DEFAULT 0,
+    SundayHours DECIMAL(10,2) DEFAULT 0,
+    LeaveHours DECIMAL(10,2) DEFAULT 0,
+    SickHours DECIMAL(10,2) DEFAULT 0,
+    HolidayHours DECIMAL(10,2) DEFAULT 0,
+    TotalHours DECIMAL(10,2) DEFAULT 0,
+
+    NightshiftAllowance DECIMAL(10,2) DEFAULT 0,
+    CompanyLoan DECIMAL(10,2) DEFAULT 0,
+    ProductDeductions DECIMAL(10,2) DEFAULT 0,
+    SalaryDeduction DECIMAL(10,2) DEFAULT 0,
+    LoanRepayment DECIMAL(10,2) DEFAULT 0,
+
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE SalaryAdvances (
+    AdvanceID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeePayrollID INT NOT NULL FOREIGN KEY REFERENCES EmployeePayrolls(ID),
+    AdvanceAmount DECIMAL(10,2) NOT NULL,
+    AdvanceDate DATE DEFAULT GETDATE()
+);
+
+
+CREATE TABLE Attendance (
+    AttendanceID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeeID INT NOT NULL FOREIGN KEY REFERENCES Employees(EmployeeID),
+
+    AttendanceDate DATE NOT NULL,
+    TimeIn TIME NULL,
+    TimeOut TIME NULL,
+
+    TotalHours DECIMAL(10,2) NULL,      -- Calculated from TimeIn/TimeOut
+    ShiftType VARCHAR(20) NULL,         -- Optional (can be derived)
+    LeaveDays INT DEFAULT 0,
+    SickDays INT DEFAULT 0,
+    MaternityDays INT DEFAULT 0,
+    HolidayDays INT DEFAULT 0,
+
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
+);

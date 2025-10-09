@@ -27,7 +27,7 @@ const MainLayout = ({ printRef }) => {
       {/* Main content area */}
       <div className="flex-1 flex flex-col lg:ml-1/6 transition-all duration-300">
         {/* Navbar */}
-        <header className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between h-16 bg-white shadow-md px-2 md:px-6">
+        <header className="fixed top-0 left-0 right-0 z-20  flex items-center justify-between h-14 2xl:h-16 bg-white shadow-md px-2 md:px-6">
           <div className="flex items-center gap-4">
             <button
               className="lg:hidden p- rounded"

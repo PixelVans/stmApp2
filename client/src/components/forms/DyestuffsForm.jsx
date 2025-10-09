@@ -464,7 +464,7 @@ export default function DyestuffsForm() {
 
   {/* Editable Table */}
   <div className="border rounded-md overflow-hidden">
-    <div className="max-h-[500px] overflow-y-auto">
+    <div className="max-h-[400px] 2xl:max-h-[500px] overflow-y-auto">
       <table className="w-full border-separate border-spacing-0 text-sm">
         <thead className="bg-slate-200 sticky top-0 z-30">
           <tr>

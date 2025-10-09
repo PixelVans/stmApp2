@@ -12,6 +12,7 @@ import Countdown from "./pages/err";
 import UpdateStockPage from "./pages/stocksUpdatePage";
 import ChemicalsStockPrintoutPage from "./customPrintouts/chemicalsStockPrintout";
 import DyestuffsStockPrintoutPage from "./customPrintouts/dyestuffsStockPrintout";
+import UpdateMusterRoll from "./pages/updateMusterRoll";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/update-warping-data" element={<UpdateWarpingData />} />
           <Route path="/htg" element={<Countdown />} />
           <Route path="/update-stock" element={<UpdateStockPage />} />
+          <Route path="/update-muster-roll" element={<UpdateMusterRoll />} />
         </Route>
 
         {/* Standalone routes without layout */}
