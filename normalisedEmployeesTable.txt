@@ -1,23 +1,30 @@
+-- ===========================================
+--  Payroll System Database Schema
+--  Optimized for monthly payroll updates
+-- ===========================================
+
+
+-- ===============================
+-- 1. Employees Table
+-- ===============================
 CREATE TABLE Employees (
     EmployeeID INT IDENTITY(1,1) PRIMARY KEY,
     EmployerCode VARCHAR(50) UNIQUE NOT NULL,
-    FirstName NVARCHAR(100),
-    LastName NVARCHAR(100),
+    FirstName NVARCHAR(100) NOT NULL,
+    LastName NVARCHAR(100) NOT NULL,
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE()
 );
+GO
 
-CREATE TABLE PayrollPeriods (
-    PayrollID INT IDENTITY(1,1) PRIMARY KEY,
-    PeriodStart DATE NOT NULL,
-    PeriodEnd DATE NOT NULL,
-    CreatedAt DATETIME DEFAULT GETDATE()
-);
-
+-- ===============================
+-- 2. EmployeePayrolls Table
+-- ===============================
 CREATE TABLE EmployeePayrolls (
     ID INT IDENTITY(1,1) PRIMARY KEY,
     EmployeeID INT NOT NULL FOREIGN KEY REFERENCES Employees(EmployeeID),
-    PayrollID INT NOT NULL FOREIGN KEY REFERENCES PayrollPeriods(PayrollID),
+
+    PayrollMonth DATE NOT NULL,  -- e.g., '2025-10-01' represents October 2025
 
     RegularHours DECIMAL(10,2) DEFAULT 0,
     DirectOverTime DECIMAL(10,2) DEFAULT 0,
@@ -34,17 +41,27 @@ CREATE TABLE EmployeePayrolls (
     LoanRepayment DECIMAL(10,2) DEFAULT 0,
 
     CreatedAt DATETIME DEFAULT GETDATE(),
-    UpdatedAt DATETIME DEFAULT GETDATE()
-);
+    UpdatedAt DATETIME DEFAULT GETDATE(),
 
+    -- Prevent duplicate payroll records for same employee & month
+    CONSTRAINT UQ_Employee_PayrollMonth UNIQUE (EmployeeID, PayrollMonth)
+);
+GO
+
+-- ===============================
+-- 3. SalaryAdvances Table
+-- ===============================
 CREATE TABLE SalaryAdvances (
     AdvanceID INT IDENTITY(1,1) PRIMARY KEY,
     EmployeePayrollID INT NOT NULL FOREIGN KEY REFERENCES EmployeePayrolls(ID),
     AdvanceAmount DECIMAL(10,2) NOT NULL,
     AdvanceDate DATE DEFAULT GETDATE()
 );
+GO
 
-
+-- ===============================
+-- 4. Attendance Table
+-- ===============================
 CREATE TABLE Attendance (
     AttendanceID INT IDENTITY(1,1) PRIMARY KEY,
     EmployeeID INT NOT NULL FOREIGN KEY REFERENCES Employees(EmployeeID),
@@ -53,13 +70,17 @@ CREATE TABLE Attendance (
     TimeIn TIME NULL,
     TimeOut TIME NULL,
 
-    TotalHours DECIMAL(10,2) NULL,      -- Calculated from TimeIn/TimeOut
-    ShiftType VARCHAR(20) NULL,         -- Optional (can be derived)
+    TotalHours DECIMAL(10,2) NULL,     -- Calculated from TimeIn/TimeOut
+    ShiftType VARCHAR(20) NULL,        -- 'Day' or 'Night' (can be derived)
     LeaveDays INT DEFAULT 0,
     SickDays INT DEFAULT 0,
     MaternityDays INT DEFAULT 0,
     HolidayDays INT DEFAULT 0,
 
     CreatedAt DATETIME DEFAULT GETDATE(),
-    UpdatedAt DATETIME DEFAULT GETDATE()
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+
+    -- Prevent duplicate entries per employee per date
+    CONSTRAINT UQ_Attendance_EmployeeDate UNIQUE (EmployeeID, AttendanceDate)
 );
+GO
