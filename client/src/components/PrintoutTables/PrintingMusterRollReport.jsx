@@ -28,6 +28,7 @@ const isKenyanHoliday = (date) => {
     `${year}-4-12`,  // Easter Monday (approx handled below)
     `${year}-5-1`,   // Labour Day
     `${year}-6-1`,   // Madaraka Day
+    `${year}-10-10`, // Mazingira Day
     `${year}-10-20`, // Mashujaa Day
     `${year}-12-12`, // Jamhuri Day
     `${year}-12-25`, // Christmas
@@ -308,9 +309,15 @@ const holidayPayable = holidayHours * 2;
                   return (
                     <React.Fragment key={index}>
                       <tr className="bg-white hover:bg-blue-50">
-                        <td className="border border-gray-500 px-1 text-xs font-medium">
-                          {dayName}
-                        </td>
+                        <td
+  className={`border border-gray-500 px-1 text-xs font-medium text-center ${
+    isKenyanHoliday(date) ? "bg-yellow-200" : ""
+  }`}
+  title={isKenyanHoliday(date) ? "Public Holiday" : ""}
+>
+  {dayName}
+</td>
+
                         <td className="border border-gray-500 text-[11px] py-0.5 text-center">
                           {`${date.getDate()}/${date.getMonth() + 1}`}
                         </td>
