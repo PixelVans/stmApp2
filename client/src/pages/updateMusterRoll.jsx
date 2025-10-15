@@ -27,8 +27,78 @@ export default function UpdateMusterRoll() {
     return dates;
   };
 
+useEffect(() => {
+  if (!selectedEmployee) return;
 
-  
+  async function fetchEmployeeMusterRoll() {
+    try {
+      const res = await fetch(
+        `/api/employees/report?employeeId=${selectedEmployee}&month=${selectedMonth}`
+      );
+      if (!res.ok) throw new Error("Failed to fetch employee muster roll");
+
+      const data = await res.json();
+      console.log("Fetched existing muster roll:", data);
+
+      // Pre-fill attendance
+      const attendanceMap = {};
+    data.attendance?.forEach((rec) => {
+      const key = new Date(rec.AttendanceDate).toISOString().split("T")[0];
+
+      // Format times  from ISO strings
+      const formatTime = (timeStr) => {
+        if (!timeStr) return "";
+        const d = new Date(timeStr);
+        // toTimeString gives e.g. "06:00:00 GMT+0000..."
+        return d.toTimeString().slice(0, 5); // "06:00"
+      };
+
+      attendanceMap[key] = {
+        TimeIn: formatTime(rec.TimeIn),
+        TimeOut: formatTime(rec.TimeOut),
+        DayOfWeek: rec.DayOfWeek,
+      };
+    });
+
+
+      // Align attendanceData with generated dateRange
+      const prefilled = generateDateRange(selectedMonth).map((date) => {
+        const dateKey = date.toISOString().split("T")[0];
+        return attendanceMap[dateKey] || { TimeIn: "", TimeOut: "" };
+      });
+      
+      console.log("Prefilled attendance data:", prefilled);
+      setAttendanceData(prefilled);
+
+      // Pre-fill leave summary if available
+      if (data.summary) {
+        setLeaveSummary({
+          LeaveDays: data.summary.LeaveDays || "",
+          SickDays: data.summary.SickDays || "",
+          MaternityDays: data.summary.MaternityDays || "",
+          HolidayDays: data.summary.HolidayDays || "",
+        });
+      } else {
+        setLeaveSummary({
+          LeaveDays: "",
+          SickDays: "",
+          MaternityDays: "",
+          HolidayDays: "",
+        });
+      }
+
+      toast.success("Loaded existing muster roll data");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load existing muster roll data");
+      setAttendanceData([]); // reset on error
+    }
+  }
+
+  fetchEmployeeMusterRoll();
+}, [selectedEmployee, selectedMonth]);
+
+
 
 
   useEffect(() => {
@@ -208,21 +278,19 @@ export default function UpdateMusterRoll() {
                     </td>
                     <td className="border-t px-3 py-2">
                       <input
-                        type="time"
-                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
-                        onChange={(e) =>
-                          handleTimeChange(index, "TimeIn", e.target.value)
-                        }
-                      />
+                      type="time"
+                      value={attendanceData[index]?.TimeIn || ""}
+                      onChange={(e) => handleTimeChange(index, "TimeIn", e.target.value)}
+                      className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
+                    />
                     </td>
                     <td className="border-t px-3 py-2">
                       <input
-                        type="time"
-                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
-                        onChange={(e) =>
-                          handleTimeChange(index, "TimeOut", e.target.value)
-                        }
-                      />
+                      type="time"
+                      value={attendanceData[index]?.TimeOut || ""}
+                      onChange={(e) => handleTimeChange(index, "TimeOut", e.target.value)}
+                      className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
+                    />
                     </td>
                   </tr>
 

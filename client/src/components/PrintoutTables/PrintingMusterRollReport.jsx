@@ -147,7 +147,7 @@ const PrintingMusterRollReport = () => {
       <Toaster position="top-center" richColors />
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 ">
+      <div className="hidden justify-between items-center mb-8 ">
         <h1 className="text-2xl font-bold">Muster Roll Report (Printable)</h1>
 
         <div className="flex gap-4 items-center">
@@ -181,20 +181,20 @@ const PrintingMusterRollReport = () => {
       {/* Dynamic Form Header Section */}
       <div className="max-w-3xl mx-auto  ">
         <h1 className="text-center font-bold">SPECIALISED TOWEL MANUFACTURERS LTD.</h1>
-        <h4 className="text-center font-semibold text-xs mb-4" >MUSTEROLL FORM.</h4>
+        <h4 className="text-center font-bold text-xs mb-4" >MUSTEROLL FORM.</h4>
 
       <div className="text-center mb-6 ">
         <div className="flex justify-center items-center gap-20">
-          <div className="border-1 border-slate-500  px-4 ">
+          <div className="border-1 border-slate-300  px-4 text-sm ">
             <label className="font-semibold mr-2">Name:</label>
             <span>{employeeName}</span>
           </div>
-          <div className="border-1 border-slate-500  px-4 ">
+          <div className="border-1 border-slate-300  px-4 text-sm ">
             <label className="font-semibold mr-2">Form No:</label>
             <span>{employeeId}</span>
           </div>
         </div>
-        <div className="border-1 border-slate-500  px-4  mx-auto mt-4 w-64">
+        <div className="border-1 border-slate-300  px-4  mx-auto mt-2 w-64 text-sm ">
           <label className="font-semibold mr-2">Month:</label>
           <span>{monthLabel}</span>
         </div>
