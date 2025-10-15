@@ -15,6 +15,63 @@ const PrintingMusterRollReport = () => {
     HolidayDays: 0,
   });
 
+   // Utility: Kenyan holidays calculator
+const isKenyanHoliday = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // JS months are 0-based
+  const day = date.getDate();
+
+  // Fixed holidays
+  const fixedHolidays = [
+    `${year}-1-1`,   // New Year's Day
+    `${year}-4-1`,   // Good Friday (approx handled below)
+    `${year}-4-12`,  // Easter Monday (approx handled below)
+    `${year}-5-1`,   // Labour Day
+    `${year}-6-1`,   // Madaraka Day
+    `${year}-10-20`, // Mashujaa Day
+    `${year}-12-12`, // Jamhuri Day
+    `${year}-12-25`, // Christmas
+    `${year}-12-26`, // Boxing Day
+  ];
+
+  // Convert date to string form
+  const dateStr = `${year}-${month}-${day}`;
+
+  if (fixedHolidays.includes(dateStr)) return true;
+
+  // --- Moveable holidays (rough logic) ---
+  // Good Friday and Easter Monday – use Computus algorithm
+  const easter = getEasterDate(year);
+  const goodFriday = new Date(easter);
+  goodFriday.setDate(easter.getDate() - 2);
+  const easterMonday = new Date(easter);
+  easterMonday.setDate(easter.getDate() + 1);
+
+  const moveable = [
+    goodFriday.toDateString(),
+    easterMonday.toDateString(),
+  ];
+
+  return moveable.includes(date.toDateString());
+};
+
+// Helper: Compute Easter Sunday (Western)
+const getEasterDate = (year) => {
+  const f = Math.floor,
+    G = year % 19,
+    C = f(year / 100),
+    H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30,
+    I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11)),
+    J = (year + f(year / 4) + I + 2 - C + f(C / 4)) % 7,
+    L = I - J,
+    month = 3 + f((L + 40) / 44),
+    day = L + 28 - 31 * f(month / 4);
+  return new Date(year, month - 1, day);
+};
+
+
+
+
   // Generate range from 27th of current month to 26th of next
   const generateDateRange = (month) => {
     const year = new Date().getFullYear();
@@ -124,6 +181,17 @@ const PrintingMusterRollReport = () => {
     .filter((r) => r.DayOfWeek === "Sun" && r.TotalHours)
     .reduce((sum, r) => sum + r.TotalHours, 0);
   const sundayPayable = sundayHours * 2;
+  // Kenyan public holidays (×2 rule)
+const holidayHours = attendanceData
+  .filter((r) => {
+    if (!r.AttendanceDate || !r.TotalHours) return false;
+    const date = new Date(r.AttendanceDate);
+    return isKenyanHoliday(date);
+  })
+  .reduce((sum, r) => sum + r.TotalHours, 0);
+
+const holidayPayable = holidayHours * 2;
+
   const totalHours = attendanceData
     .filter((r) => r.TotalHours)
     .reduce((sum, r) => sum + r.TotalHours, 0);
@@ -147,7 +215,7 @@ const PrintingMusterRollReport = () => {
       <Toaster position="top-center" richColors />
 
       {/* Header */}
-      <div className="hidden justify-between items-center mb-8 ">
+      <div className="flex justify-between items-center mb-8 ">
         <h1 className="text-2xl font-bold">Muster Roll Report (Printable)</h1>
 
         <div className="flex gap-4 items-center">
@@ -393,13 +461,14 @@ const PrintingMusterRollReport = () => {
                 </tr>
 
                  <tr>
-                  <td className="border border-gray-300  pl-1 py-0.5 font-semibold">
-                    Holidays
-                  </td>
-                  <td className="border border-gray-300  text-center">
-                    {summary.HolidayDays}
-                  </td>
-                </tr>
+                <td className="border border-gray-300  pl-1 py-0.5 font-semibold">
+                  Holidays (x2)
+                </td>
+                <td className="border border-gray-300  text-center">
+                  {holidayPayable.toFixed(2)}
+                </td>
+              </tr>
+
 
                 <tr>
                   <td className="border border-gray-300  pl-1 py-0.5 font-semibold">

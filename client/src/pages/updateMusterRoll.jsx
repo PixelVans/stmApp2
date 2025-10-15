@@ -15,92 +15,115 @@ export default function UpdateMusterRoll() {
     HolidayDays: "",
   });
 
-  // Generate date range for selected month
-  const generateDateRange = (month) => {
-    const year = new Date().getFullYear();
-    const startDate = new Date(year, month, 27);
-    const endDate = new Date(year, month + 1, 26);
-    const dates = [];
-    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-      dates.push(new Date(d));
-    }
-    return dates;
+  // Local date string (YYYY-MM-DD) - avoids UTC drift
+  const localDateKey = (date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
   };
 
-useEffect(() => {
-  if (!selectedEmployee) return;
+  // Generate date range for selected month (27th → 26th next)
+  const generateDateRange = (month) => {
+  const year = new Date().getFullYear();
 
-  async function fetchEmployeeMusterRoll() {
-    try {
-      const res = await fetch(
-        `/api/employees/report?employeeId=${selectedEmployee}&month=${selectedMonth}`
-      );
-      if (!res.ok) throw new Error("Failed to fetch employee muster roll");
+  // Start from 26th of the selected month
+  const startDate = new Date(year, month, 26);
 
-      const data = await res.json();
-      console.log("Fetched existing muster roll:", data);
+  // End at 25th of the following month
+  const endDate = new Date(year, month + 1, 25);
 
-      // Pre-fill attendance
-      const attendanceMap = {};
-    data.attendance?.forEach((rec) => {
-      const key = new Date(rec.AttendanceDate).toISOString().split("T")[0];
-
-      // Format times  from ISO strings
-      const formatTime = (timeStr) => {
-        if (!timeStr) return "";
-        const d = new Date(timeStr);
-        // toTimeString gives e.g. "06:00:00 GMT+0000..."
-        return d.toTimeString().slice(0, 5); // "06:00"
-      };
-
-      attendanceMap[key] = {
-        TimeIn: formatTime(rec.TimeIn),
-        TimeOut: formatTime(rec.TimeOut),
-        DayOfWeek: rec.DayOfWeek,
-      };
-    });
-
-
-      // Align attendanceData with generated dateRange
-      const prefilled = generateDateRange(selectedMonth).map((date) => {
-        const dateKey = date.toISOString().split("T")[0];
-        return attendanceMap[dateKey] || { TimeIn: "", TimeOut: "" };
-      });
-      
-      console.log("Prefilled attendance data:", prefilled);
-      setAttendanceData(prefilled);
-
-      // Pre-fill leave summary if available
-      if (data.summary) {
-        setLeaveSummary({
-          LeaveDays: data.summary.LeaveDays || "",
-          SickDays: data.summary.SickDays || "",
-          MaternityDays: data.summary.MaternityDays || "",
-          HolidayDays: data.summary.HolidayDays || "",
-        });
-      } else {
-        setLeaveSummary({
-          LeaveDays: "",
-          SickDays: "",
-          MaternityDays: "",
-          HolidayDays: "",
-        });
-      }
-
-      toast.success("Loaded existing muster roll data");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to load existing muster roll data");
-      setAttendanceData([]); // reset on error
-    }
+  const dates = [];
+  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+    dates.push(new Date(d));
   }
-
-  fetchEmployeeMusterRoll();
-}, [selectedEmployee, selectedMonth]);
-
+  return dates;
+};
 
 
+  // ==============================
+  // Fetch employee muster roll
+  // ==============================
+  useEffect(() => {
+    if (!selectedEmployee) return;
 
+    async function fetchEmployeeMusterRoll() {
+      try {
+        const res = await fetch(
+          `/api/employees/report?employeeId=${selectedEmployee}&month=${selectedMonth}`
+        );
+        if (!res.ok) throw new Error("Failed to fetch employee muster roll");
+
+        const data = await res.json();
+        console.log("Fetched existing muster roll:", data);
+
+        // Build attendance map using local date keys
+        const attendanceMap = {};
+        data.attendance?.forEach((rec) => {
+          let recDate;
+          if (/^\d{4}-\d{2}-\d{2}$/.test(rec.AttendanceDate)) {
+            const [yy, mm, dd] = rec.AttendanceDate.split("-").map(Number);
+            recDate = new Date(yy, mm - 1, dd);
+          } else {
+            const tmp = new Date(rec.AttendanceDate);
+            recDate = new Date(tmp.getFullYear(), tmp.getMonth(), tmp.getDate());
+          }
+
+          const key = localDateKey(recDate);
+
+          const formatTime = (timeStr) => {
+            if (!timeStr) return "";
+            const d = new Date(timeStr);
+            return d.toTimeString().slice(0, 5); // "HH:MM"
+          };
+
+          attendanceMap[key] = {
+            TimeIn: formatTime(rec.TimeIn),
+            TimeOut: formatTime(rec.TimeOut),
+            DayOfWeek: rec.DayOfWeek,
+          };
+        });
+
+        //  Align attendanceData with dateRange
+        const prefilled = generateDateRange(selectedMonth).map((date) => {
+          const dateKey = localDateKey(date);
+          return attendanceMap[dateKey] || { TimeIn: "", TimeOut: "" };
+        });
+
+        console.log("Prefilled attendance data:", prefilled);
+        setAttendanceData(prefilled);
+
+        //  Leave summary
+        if (data.summary) {
+          setLeaveSummary({
+            LeaveDays: data.summary.LeaveDays || "",
+            SickDays: data.summary.SickDays || "",
+            MaternityDays: data.summary.MaternityDays || "",
+            HolidayDays: data.summary.HolidayDays || "",
+          });
+        } else {
+          setLeaveSummary({
+            LeaveDays: "",
+            SickDays: "",
+            MaternityDays: "",
+            HolidayDays: "",
+          });
+        }
+
+        toast.success("Loaded existing muster roll data");
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to load existing muster roll data");
+        setAttendanceData([]); // reset on error
+      }
+    }
+
+    fetchEmployeeMusterRoll();
+  }, [selectedEmployee, selectedMonth]);
+
+  // ==============================
+  // Other effects
+  // ==============================
   useEffect(() => {
     setDateRange(generateDateRange(selectedMonth));
   }, [selectedMonth]);
@@ -112,7 +135,6 @@ useEffect(() => {
         if (!res.ok) throw new Error("Failed to fetch employees");
 
         const data = await res.json();
-        console.log(data)
         setEmployees(data);
       } catch (err) {
         console.error(err);
@@ -122,7 +144,9 @@ useEffect(() => {
     fetchEmployees();
   }, []);
 
-  
+  // ==============================
+  // Handlers
+  // ==============================
   const handleTimeChange = (index, field, value) => {
     const updated = [...attendanceData];
     updated[index] = { ...updated[index], [field]: value };
@@ -135,31 +159,31 @@ useEffect(() => {
 
   const isSunday = (date) => date.getDay() === 0;
 
-  // Normalize blank or invalid time values before sending
   const normalizeTime = (time) => {
     if (!time || time === "0000" || time === "00:00") return null;
     return time.length === 5 ? `${time}:00` : time;
   };
 
+  // ==============================
+  // Save handler
+  // ==============================
   const handleSave = async () => {
     if (!selectedEmployee) {
       toast.warning("Please select an employee first.");
       return;
     }
 
- const preparedAttendance = dateRange.map((date, index) => {
-  const record = attendanceData[index] || {};
-  const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "short" }); // 'Mon', 'Tue', etc.
-
+    const preparedAttendance = dateRange.map((date, index) => {
+      const record = attendanceData[index] || {};
+      const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "short" });
       return {
         EmployeeID: selectedEmployee,
-        AttendanceDate: date.toISOString().split("T")[0],
+        AttendanceDate: localDateKey(date),
         TimeIn: normalizeTime(record.TimeIn),
         TimeOut: normalizeTime(record.TimeOut),
-        DayOfWeek: dayOfWeek, 
+        DayOfWeek: dayOfWeek,
       };
     });
-
 
     const payload = {
       EmployeeID: selectedEmployee,
@@ -241,7 +265,6 @@ useEffect(() => {
           <button
             onClick={handleSave}
             disabled={!selectedEmployee}
-            // disabled={true}
             className="bg-blue-600 text-white font-medium px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Save Attendance
@@ -274,23 +297,27 @@ useEffect(() => {
                       {date.toLocaleDateString("en-US", { weekday: "short" })}
                     </td>
                     <td className="border-t px-3 py-2 text-gray-700">
-                      {date.toISOString().split("T")[0]}
+                      {localDateKey(date)}
                     </td>
                     <td className="border-t px-3 py-2">
                       <input
-                      type="time"
-                      value={attendanceData[index]?.TimeIn || ""}
-                      onChange={(e) => handleTimeChange(index, "TimeIn", e.target.value)}
-                      className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
-                    />
+                        type="time"
+                        value={attendanceData[index]?.TimeIn || ""}
+                        onChange={(e) =>
+                          handleTimeChange(index, "TimeIn", e.target.value)
+                        }
+                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
+                      />
                     </td>
                     <td className="border-t px-3 py-2">
                       <input
-                      type="time"
-                      value={attendanceData[index]?.TimeOut || ""}
-                      onChange={(e) => handleTimeChange(index, "TimeOut", e.target.value)}
-                      className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
-                    />
+                        type="time"
+                        value={attendanceData[index]?.TimeOut || ""}
+                        onChange={(e) =>
+                          handleTimeChange(index, "TimeOut", e.target.value)
+                        }
+                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
+                      />
                     </td>
                   </tr>
 
