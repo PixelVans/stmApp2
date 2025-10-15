@@ -22,7 +22,8 @@ const chemicalsStock = require('./routes/stocks/chemicalsStock');
 const dyestuffsStock = require('./routes/stocks/dyestuffsStock');
 
 // employees route
-const employeeRoutes = require("./routes/employees");
+const employeeRoutes = require("./routes/employees/index");
+const attendanceRoutes = require("./routes/employees/attendance");
 
 const app = express();
 const PORT = 3000;
@@ -50,6 +51,7 @@ app.use("/api/dyestuffs-stock", dyestuffsStock);
 
 // employees
 app.use("/api/employees", employeeRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 const reactBuildPath = path.resolve(__dirname, '../client/dist');
 app.use(express.static(reactBuildPath));

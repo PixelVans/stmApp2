@@ -13,6 +13,7 @@ import UpdateStockPage from "./pages/stocksUpdatePage";
 import ChemicalsStockPrintoutPage from "./customPrintouts/chemicalsStockPrintout";
 import DyestuffsStockPrintoutPage from "./customPrintouts/dyestuffsStockPrintout";
 import UpdateMusterRoll from "./pages/updateMusterRoll";
+import PrintingMusterRollReport from "./components/PrintoutTables/PrintingMusterRollReport";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         {/* Standalone routes without layout */}
         <Route path="/dyeing/print" element={<DyeingCardCustomPrint />} />
         <Route path="/weaving-production/print" element={<WeavingProductionPrintout />} />
+        <Route path="/mr" element={<PrintingMusterRollReport />} />
         <Route path="/prc" element={<ChemicalsStockPrintoutPage />} />
         <Route path="/prd" element={<DyestuffsStockPrintoutPage />} />
       </Routes>
