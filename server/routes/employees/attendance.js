@@ -2,9 +2,15 @@ const express = require("express");
 const router = express.Router();
 const { connectToDB2, sql } = require("../../config/db");
 
-// Utility to normalize time strings to HH:mm:ss
+// Utility to normalize time strings (HH:mm:ss)
 function normalizeTime(value) {
-  if (!value || value === "" || value === "0000" || value === "00:00" || value === "00:00:00") {
+  if (
+    !value ||
+    value === "" ||
+    value === "0000" ||
+    value === "00:00" ||
+    value === "00:00:00"
+  ) {
     return null;
   }
   const match = value.match(/^([0-1]?\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/);
@@ -36,7 +42,7 @@ router.post("/update", async (req, res) => {
 
     // Update Attendance table
     for (const record of AttendanceRecords) {
-      const { AttendanceDate, TimeIn, TimeOut, DayOfWeek } = record; // ✅ include DayOfWeek
+      const { AttendanceDate, TimeIn, TimeOut, DayOfWeek } = record;
       const safeTimeIn = normalizeTime(TimeIn);
       const safeTimeOut = normalizeTime(TimeOut);
 
@@ -46,7 +52,7 @@ router.post("/update", async (req, res) => {
         .input("AttendanceDate", sql.Date, AttendanceDate)
         .input("TimeIn", sql.VarChar(8), safeTimeIn)
         .input("TimeOut", sql.VarChar(8), safeTimeOut)
-        .input("DayOfWeek", sql.VarChar(10), DayOfWeek || null) // ✅ new input
+        .input("DayOfWeek", sql.VarChar(10), DayOfWeek || null)
         .query(`
           MERGE [Specialised Systems].dbo.Attendance AS target
           USING (SELECT @EmployeeID AS EmployeeID, @AttendanceDate AS AttendanceDate) AS source
@@ -55,14 +61,24 @@ router.post("/update", async (req, res) => {
             UPDATE SET 
               TimeIn = CASE WHEN TRY_CAST(@TimeIn AS TIME) IS NOT NULL THEN CAST(@TimeIn AS TIME) ELSE NULL END,
               TimeOut = CASE WHEN TRY_CAST(@TimeOut AS TIME) IS NOT NULL THEN CAST(@TimeOut AS TIME) ELSE NULL END,
-              DayOfWeek = @DayOfWeek, -- ✅ update here
+              DayOfWeek = @DayOfWeek,
               TotalHours = CASE 
                 WHEN TRY_CAST(@TimeIn AS TIME) IS NOT NULL AND TRY_CAST(@TimeOut AS TIME) IS NOT NULL THEN
-                  CAST(
-                    (DATEDIFF(MINUTE, CAST(@TimeIn AS TIME), CAST(@TimeOut AS TIME))
+                  CASE 
+                    WHEN (
+                      DATEDIFF(MINUTE, CAST(@TimeIn AS TIME), CAST(@TimeOut AS TIME))
                       + CASE WHEN @TimeOut < @TimeIn THEN 24 * 60 ELSE 0 END
-                    ) / 60.0 AS DECIMAL(10,2)
-                  )
+                      - 30
+                    ) < 0 THEN 0
+                    ELSE CAST(
+                      (
+                        (DATEDIFF(MINUTE, CAST(@TimeIn AS TIME), CAST(@TimeOut AS TIME))
+                          + CASE WHEN @TimeOut < @TimeIn THEN 24 * 60 ELSE 0 END
+                          - 30
+                        ) / 60.0
+                      ) AS DECIMAL(10,2)
+                    )
+                  END
                 ELSE NULL 
               END,
               UpdatedAt = GETDATE()
@@ -73,14 +89,24 @@ router.post("/update", async (req, res) => {
               @AttendanceDate,
               CASE WHEN TRY_CAST(@TimeIn AS TIME) IS NOT NULL THEN CAST(@TimeIn AS TIME) ELSE NULL END,
               CASE WHEN TRY_CAST(@TimeOut AS TIME) IS NOT NULL THEN CAST(@TimeOut AS TIME) ELSE NULL END,
-              @DayOfWeek, -- ✅ insert here
+              @DayOfWeek,
               CASE 
                 WHEN TRY_CAST(@TimeIn AS TIME) IS NOT NULL AND TRY_CAST(@TimeOut AS TIME) IS NOT NULL THEN
-                  CAST(
-                    (DATEDIFF(MINUTE, CAST(@TimeIn AS TIME), CAST(@TimeOut AS TIME))
+                  CASE 
+                    WHEN (
+                      DATEDIFF(MINUTE, CAST(@TimeIn AS TIME), CAST(@TimeOut AS TIME))
                       + CASE WHEN @TimeOut < @TimeIn THEN 24 * 60 ELSE 0 END
-                    ) / 60.0 AS DECIMAL(10,2)
-                  )
+                      - 30
+                    ) < 0 THEN 0
+                    ELSE CAST(
+                      (
+                        (DATEDIFF(MINUTE, CAST(@TimeIn AS TIME), CAST(@TimeOut AS TIME))
+                          + CASE WHEN @TimeOut < @TimeIn THEN 24 * 60 ELSE 0 END
+                          - 30
+                        ) / 60.0
+                      ) AS DECIMAL(10,2)
+                    )
+                  END
                 ELSE NULL 
               END
             );
@@ -115,10 +141,10 @@ router.post("/update", async (req, res) => {
       `);
 
     await transaction.commit();
-    res.json({ message: "Attendance and payroll summary successfully updated" });
+    res.json({ message: "Attendance and payroll summary successfully updated (with 30 min lunch deduction)" });
 
   } catch (err) {
-    console.error("Error saving attendance:", err);
+    console.error(" Error saving attendance:", err);
     res.status(500).json({ error: "Error saving attendance", details: err.message });
   }
 });
