@@ -218,7 +218,7 @@ export default function UpdateMusterRoll() {
   // RENDER
   // ==============================
   return (
-    <div className="bg-gray-50 max-h-screen hidden flex-col">
+    <div className="bg-gray-50 max-h-screen flex flex-col">
       <Toaster position="top-right" richColors />
 
       {/* Fixed Control Panel */}
@@ -332,28 +332,31 @@ export default function UpdateMusterRoll() {
           </table>
         </div>
 
-        {/* RIGHT: Sticky Leave Summary Panel */}
-        <div className="w-full lg:w-80">
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-5 sticky top-[120px]">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Leave & Absence Summary
-            </h2>
-            {Object.keys(leaveSummary).map((field) => (
-              <div key={field} className="mb-4">
-                <label className="block text-gray-700 font-medium mb-1">
-                  {field.replace("Days", " Days")}
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={leaveSummary[field]}
-                  onChange={(e) => handleSummaryChange(field, e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-            ))}
-          </div>
+        
+       {/* RIGHT: Sticky Leave Summary Panel */}
+      <div className="w-full lg:w-80">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-5 sticky top-[120px]">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            Leave & Absence Summary
+          </h2>
+
+          {["LeaveDays", "SickDays", "MaternityDays"].map((field) => (
+            <div key={field} className="mb-4">
+              <label className="block text-gray-700 font-medium mb-1">
+                {field.replace("Days", " Days")}
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={leaveSummary[field]}
+                onChange={(e) => handleSummaryChange(field, e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+          ))}
         </div>
+      </div>
+
       </div>
     </div>
   );

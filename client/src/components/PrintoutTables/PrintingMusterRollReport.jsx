@@ -295,76 +295,81 @@ const holidayPayable = holidayHours * 2;
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {dateRange.map((date, index) => {
-                  const rec = attendanceData.find(
-                    (r) =>
-                      new Date(r.AttendanceDate).toISOString().split("T")[0] ===
-                      date.toISOString().split("T")[0]
-                  );
-
-                  const dayName =
-                    rec?.DayOfWeek ||
-                    date.toLocaleDateString("en-US", { weekday: "short" });
-
-                  return (
-                    <React.Fragment key={index}>
-                      <tr className="bg-white hover:bg-blue-50">
-                        <td
-                      className={`border border-gray-500 px-1 text-xs font-medium text-center ${
-                        isKenyanHoliday(date) ? "bg-yellow-200" : ""
-                      }`}
-                      title={isKenyanHoliday(date) ? "Public Holiday" : ""}
-                    >
-                      {dayName}
-                    </td>
-
-                        <td className="border border-gray-500 text-[11px] py-0.5 text-center">
-                          {`${date.getDate()}/${date.getMonth() + 1}`}
-                        </td>
-                        <td className="border border-gray-500 text-[11px] text-center">
-                          {rec?.TimeIn
-                            ? new Date(rec.TimeIn).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : ""}
-                        </td>
-                        <td className="border border-gray-500 text-[11px] text-center">
-                          {rec?.TimeOut
-                            ? new Date(rec.TimeOut).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : ""}
-                        </td>
-                        <td className="border border-gray-500 text-[11px] text-center">
-                          {rec?.TotalHours != null ? rec.TotalHours.toFixed(2) : ""}
-                        </td>
-                      </tr>
-
-                      {/* Add small separator after Sunday */}
-                      {dayName === "Sun" && (
-                        <tr>
-                          <td colSpan="5">
-                            <div className="h-3 bg-gray-200" />
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
 
 
-                <tr className="bg-blue-50 font-semibold">
-                  <td colSpan="4" className="border border-gray-500 px-3 text-[11px] py-0.5">
-                    Monthly Total Hours
-                  </td>
-                  <td className="border border-gray-500 px-3 py-1 text-right">
-                    {totalHours.toFixed(2)}
-                  </td>
-                </tr>
-              </tbody>
+           <tbody>
+  {dateRange.map((date, index) => {
+    const record =
+      attendanceData.find(
+        (r) =>
+          new Date(r.AttendanceDate).toDateString() === date.toDateString()
+      ) || {};
+
+    const dayName = date
+      .toLocaleDateString("en-US", { weekday: "short" })
+      .slice(0, 3);
+
+    return (
+      <React.Fragment key={index}>
+        <tr className="bg-white hover:bg-blue-50">
+          <td
+            className={`border border-gray-500 px-1 text-xs font-medium text-center ${
+              isKenyanHoliday(date) ? "bg-yellow-200" : ""
+            }`}
+            title={isKenyanHoliday(date) ? "Public Holiday" : ""}
+          >
+            {dayName}
+          </td>
+
+          <td className="border border-gray-500 text-[11px] py-0.5 text-center">
+            {`${date.getDate()}/${date.getMonth() + 1}`}
+          </td>
+
+          <td className="border border-gray-500 text-[11px] text-center">
+            {record?.TimeIn
+              ? new Date(record.TimeIn).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : ""}
+          </td>
+
+          <td className="border border-gray-500 text-[11px] text-center">
+            {record?.TimeOut
+              ? new Date(record.TimeOut).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : ""}
+          </td>
+
+          <td className="border border-gray-500 text-[11px] text-center">
+            {record?.TotalHours != null ? record.TotalHours.toFixed(2) : ""}
+          </td>
+        </tr>
+
+        {dayName === "Sun" && (
+          <tr>
+            <td colSpan="5">
+              <div className="h-3 bg-gray-200" />
+            </td>
+          </tr>
+        )}
+      </React.Fragment>
+    );
+  })}
+
+  <tr className="bg-blue-50 font-semibold">
+    <td colSpan="4" className="border border-gray-500 px-3 text-[11px] py-0.5">
+      Monthly Total Hours
+    </td>
+    <td className="border border-gray-500 px-3 py-1 text-right">
+      {totalHours.toFixed(2)}
+    </td>
+  </tr>
+</tbody>
+
+
             </table>
             <h1 className="text-center font-semibold mb-5 mt-10">Employee Signature
               .........................................................</h1>
