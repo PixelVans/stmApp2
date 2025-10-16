@@ -218,7 +218,7 @@ export default function UpdateMusterRoll() {
   // RENDER
   // ==============================
   return (
-    <div className="bg-gray-50 max-h-screen flex flex-col">
+    <div className="bg-gray-50 max-h-screen hidden flex-col">
       <Toaster position="top-right" richColors />
 
       {/* Fixed Control Panel */}

@@ -117,6 +117,7 @@ const getEasterDate = (year) => {
         );
         if (!res.ok) throw new Error("Failed to fetch muster roll report");
         const data = await res.json();
+        console.log("muster roll report returned for one employee", data)
 
         setAttendanceData(data.attendance || []);
         setSummary(data.summary || {});
@@ -310,13 +311,13 @@ const holidayPayable = holidayHours * 2;
                     <React.Fragment key={index}>
                       <tr className="bg-white hover:bg-blue-50">
                         <td
-  className={`border border-gray-500 px-1 text-xs font-medium text-center ${
-    isKenyanHoliday(date) ? "bg-yellow-200" : ""
-  }`}
-  title={isKenyanHoliday(date) ? "Public Holiday" : ""}
->
-  {dayName}
-</td>
+                      className={`border border-gray-500 px-1 text-xs font-medium text-center ${
+                        isKenyanHoliday(date) ? "bg-yellow-200" : ""
+                      }`}
+                      title={isKenyanHoliday(date) ? "Public Holiday" : ""}
+                    >
+                      {dayName}
+                    </td>
 
                         <td className="border border-gray-500 text-[11px] py-0.5 text-center">
                           {`${date.getDate()}/${date.getMonth() + 1}`}

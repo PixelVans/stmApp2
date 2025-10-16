@@ -119,28 +119,37 @@ export default function UpdateWeavingProductionPage() {
     setMachineStatus(null);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.machineNo) return;
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (!formData.machineNo) return;
 
-    try {
-      setIsSubmitting(true);
-      await saveWeavingProduction(formData);
+      try {
+        setIsSubmitting(true);
 
-      toast.success(
-        `Production data updated for Machine ${formData.machineNo} (Week ${formData.weekNo})`
-      );
+        // Normalize day before sending to backend
+        const correctedDay =
+          formData.day === "Thu" ? "Thur" : formData.day;
 
-      setMachineStatus("success");
-      resetShiftData(true);
-    } catch (err) {
-      console.error("Save error:", err);
-      toast.error(err.message || "Failed to submit form.");
-      setMachineStatus("error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+        await saveWeavingProduction({
+          ...formData,
+          day: correctedDay,
+        });
+
+        toast.success(
+          `Production data updated for Machine ${formData.machineNo} (Week ${formData.weekNo})`
+        );
+
+        setMachineStatus("success");
+        resetShiftData(true);
+      } catch (err) {
+        console.error("Save error:", err);
+        toast.error(err.message || "Failed to submit form.");
+        setMachineStatus("error");
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
 
   const handleCancel = () => {
     resetShiftData(false);
