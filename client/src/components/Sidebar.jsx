@@ -27,6 +27,11 @@ const navItems = [
     icon: <FiClipboard size={18} className="text-orange-400" />, 
     href: "/update-muster-roll" 
   },
+  { 
+    name: "Muster Roll Forms", 
+    icon: <FiClipboard size={18} className="text-orange-400" />, 
+    href: "/mr" 
+  },
 ];
 
 

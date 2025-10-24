@@ -214,12 +214,28 @@ const handlePrint = useReactToPrint({
 
   // render loading state
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center mt-48">
-        <div className="animate-spin h-7 w-7 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-        <p className="mt-4 text-sm font-medium text-gray-700">
-          Loading Chemicals Stock Data...
+      return (
+      <div className="flex flex-col mt-[170px] items-center justify-center  bg-white">
+        <div className="flex space-x-1">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            ></div>
+          ))}
+        </div>
+
+        <p className="mt-6 text-lg font-semibold text-gray-800">
+          Loading Chemicals Stock Data
         </p>
+        
+      <style>{`
+          @keyframes wave {
+            0%, 40%, 100% { transform: scaleY(0.4); } 
+            20% { transform: scaleY(1.0); }
+          }
+        `}</style>
       </div>
     );
   }
@@ -274,7 +290,7 @@ const handlePrint = useReactToPrint({
           <button
               onClick={handlePrint}
               type="button"
-              className=" hidden items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+              className=" flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
               >
                <FiPrinter className="w-4 h-4" />
                 Print report

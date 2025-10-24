@@ -15,16 +15,16 @@ export async function getScouringChemGPL(scouring, selectedColour, position) {
   try {
     
     const row = await fetchScouringRow(selectedColour);
-    if (!row) return "dbErr"; 
+    if (!row) return "0"; 
 
     
     const rowValues = Object.values(row);
-    const amount = rowValues[colNum] ?? "dbErr";
+    const amount = rowValues[colNum] ?? "0";
 
     return amount;
   } catch (err) {
     console.error("Failed to fetch scouring GramsPL:", err);
-    return "dbErr"; 
+    return "0"; 
   }
 }
 
@@ -45,10 +45,10 @@ export async function getScouringTemperature(scouring, selectedColour) {
 
   try {
     const row = await fetchScouringRow(selectedColour);
-    if (!row) return "dbErr";
+    if (!row) return "0";
 
     const rowValues = Object.values(row);
-    let temp = rowValues[colNum] ?? "dbErr";
+    let temp = rowValues[colNum] ?? "0";
 
     // Replace "?" with a the degree symbol
     if (typeof temp === "string") {
@@ -58,7 +58,7 @@ export async function getScouringTemperature(scouring, selectedColour) {
     return temp;
   } catch (err) {
     console.error("Failed to fetch scouring temp:", err);
-    return "dbErr";
+    return "0";
   }
 }
 
@@ -77,15 +77,15 @@ export async function getScouringTimeorPH(scouring, selectedColour, position) {
   try {
     
     const row = await fetchScouringRow(selectedColour);
-    if (!row) return "dbErr"; 
+    if (!row) return "0"; 
 
     const rowValues = Object.values(row);
-    const value = rowValues[colNum] ?? "dbErr";
+    const value = rowValues[colNum] ?? "0";
 
     return value;
   } catch (err) {
     console.error("Failed to fetch scouring GramsPL:", err);
-    return "dbErr"; 
+    return "0"; 
   }
 }
 
@@ -102,15 +102,15 @@ export async function getHotwashGPL(dyeingSystem, selectedColour, position) {
   try {
     
     const row = await fetchScouringRow(selectedColour);
-    if (!row) return "dbErr"; 
+    if (!row) return "0"; 
 
     const rowValues = Object.values(row);
-    const value = rowValues[colNum] ?? "dbErr";
+    const value = rowValues[colNum] ?? "0";
 
     return value;
   } catch (err) {
     console.error("Failed to fetch scouring GramsPL:", err);
-    return "dbErr"; 
+    return "0"; 
   }
 }
 
@@ -134,25 +134,25 @@ export async function getDyeingSec1ChemGpl(mode, selectedColour, scouring, b26Ti
     let row;
     row = await fetchPrepareToDyeRow(selectedColour);
 
-    if (!row) return "dbErr"; 
+    if (!row) return "0"; 
     const rowValues = Object.values(row);
     if (mode === "prepareToDye") {
 
-     value = rowValues[colNum] ?? "dbErr";
-     return value ??'dbErr'
+     value = rowValues[colNum] ?? "0";
+     return value ??'0'
 
   } 
   if (mode === "dyeing") {
     row = await fetchDyeingRow(selectedColour)
     const dyeingrowValues = Object.values(row);
-    value = dyeingrowValues[colIndex] ?? "dbErr";
-    return value ?? 'dbErr'
+    value = dyeingrowValues[colIndex] ?? "0";
+    return value ?? '0'
   }
   return value;
 
   } catch (err) {
     console.error("Failed to fetch DyeingSec1ChemGpl:", err);
-    return "dbErr"; 
+    return "0"; 
   }
 }
 
@@ -169,12 +169,12 @@ export async function getDyeingSec1ChemGpl2( selectedColour, b26Title) {
   try {
     const row = await fetchDyeingRow(selectedColour)
     const dyeingrowValues = Object.values(row);
-    const value = dyeingrowValues[colIndex] ?? "dbErr";
-    return value ?? 'dbErr'
+    const value = dyeingrowValues[colIndex] ?? "0";
+    return value ?? '0'
   
  } catch (err) {
     console.error("Failed to fetch DyeingSec1ChemGpl 2:", err);
-    return "dbErr"; 
+    return "0"; 
   }
 }
 
@@ -193,14 +193,14 @@ export async function getDyeingSec1ChemGpl1( selectedColour, scouring,) {
     let row;
     row = await fetchPrepareToDyeRow(selectedColour);
     
-    if (!row) return "dbErr"; 
+    if (!row) return "0"; 
     const rowValues = Object.values(row);
-    value = rowValues[colNum] ?? "dbErr";
-     return value ??'dbErr'
+    value = rowValues[colNum] ?? "0";
+     return value ??'0'
 
    } catch (err) {
     console.error("Failed to fetch DyeingSec1ChemGpl one 1:", err);
-    return "dbErr"; 
+    return "0"; 
   }
 }
 
@@ -232,6 +232,9 @@ export function getDyeingSec1ChemAmt2(C26, waterLitresDyeing, unit = "Kgs") {
       return Math.ceil(product / 1000) + " " + unit;
     } else {
       // Roundup to integer grams
+      if (product <= 0) {
+        return "";
+      }
       return Math.ceil(product) + " " + " gm";
     }
   } catch (e) {
@@ -260,16 +263,16 @@ export async function getDyeingSec1Value(scouring,  selectedColour,dyeingSystem,
     if (!colNum) return "";
 
     const row = await fetchDyeingRow(selectedColour);
-    if (!row) return "dbErr";
+    if (!row) return "0";
    
     const rowValues = Object.values(row);
     
-    return rowValues[colNum] ?? "dbErr";
+    return rowValues[colNum] ?? "0";
     
 
   } catch (err) {
     console.error("Failed to fetch Dyeing value:", err);
-    return "dbErr";
+    return "0";
   }
 }
 
@@ -286,7 +289,7 @@ function normalizeSaltOption(option) {
 export async function getDyestuffGpl(selectedColour, index, saltOptionstep4) {
   try {
     const row = await fetchDyeingRow(selectedColour);
-    if (!row) return "dbErr";
+    if (!row) return "0";
 
     // Case 1: Salt / other chemical
     if (index === 6 && saltOptionstep4) {
@@ -302,7 +305,7 @@ export async function getDyestuffGpl(selectedColour, index, saltOptionstep4) {
     return value ?? "";
   } catch (err) {
     console.error("Failed to fetch dyestuff amount:", err);
-    return "dbErr";
+    return "0";
   }
 }
 
@@ -319,14 +322,14 @@ export async function getDyeingSec2Temp(scouring, selectedColour, index, dyeingS
     if (!colNum) return ""; 
 
     const row = await fetchDyeingRow(selectedColour);
-    if (!row) return "dbErr";
+    if (!row) return "0";
     const rowValues = Object.values(row);
-    const value = rowValues[colNum] ?? "dbErr";
-    return value ??'dbErr'
+    const value = rowValues[colNum] ?? "0";
+    return value ??'0'
     
   } catch (err) {
     console.error("Failed to fetch dyestuff amount:", err);
-    return "dbErr";
+    return "0";
   }
 }
 
@@ -341,14 +344,14 @@ export async function getDyeingSec2TimePh(selectedColour, index, dyeingSystem ) 
     if (!colNum) return ""; 
 
     const row = await fetchDyeingRow(selectedColour);
-    if (!row) return "dbErr";
+    if (!row) return "0";
     const rowValues = Object.values(row);
-    const value = rowValues[colNum] ?? "dbErr";
-    return value ??'dbErr'
+    const value = rowValues[colNum] ?? "0";
+    return value ??'0'
     
   } catch (err) {
     console.error("Failed to fetch dyestuff amount:", err);
-    return "dbErr";
+    return "0";
   }
 }
 

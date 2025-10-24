@@ -35,7 +35,7 @@ export default function ChemicalStepTable({ rows }) {
         if (current.length > 0) {
           const lastRow = current[current.length - 1];
           if (!lastRow.temp || String(lastRow.temp).trim() === "") {
-            lastRow.temp = "⇩⇩⇩".repeat(2);
+            lastRow.temp = "";
           }
         }
 

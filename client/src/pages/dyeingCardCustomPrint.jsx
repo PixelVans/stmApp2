@@ -31,30 +31,35 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
 
   return (
     <div ref={ref} className="p-1 sm:p-2  bg-white text-[10px] leading-tight">
-      {/* Header Info */}
-      <div className="border border-gray-300 p-1 mb-2 rounded text-[9px] text-gray-700">
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-x-2 gap-y-0.5">
+      {/* Header */}
+      <div className="border border-gray-300 p-1 px-2 mb-2 rounded text-[11px] text-gray-800">
+        <div
+          className="
+            grid 
+            grid-cols-[1.2fr_1.3fr_2.0fr_1.5fr] 
+            gap-x-2 gap-y-[2px]
+            [&>div]:whitespace-nowrap 
+            [&>div]:overflow-hidden 
+            [&>div]:text-ellipsis
+          "
+        >
           <div><strong>Client:</strong> {client ?? "-"}</div>
-          <div><strong>Lot No:</strong> {lotNo ?? "-"}</div>
           <div><strong>Article:</strong> {article ?? "-"}</div>
-          <div><strong>Winch:</strong> {winch ?? "-"}</div>
+          <div><strong>Machine:</strong> {winch ?? "-"} @ {liqRatio ?? "-"}</div>
           <div><strong>Dyeing System:</strong> {dyeingSystem ?? "-"}</div>
-          <div>
-            <strong>Shade:</strong>{" "}
-            <span >
-              {selectedColour ?? "-"}
-            </span>
-          </div>
-          <div><strong>Scouring:</strong> {scouring ?? "-"}</div>
+          
           <div><strong>Softener:</strong> {softener ?? "-"}</div>
-          <div><strong>Liq. Ratio:</strong> {liqRatio ?? "-"}</div>
-          <div><strong>Dye-Fix:</strong> {liqRatio8 ?? "-"}</div>
-          <div><strong>Lot Weight:</strong> {lotWeight ? `${lotWeight} Kgs` : "-"}</div>
-          <div><strong>Salt Option:</strong> {saltOption ?? "-"}</div>
+          <div><strong>Scouring:</strong> {scouring ?? "-"}</div>
+          
+          <div><strong>Shade:</strong> {selectedColour ?? "-"}</div>
+          
+          <div><strong>{liqRatio8 ?? "-"}</strong></div>
           <div><strong>Salt Position:</strong> {saltPosition ?? "-"}</div>
-          <div><strong>Soaping:</strong> {soaping ?? "-"}</div>
+          <div><strong>Salt Option:</strong> {saltOption ?? "-"}</div>
+          <div><strong>Lot Weight:</strong> {lotWeight ? `${lotWeight} Kgs @ ${lotNo ?? "-"}` : "-"}</div>
         </div>
       </div>
+
 
       {/* Steps */}
       {steps.map((step, sIdx) => (
@@ -63,19 +68,19 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
             <img
               src="/images/Picture1.png"
               alt="Isotherm"
-              className="mb-2 mt-2 h-[113px] mx-auto"
+              className="mb-1 mt-1 h-[118px] mx-auto"
             />
           )}
 
           {step.step === "Step 5 -  First Rinse" && (
-            <h3 className="italic text-[9px] mb-2 text-blue-600">
+            <h3 className=" text-[10px] mb-2 text-blue-800">
               BAADA YA KUONGEZA MAGADI NA CAUSTIC, DWELL KWA DAKIKA ARUBAINE NA TANO AT 60°C
             </h3>
           )}
           <h2 className="text-[11px] font-bold">{step.step}</h2>
           {step.extraSection && (
             <>
-              <h3 className="italic text-[9px] mb-1 text-blue-600">
+              <h3 className=" text-[9px] mb-1 text-blue-800">
                 {step.extraSection.title}
               </h3>
               <div className="mb-2">
@@ -84,7 +89,7 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
             </>
           )}
           {step.instructions && (
-            <p className="italic text-[9px] mb-1 text-blue-600">{step.instructions}</p>
+            <p className=" text-[9px] mb-1 text-blue-800">{step.instructions}</p>
           )}
           <div className="mt-1">
             <PrintChemStepTable rows={step.rows} />
@@ -109,9 +114,9 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
 
 
       {/* Totals Section */}
-      <div className="mt-4 mx-auto max-w-sm rounded-lg bg-white border border-gray-300 overflow-hidden text-[9px]">
-        <div className="bg-gradient-to-r from-slate-800 to-slate-500 px-1 py-1.5">
-          <h2 className="text-white ml-4 text-[10px] font-semibold tracking-wide">Total Cost</h2>
+      <div className="mt-4 mx-auto max-w-sm rounded-lg bg-white border border-gray-300 overflow-hidden text-[12px]">
+        <div className="bg-gradient-to-r from-slate-800 to-slate-500 px-1 py-1.5 flex items-center">
+          <h2 className="text-white ml-4 text-[13px] font-semibold tracking-wide">Total Cost</h2>
         </div>
         <table className="w-full ml-4 my-1 text-left border-collapse">
           <tbody>

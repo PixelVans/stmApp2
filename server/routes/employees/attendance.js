@@ -28,7 +28,9 @@ router.post("/update", async (req, res) => {
     LeaveDays,
     SickDays,
     MaternityDays,
-    HolidayDays,
+    NightshiftAllowance,
+    ProductDeductions,
+    LeaveAllowance,
   } = req.body;
 
   if (!EmployeeID || !AttendanceRecords?.length) {
@@ -40,7 +42,9 @@ router.post("/update", async (req, res) => {
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
 
+    // ==============================
     // Update Attendance table
+    // ==============================
     for (const record of AttendanceRecords) {
       const { AttendanceDate, TimeIn, TimeOut, DayOfWeek } = record;
       const safeTimeIn = normalizeTime(TimeIn);
@@ -113,8 +117,11 @@ router.post("/update", async (req, res) => {
         `);
     }
 
+    // ==============================
     // Update EmployeePayrolls table
-    const payrollMonth = `${new Date().getFullYear()}-${String(Month).padStart(2, "0")}-01`;
+    // ==============================
+    const payrollMonth = `${new Date().getFullYear()}-${String(Month + 1).padStart(2, "0")}-01`;
+
 
     const req2 = new sql.Request(transaction);
     await req2
@@ -123,7 +130,9 @@ router.post("/update", async (req, res) => {
       .input("LeaveDays", sql.Int, LeaveDays || 0)
       .input("SickDays", sql.Int, SickDays || 0)
       .input("MaternityDays", sql.Int, MaternityDays || 0)
-      .input("HolidayDays", sql.Int, HolidayDays || 0)
+      .input("NightshiftAllowance", sql.Decimal(10, 2), NightshiftAllowance || 0)
+      .input("ProductDeductions", sql.Decimal(10, 2), ProductDeductions || 0)
+      .input("LeaveAllowance", sql.Decimal(10, 2), LeaveAllowance || 0)
       .query(`
         MERGE [Specialised Systems].dbo.EmployeePayrolls AS target
         USING (SELECT @EmployeeID AS EmployeeID, @PayrollMonth AS PayrollMonth) AS source
@@ -133,18 +142,20 @@ router.post("/update", async (req, res) => {
             LeaveDays = @LeaveDays,
             SickDays = @SickDays,
             MaternityDays = @MaternityDays,
-            HolidayDays = @HolidayDays,
+            NightshiftAllowance = @NightshiftAllowance,
+            ProductDeductions = @ProductDeductions,
+            LeaveAllowance = @LeaveAllowance,
             UpdatedAt = GETDATE()
         WHEN NOT MATCHED THEN
-          INSERT (EmployeeID, PayrollMonth, LeaveDays, SickDays, MaternityDays, HolidayDays)
-          VALUES (@EmployeeID, @PayrollMonth, @LeaveDays, @SickDays, @MaternityDays, @HolidayDays);
+          INSERT (EmployeeID, PayrollMonth, LeaveDays, SickDays, MaternityDays, NightshiftAllowance, ProductDeductions, LeaveAllowance)
+          VALUES (@EmployeeID, @PayrollMonth, @LeaveDays, @SickDays, @MaternityDays, @NightshiftAllowance, @ProductDeductions, @LeaveAllowance);
       `);
 
     await transaction.commit();
-    res.json({ message: "Attendance and payroll summary successfully updated (with 30 min lunch deduction)" });
+    res.json({ message: "Attendance and payroll successfully updated" });
 
   } catch (err) {
-    console.error(" Error saving attendance:", err);
+    console.error("❌ Error saving attendance:", err);
     res.status(500).json({ error: "Error saving attendance", details: err.message });
   }
 });

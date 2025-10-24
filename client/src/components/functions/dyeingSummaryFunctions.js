@@ -82,18 +82,18 @@ export function getScouringSummaryChem(scouringSystem, matchValIfCream, matchVal
 
 export function getPrepareToDyeSummaryChem(scouringSystem, matchVal) {
   const positionsArray = positions_prepare_to_dye[scouringSystem];
-  if (!positionsArray) return "E";
+  if (!positionsArray) return "0";
 
   const columnIdx = positionsArray.indexOf(matchVal);
 
-  return columnIdx !== -1 ? titles_prepare_to_dye[columnIdx] ?? "E" : "E";
+  return columnIdx !== -1 ? titles_prepare_to_dye[columnIdx] ?? "0" : "0";
 }
 
 
 
 export function getDyeingChem4(scouringSystem, saltPosition, saltOption) {
   const positionsArray = positions_dyeing[scouringSystem];
-  if (!positionsArray) return "E";
+  if (!positionsArray) return "0";
 
   // Case 1: Salt_Position empty or "After Dyes"
   if (!saltPosition || saltPosition === "After Dyes") {
@@ -109,19 +109,19 @@ export function getDyeingChem4(scouringSystem, saltPosition, saltOption) {
   }
 
   const columnIdx = positionsArray.indexOf(matchVal);
-  return columnIdx !== -1 ? Titles_Dyeing[columnIdx] ?? "E" : "E";
+  return columnIdx !== -1 ? Titles_Dyeing[columnIdx] ?? "" : "";
 }
 
 
 export function getDyeingChem5(scouringSystem, saltPosition, saltOption) {
   const positionsArray = positions_dyeing[scouringSystem];
-  if (!positionsArray) return "E";
+  if (!positionsArray) return "";
 
   // Case 1: Salt_Position is "" or "After Dyes"
   if (!saltPosition || saltPosition === "After Dyes") {
     let matchVal = saltOption == "Industrial Salt" ? 5 : 7;
     const columnIdx = positionsArray.indexOf(matchVal);
-    return columnIdx !== -1 ? Titles_Dyeing[columnIdx] ?? "E" : "E";
+    return columnIdx !== -1 ? Titles_Dyeing[columnIdx] ?? "" : "";
   }
 
   // Case 2: otherwise → return ""
@@ -158,7 +158,7 @@ export function getKgsNeededScouringChem1(
       totalGrams = c8 * waterLitresDyeing + c48 * waterLitresDyeing;
     }
 
-    if (isNaN(totalGrams) || totalGrams <= 0) return "E";
+    if (isNaN(totalGrams) || totalGrams <= 0) return "0";
 
     if (totalGrams >= 1000) {
       const kgs = totalGrams / 1000;
@@ -168,7 +168,7 @@ export function getKgsNeededScouringChem1(
     }
   } catch (e) {
     console.error(e);
-    return "E";
+    return "0";
   }
 }
 
@@ -203,7 +203,7 @@ export function getKgsNeededScouringChem2(
       totalGrams = (c9 + c49) * waterLitresDyeing;
     }
 
-    if (isNaN(totalGrams) || totalGrams <= 0) return "E";
+    if (isNaN(totalGrams) || totalGrams <= 0) return "0";
 
     // Convert to correct units
     if (totalGrams >= 1000) {
@@ -214,7 +214,7 @@ export function getKgsNeededScouringChem2(
     }
   } catch (e) {
     console.error(e);
-    return "E";
+    return "0";
   }
 }
 
@@ -299,7 +299,7 @@ export function getKgsNeededScouringChem4(
       return "";
     }
 
-    if (isNaN(totalGrams) || totalGrams <= 0) return "E";
+    if (isNaN(totalGrams) || totalGrams <= 0) return "0";
 
     if (totalGrams >= 1000) {
       const kgs = totalGrams / 1000;
@@ -309,7 +309,7 @@ export function getKgsNeededScouringChem4(
     }
   } catch (e) {
     console.error(e);
-    return "E";
+    return "0";
   }
 }
 
@@ -327,7 +327,7 @@ export function getKgsNeededScouringChem5(scouringSystem, waterLitresDyeing, c12
     if (scouringSystem !== "Reactive") return ""; // Excel’s "Zero"
 
     const totalGrams = c12 * waterLitresDyeing;
-    if (isNaN(totalGrams) || totalGrams <= 0) return "E";
+    if (isNaN(totalGrams) || totalGrams <= 0) return "0";
 
     if (totalGrams >= 1000) {
       const kgs = totalGrams / 1000;
@@ -337,7 +337,7 @@ export function getKgsNeededScouringChem5(scouringSystem, waterLitresDyeing, c12
     }
   } catch (e) {
     console.error(e);
-    return "E";
+    return "0";
   }
 }
 
@@ -352,7 +352,7 @@ export function getKgsNeededScouringChem6(scouringSystem, waterLitresDyeing, c13
     if (scouringSystem !== "Reactive") return ""; // Excel’s "Zero"
 
     const totalGrams = c13 * waterLitresDyeing;
-    if (isNaN(totalGrams) || totalGrams <= 0) return "E";
+    if (isNaN(totalGrams) || totalGrams <= 0) return "0";
 
     if (totalGrams >= 1000) {
       const kgs = totalGrams / 1000;
@@ -362,7 +362,7 @@ export function getKgsNeededScouringChem6(scouringSystem, waterLitresDyeing, c13
     }
   } catch (e) {
     console.error(e);
-    return "E";
+    return "0";
   }
 }
 
@@ -373,39 +373,39 @@ export function getKgsNeededScouringChem6(scouringSystem, waterLitresDyeing, c13
 export function getprepareToDyeChem1KgsNeeded(waterLitresDyeing, c21, c59) {
   try {
     const grams = c21 * waterLitresDyeing + c59 * waterLitresDyeing;
-    if (isNaN(grams)) return "E";
+    if (isNaN(grams)) return "0";
     if (grams >= 1000) {
       return `${(grams / 1000).toFixed(1)} Kgs`;
     }
     return `${grams.toFixed(0)} g`;
   } catch {
-    return "E";
+    return "0";
   }
 }
 
 export function getprepareToDyeChem2KgsNeeded(waterLitresDyeing, c22) {
   try {
     const grams = c22 * waterLitresDyeing;
-    if (isNaN(grams)) return "E";
+    if (isNaN(grams)) return "0";
     if (grams >= 1000) {
       return `${(grams / 1000).toFixed(1)} Kgs`;
     }
     return `${grams.toFixed(0)} g`;
   } catch {
-    return "E";
+    return "0";
   }
 }
 
 export function getprepareToDyeChem3KgsNeeded(waterLitresDyeing, c25) {
   try {
     const grams = c25 * waterLitresDyeing;
-    if (isNaN(grams)) return "E";
+    if (isNaN(grams)) return "0";
     if (grams >= 1000) {
       return `${(grams / 1000).toFixed(1)} Kgs`;
     }
     return `${grams.toFixed(0)} g`;
   } catch {
-    return "E";
+    return "0";
   }
 }
 
@@ -432,15 +432,18 @@ export function getprepareToDyeChem4KgsNeeded(waterLitresDyeing, c26, c34, saltP
 
 
 function formatKgsGms(valueKg) {
-  if (isNaN(valueKg)) return "E";
+  if (isNaN(valueKg)) return "0";
 
   if (valueKg >= 1.1) {
     const kgs = Math.trunc(valueKg);                     // whole kilos
-    const gms = Math.round((valueKg - kgs) * 1000);      // remainder as grams
-    return `${kgs} Kgs${gms > 0 ? " " + gms + " gms" : ""}`;
+    const gms = (valueKg - kgs) * 1000;                  // remainder in grams
+    const gmsDisplay = gms >= 1 ? gms.toFixed(1) : gms.toFixed(3); // show decimals if tiny
+    return `${kgs} Kgs${gms > 0 ? " " + gmsDisplay + " gms" : ""}`;
   } else {
     // less than 1.1 kg → only grams
-    return `${Math.round(valueKg * 1000)} gms`;
+    const gms = valueKg * 1000;
+    const gmsDisplay = gms >= 1 ? gms.toFixed(1) : gms.toFixed(3);
+    return `${gmsDisplay} gms`;
   }
 }
 
@@ -448,12 +451,15 @@ function formatKgsGms(valueKg) {
 
 
 
+
 export function getDyeingChem1KgsNeeded(lotWeight, c29) {
+  console.log('getDyeingChem1KgsNeeded called with:', { lotWeight, c29 });
   if(!c29)return ''
   try {
+    console.log('Calculating:', (c29 / 100) * lotWeight);
     return formatKgsGms((c29 / 100) * lotWeight);  // <-- FIXED
   } catch {
-    return "E";
+    return "0";
   }
 }
 
@@ -463,7 +469,7 @@ export function getDyeingChem2KgsNeeded(lotWeight, c30) {
   try {
     return formatKgsGms((c30 / 100) * lotWeight);
   } catch {
-    return "E";
+    return "0";
   }
 }
 
@@ -472,7 +478,7 @@ export function getDyeingChem3KgsNeeded(lotWeight, c31) {
     if(!c31)return ''
     return formatKgsGms((c31 / 100) * lotWeight);
   } catch {
-    return "E";
+    return "0";
   }
 }
 
@@ -483,7 +489,7 @@ export function getDyeingChem4KgsNeeded(lotWeight, c32) {
     if (Math.round(valueKg * 1000) === 0) return ""; // Excel's Zero case
     return formatKgsGms(valueKg);
   } catch {
-    return "E";
+    return "0";
   }
 }
 
@@ -500,7 +506,7 @@ export function getDyeingChem5KgsNeeded(lotWeight, waterLitresDyeing, c34, saltP
     if (scouringSystem === "CreamStripe") return "";
     return formatKgsGms(c34 * lotWeight);
   } catch {
-    return "E";
+    return "0";
   }
 }
 
@@ -518,7 +524,7 @@ export function getFinishingChem1KgsNeeded(waterLitresDyeing, c66) {
 
     return `${(Math.round(value * 10) / 10)} gms`;
   } catch {
-    return "E";
+    return "0";
   }
 }
 
@@ -536,7 +542,7 @@ export function getFinishingChem2KgsNeeded(waterLitresDyeing, c25, dyeFixSelecti
 
     return `${(Math.round(value * 10) / 10)} gms`;
   } catch {
-    return "E";
+    return "0";
   }
 }
 
@@ -547,7 +553,7 @@ export function getFinishingChem2KgsNeeded(waterLitresDyeing, c25, dyeFixSelecti
 export async function getChemicalsAmtonHand(chemical) {
   try {
     const row = await fetchChemicalsRow(chemical);
-    if (!row) return "dbErr";
+    if (!row) return "0";
 
     const rowValues = Object.values(row);
     const value = rowValues[3] ?? "";
@@ -564,7 +570,7 @@ export async function getChemicalsAmtonHand(chemical) {
 export async function getDyestuffAmtonHand(dye) {
   try {
     const row = await fetchDyeStuffsRow(dye);
-    if (!row) return "dbErr";
+    if (!row) return "0";
 
     const rowValues = Object.values(row);
     const value = rowValues[3] ?? "";
@@ -578,7 +584,7 @@ export async function getDyestuffAmtonHand(dye) {
 export async function getFinishingChemicalsAmtonHand(chemical) {
   try {
     const row = await fetchChemicalsRow(chemical);
-    if (!row) return "dbErr";
+    if (!row) return "0";
 
     const rowValues = Object.values(row);
     const value = rowValues[3] ?? "";
@@ -596,7 +602,7 @@ export async function getFinishingChemicalsAmtonHand(chemical) {
 export async function getChemicalsCostPerLtorKg(chemical) {
   try {
     const row = await fetchChemicalsRow(chemical);
-    if (!row) return "dbErr";
+    if (!row) return "0r";
 
     const rowValues = Object.values(row);
     const value = rowValues[6] ?? "";
@@ -614,7 +620,7 @@ export async function getChemicalsCostPerLtorKg(chemical) {
 export async function getDyestuffCostPerLtorKg(dye) {
   try {
     const row = await fetchDyeStuffsRow(dye);
-    if (!row) return "dbErr";
+    if (!row) return "0";
 
     const rowValues = Object.values(row);
     const value = rowValues[6] ?? "";
@@ -1035,7 +1041,7 @@ export function getChemSummary(kgsNeeded, amtInHand) {
     const hand = parseValueUnit(handRaw);
 
     if (isNaN(needed.numeric) || isNaN(hand.numeric)) {
-       return "E";
+       return "0";
     }
 
     
@@ -1053,7 +1059,7 @@ export function getChemSummary(kgsNeeded, amtInHand) {
     return result;
   } catch (err) {
    
-    return "E";
+    return "0";
   }
 }
 

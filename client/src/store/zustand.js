@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-
 function getISOWeek(date = new Date()) {
   const tempDate = new Date(date.getTime());
   tempDate.setHours(0, 0, 0, 0);
@@ -18,17 +17,27 @@ function getISOWeek(date = new Date()) {
   );
 }
 
+// ✅ Mapping winch → default liquor ratio
+const defaultLiqRatioMap = {
+  "Soft Flow": 8,
+  "Main Winch": 8,
+  "Sample Winch": 10,
+  "Paddle Winch": 15,
+  "Soft Flow-Minimum": 12,
+  "VAT": 12,
+};
+
 const useDyeingStore = create(
   persist(
     (set, get) => ({
-      selectedColour: "Biege",
+      selectedColour: "Blue - Sky - Sunfix",
       winch: "Soft Flow",
       dyeingSystem: "Reactive",
       scouring: "Enzymatic",
-      softener: "Brenntag",
+      softener: "Bubanks",
       saltOption: "Industrial Salt",
       saltPosition: "",
-      liqRatio: "",
+      liqRatio: defaultLiqRatioMap["Soft Flow"], // ✅ initialize based on default winch
       lotWeight: "",
       client: "",
       article: "",
@@ -36,25 +45,34 @@ const useDyeingStore = create(
       liqRatio8: "No Dye Fix",
       soaping: "",
       date: new Date(),
-
-      // Week state
       selectedWeek: getISOWeek(),
+
+      // Update selected week
       setSelectedWeek: (week) => set({ selectedWeek: week }),
 
-      
-      setField: (field, value) => set({ [field]: value }),
+      // ✅ Smart setter: updates liqRatio if winch changes
+      setField: (field, value) => {
+        if (field === "winch") {
+          const newRatio = defaultLiqRatioMap[value] || "";
+          set({ winch: value, liqRatio: newRatio });
+        } else {
+          set({ [field]: value });
+        }
+      },
 
-      
-      resetFields: () =>
+      // ✅ Reset all fields (liqRatio depends on current winch)
+      resetFields: () => {
+        const currentWinch = get().winch; // 👈 get the currently selected winch
+        const liqRatioDefault = defaultLiqRatioMap[currentWinch] || "";
+
         set({
-          selectedColour: "Biege",
-          winch: "Soft Flow",
+          selectedColour: "Blue - Sky - Sunfix",
           dyeingSystem: "Reactive",
           scouring: "Enzymatic",
-          softener: "Brenntag",
+          softener: "Bubanks",
           saltOption: "Industrial Salt",
           saltPosition: "",
-          liqRatio: "",
+          liqRatio: liqRatioDefault, // ✅ match the winch’s ratio
           lotWeight: "",
           client: "",
           article: "",
@@ -63,17 +81,15 @@ const useDyeingStore = create(
           soaping: "",
           date: new Date(),
           selectedWeek: getISOWeek(),
-        }),
+        });
+      },
     }),
     {
       name: "dyeing-storage",
       getStorage: () => localStorage,
       onRehydrateStorage: () => (state) => {
-        if (state?.date) {
-          state.date = new Date(state.date);
-        }
+        if (state?.date) state.date = new Date(state.date);
 
-        
         const currentWeek = getISOWeek();
         if (state && state.selectedWeek !== currentWeek) {
           state.selectedWeek = currentWeek;

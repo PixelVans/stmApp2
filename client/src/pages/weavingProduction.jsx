@@ -69,16 +69,32 @@ const handlePrint = useReactToPrint({
 
   // Loading UI
   if (loading) {
-    return (
-      <div className="flex flex-col mt-[-120px] items-center justify-center h-screen ">
-        <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-        <p className="mt-4 text-lg font-medium text-gray-700">
+       return (
+      <div className="flex flex-col mt-[-120px] items-center justify-center h-screen bg-white">
+        <div className="flex space-x-1">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            ></div>
+          ))}
+        </div>
+
+        <p className="mt-6 text-lg font-semibold text-gray-800">
           Loading Weaving production Data
         </p>
         <p className="mt-2 text-sm text-gray-600">
           Timeout <span className="font-semibold">{seconds}</span> sec
           {seconds !== 1 ? "s" : ""}
         </p>
+
+        <style>{`
+          @keyframes wave {
+            0%, 40%, 100% { transform: scaleY(0.4); } 
+            20% { transform: scaleY(1.0); }
+          }
+        `}</style>
       </div>
     );
   }

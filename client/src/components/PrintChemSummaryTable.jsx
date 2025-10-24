@@ -4,13 +4,13 @@ export default function PrintChemSummaryTable({ steps }) {
   const NBSP = "\u00A0";
 
   return (
-    <table className="table-auto border-collapse border border-gray-600 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
+    <table className="table-auto border-collapse border border-gray-600 w-full text-[12px]  text-center">
       <thead>
         <tr className="bg-gray-200">
           <th className="border border-gray-600 px-0.5 py-0.5 text-center">
             Chemicals Summary
           </th>
-          <th className="border border-gray-600 px-0.5 py-0.5 text-center w-24">
+          <th className="border border-gray-600 px-0.5 py-0.5 text-center w-28">
             Kgs Needed
           </th>
           <th className="border border-gray-600 px-0.5 py-0.5 text-center w-24">
@@ -19,10 +19,10 @@ export default function PrintChemSummaryTable({ steps }) {
           <th className="border border-gray-600 px-0.5 py-0.5 text-center w-24">
             Summary
           </th>
-          <th className="border border-gray-600 px-0.5 py-0.5 text-center w-24">
+          <th className="border border-gray-600 px-0.5 py-0.5 text-center w-22">
             Kg/Lt Cost
           </th>
-          <th className="border border-gray-600 px-0.5 py-0.5 text-center w-24">
+          <th className="border border-gray-600 px-0.5 py-0.5 text-center w-22">
             Total Cost
           </th>
           <th className="border border-gray-600 px-0.5 py-0.5 text-center hidden">
@@ -53,33 +53,33 @@ export default function PrintChemSummaryTable({ steps }) {
                   key={i}
                   className={`${i % 2 === 0 ? "bg-white" : "bg-white"} text-center`}
                 >
-                  <td className="border border-gray-600 px-0.5 py-0.5">
+                  <td className="border border-gray-600 px-0.5 py-[1px]">
                     {r.chemical || NBSP}
                   </td>
-                  <td className="border border-gray-600 px-0.5 py-0.5">
+                  <td className="border border-gray-600 px-0.5 py-[1px]">
                     {r.kgs_needed || NBSP}
                   </td>
                   <td
-                    className={`border border-gray-600 px-0.5 py-0.5 ${
+                    className={`border border-gray-600 px-0.5 py-[1px] ${
                       isShortfall ? "bg-yellow-400 font-semibold" : ""
                     }`}
                   >
                     {r.amt_on_hand || NBSP}
                   </td>
                   <td
-                    className={`border border-gray-600 px-0.5 py-0.5 ${
+                    className={`border border-gray-600 px-0.5 py-[1px] ${
                       isShortfall ? "bg-yellow-400 font-semibold" : ""
                     }`}
                   >
                     {r.summary || NBSP}
                   </td>
-                  <td className="border border-gray-600 px-0.5 py-0.5">
+                  <td className="border border-gray-600 px-0.5 py-[1px]">
                     {r.cost_per_kg || NBSP}
                   </td>
-                  <td className="border border-gray-600 px-0.5 py-0.5">
+                  <td className="border border-gray-600 px-0.5 py-[1px]">
                     {r.total_cost || NBSP}
                   </td>
-                  <td className="border border-gray-600 px-0.5 py-0.5 hidden">
+                  <td className="border border-gray-600 px-0.5 py-[1px] hidden">
                     {r.needed_totals || NBSP}
                   </td>
                 </tr>

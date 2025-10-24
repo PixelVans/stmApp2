@@ -8,6 +8,7 @@ import { FiPrinter } from "react-icons/fi";
 import { useReactToPrint } from "react-to-print";
 import ChemicalTable from "../pages/dyeing";
 import DyeingCardCustomPrint from "../pages/dyeingCardCustomPrint";
+import { toast } from "sonner";
 
 
 const FormRow = React.memo(function FormRow({ label, children }) {
@@ -68,6 +69,8 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
   const [saltOption, setSaltOption] = useState(initial.current.saltOption || "Glauber Salt");
   const [saltPosition, setSaltPosition] = useState(initial.current.saltPosition || "After Dyes");
   const [soaping, setSoaping] = useState(initial.current.soaping || "");
+  const [isExecuting, setIsExecuting] = useState(false);
+
 
   const today = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -76,12 +79,34 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
   });
   const currentYear = new Date().getFullYear();
 
+  const defaultLiqRatioMap = {
+  "Soft Flow": 8,
+  "Main Winch": 8,
+  "Sample Winch": 10,
+  "Paddle Winch": 15,
+  "Soft Flow-Minimum": 12,
+  "VAT": 12,
+};
+
+
   const baseInput =
     "border border-gray-300 rounded-lg px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition";
   const baseSelect = baseInput + " bg-white";
 
-  const handleCompute = () => {
-    // Only now push local values to Zustand
+const handleCompute = async () => {
+  //  Validation first
+  if (!lotWeight || Number(lotWeight) <= 0) {
+    toast.error("Please enter a valid Lot Weight before executing");
+    return;
+  }
+
+  try {
+    setIsExecuting(true);
+
+    // Optional: simulate delay to show the executing state
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    // Push local values to Zustand
     setField("winch", winch);
     setField("dyeingSystem", dyeingSystem);
     setField("lotNo", lotNo);
@@ -96,7 +121,16 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
     setField("saltOption", saltOption);
     setField("saltPosition", saltPosition);
     setField("soaping", soaping);
-  };
+
+    toast.success("Execution completed successfully ");
+  } catch (error) {
+    toast.error("Execution failed ");
+  } finally {
+    setIsExecuting(false);
+  }
+};
+
+
 
   const handleReset = () => {
     resetFields();
@@ -143,16 +177,25 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
 
             {/* Full-width form grid */}
             <div className="grid gap-3 grid-cols-2  lg:grid-cols-4 w-full">
-              <FormRow label="Winch">
-                <select className={baseSelect} value={winch} onChange={(e) => setWinch(e.target.value)}>
-                  <option value="Soft Flow">Soft Flow</option>
-                  <option value="Main Winch">Main Winch</option>
-                  <option value="Sample Winch">Sample Winch</option>
-                  <option value="Paddle Winch">Paddle Winch</option>
-                  <option value="Soft Flow-Minimum">Soft Flow-Minimum</option>
-                  <option value="VAT">VAT</option>
-                </select>
-              </FormRow>
+              <FormRow label="Machine">
+              <select
+                className={baseSelect}
+                value={winch}
+                onChange={(e) => {
+                  const newWinch = e.target.value;
+                  setWinch(newWinch);
+                  setLiqRatio(defaultLiqRatioMap[newWinch]); // 👈 instantly update ratio
+                }}
+              >
+                <option value="Soft Flow">Soft Flow</option>
+                <option value="Main Winch">Main Winch</option>
+                <option value="Sample Winch">Sample Winch</option>
+                <option value="Paddle Winch">Paddle Winch</option>
+                <option value="Soft Flow-Minimum">Soft Flow-Minimum</option>
+                <option value="VAT">VAT</option>
+              </select>
+            </FormRow>
+
 
               <FormRow label="Dyeing System">
                 <select
@@ -168,7 +211,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
               <FormRow label="Lot No">
                 <input
                   type="text"
-                  className={baseInput}
+                  className={baseInput + " bg-white"}
                   value={lotNo}
                   onChange={(e) => setLotNo(e.target.value)}
                 />
@@ -177,7 +220,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
               <FormRow label="Client">
                 <input
                   type="text"
-                  className={baseInput}
+                  className={baseInput + " bg-white"}
                   value={client}
                   onChange={(e) => setClient(e.target.value)}
                 />
@@ -211,18 +254,20 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
               </FormRow>
 
               <FormRow label="Lot Weight">
-                <input
-                  type="number"
-                  className={baseInput}
-                  value={lotWeight}
-                  onChange={(e) => setLotWeight(e.target.value)}
-                />
-              </FormRow>
+              <input
+                type="number"
+                className={`${baseInput} bg-white ${!lotWeight ? "border-red-500 border-2" : ""}`}
+                value={lotWeight}
+                onChange={(e) => setLotWeight(e.target.value)}
+              />
+
+            </FormRow>
+
 
               <FormRow label="Article">
                 <input
                   type="text"
-                  className={baseInput}
+                  className={baseInput + " bg-white"}
                   value={article}
                   onChange={(e) => setArticle(e.target.value)}
                 />
@@ -239,14 +284,21 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
                 </select>
               </FormRow>
 
-              <FormRow label="Adjusted Liq. Ratio">
-                <input
-                  type="number"
-                  className={baseInput}
-                  value={liqRatio}
-                  onChange={(e) => setLiqRatio(e.target.value)}
-                />
-              </FormRow>
+              <FormRow label="Liquor Ratio">
+              <select
+                className={baseSelect}
+                value={liqRatio}
+                onChange={(e) => setLiqRatio(Number(e.target.value))}
+              >
+                {Array.from({ length: 16 }, (_, i) => i + 5).map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
+            </FormRow>
+
+
 
               <FormRow label="Dye Fix">
                 <select
@@ -282,26 +334,32 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
                 </select>
               </FormRow>
 
-              <FormRow label="Soaping">
+              {/* <FormRow label="Soaping">
                 <select
-                  className={baseSelect}
+                  className={baseSelect }
                   value={soaping}
                   onChange={(e) => setSoaping(e.target.value)}
                 >
                   <option value=""></option>
                   <option value="Acetic Acid">Acetic Acid</option>
                 </select>
-              </FormRow>
+              </FormRow> */}
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-4 flex gap-4">
+            <div className="mt-4 flex gap-4 justify-between">
               <button
                 onClick={handleCompute}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 transition text-sm"
+                disabled={isExecuting}
+                className={`px-4 py-2 rounded-lg text-white transition text-sm ${
+                  isExecuting
+                    ? "bg-green-400 cursor-not-allowed"
+                    : "bg-green-600 hover:bg-green-800"
+                }`}
               >
-                Execute
+                {isExecuting ? "Executing..." : "Execute"}
               </button>
+
               <button
                 onClick={handleReset}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm"
@@ -311,7 +369,7 @@ const DyeingControlPanel = ({ open, setOpen,printRef }) => {
 
              <button
                 onClick={handlePrint}
-                className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+                className=" items-center hidden gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
               >
                 <FiPrinter className="w-4 h-4" />
                 Print Document

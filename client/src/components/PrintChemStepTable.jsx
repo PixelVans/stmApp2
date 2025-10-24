@@ -63,25 +63,25 @@ export default function PrintChemStepTable({ rows }) {
   let globalRowIndex = 0;
 
   return (
-    <table className="table-auto border-collapse border border-gray-600 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
+    <table className="table-auto border-collapse border border-gray-600 w-full text-[12px] text-center">
       <thead>
         <tr className="bg-gray-200">
-          <th className="border border-gray-600 px-0.5 py-0.5 align-middle">
+          <th className="border border-gray-600 px-0.5 py-[1px] align-middle">
             Chemical
           </th>
-          <th className="border border-gray-600 px-0.5 py-0.5 align-middle w-24">
+          <th className="border border-gray-600 px-0.5 py-[1px] align-middle w-24">
             Grams/Lt
           </th>
-          <th className="border border-gray-600 px-0.5 py-0.5 align-middle w-24">
+          <th className="border border-gray-600 px-0.5 py-[1px] align-middle w-28">
             Amount
           </th>
-          <th className="border border-gray-600 px-0.5 py-0.5 align-middle w-20">
+          <th className="border border-gray-600 px-0.5 py-[1px] align-middle w-20">
             Temp
           </th>
-          <th className="border border-gray-600 px-0.5 py-0.5 align-middle w-28">
+          <th className="border border-gray-600 px-0.5 py-[1px] align-middle w-28">
             Time
           </th>
-          <th className="border border-gray-600 px-0.5 py-0.5 align-middle w-20">
+          <th className="border border-gray-600 px-0.5 py-[1px] align-middle w-20">
             pH
           </th>
         </tr>
@@ -107,22 +107,22 @@ export default function PrintChemStepTable({ rows }) {
             globalRowIndex += 1;
             return (
               <tr key={`drain-${gIdx}`} className={`${bg}`}>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle">
                   {r.chemical || NBSP}
                 </td>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle w-16">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle w-16">
                   {r.gramsPerLt || NBSP}
                 </td>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle w-16">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle w-16">
                   {r.amount || NBSP}
                 </td>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle w-16">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle w-16">
                   {r.temp || NBSP}
                 </td>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle w-28">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle w-28">
                   {r.time || NBSP}
                 </td>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle font-bold italic w-16">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle font-bold italic w-16">
                   {r.ph || NBSP}
                 </td>
               </tr>
@@ -153,32 +153,32 @@ export default function PrintChemStepTable({ rows }) {
 
             return (
               <tr key={`g-${gIdx}-r-${i}`} className={bg}>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle">
                   {r.chemical || NBSP}
                 </td>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle w-16">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle w-16">
                   {r.gramsPerLt || NBSP}
                 </td>
-                <td className="border border-gray-600 px-0.5 py-0.5 align-middle w-16">
+                <td className="border border-gray-600 px-0.5 py-[1px] align-middle w-16">
                   {r.amount || NBSP}
                 </td>
 
                 {isFirst && (
                   <>
                     <td
-                      className="border border-gray-600 px-0.5 py-0.5 align-middle w-16"
+                      className="border border-gray-600 px-0.5 py-[1px] align-middle w-16"
                       rowSpan={groupRowsArr.length}
                     >
                       {groupTemp}
                     </td>
                     <td
-                      className="border border-gray-600 px-0.5 py-0.5 align-middle w-28"
+                      className="border border-gray-600 px-0.5 py-[1px] align-middle w-28"
                       rowSpan={groupRowsArr.length}
                     >
                       {groupTime}
                     </td>
                     <td
-                      className="border border-gray-600 px-0.5 py-0.5 align-middle w-16"
+                      className="border border-gray-600 px-0.5 py-[1px] align-middle w-16"
                       rowSpan={groupRowsArr.length}
                     >
                       {groupPh}

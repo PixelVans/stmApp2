@@ -50,11 +50,6 @@ sodiumsulphateGramsPerL
 const UNIT_KG = " Kgs";
 const UNIT_G = " gms";
 
-
-  
-
-  
-
 export function computeAmount(gramsPerLt, lotWeight) {
   if (!gramsPerLt || !lotWeight) return "";
 
@@ -63,13 +58,19 @@ export function computeAmount(gramsPerLt, lotWeight) {
   if (totalGrams >= 1000) {
     const wholeKg = Math.trunc(totalGrams / 1000);
     const grams = totalGrams % 1000;
-    return grams > 0
-      ? `${wholeKg}${UNIT_KG} ${grams.toFixed(0)} ${UNIT_G}`
+
+    // Round grams to 4 decimal places to prevent floating-point errors
+    const roundedGrams = Number(grams.toFixed(4));
+
+    return roundedGrams > 0
+      ? `${wholeKg}${UNIT_KG} ${roundedGrams}${UNIT_G}`
       : `${wholeKg}${UNIT_KG}`;
   } else {
-    return `${totalGrams.toFixed(0)} ${UNIT_G}`;
+    // If total is under 1kg, show with 4 decimal places
+    return `${totalGrams.toFixed(4)}${UNIT_G}`;
   }
 }
+
 
 
 export function getDyeingTemp(scouringSystemSelected, colourSelected, dyeingSystemSelected) {
@@ -288,9 +289,9 @@ export function getRemainInDwell({
 
 
 export function computeStartingWaterAmount({
-  lotWeight, // Quantity_Kgs_Dyeing
-  liqRatio, // N3
-  winch
+  lotWeight, 
+  liqRatio,  
+  winch     
 }) {
   const dyeingMachineList = [
     "Soft Flow",
@@ -301,16 +302,25 @@ export function computeStartingWaterAmount({
     "VAT"
   ];
 
-  const liquorRatioDyeing = [8, 8, 10, 15, 12, 12]; 
+  const liquorRatioDyeing = [8, 8, 10, 15, 12, 12];
 
-  if (!liqRatio) {
-    const machineIndex = dyeingMachineList.indexOf(winch);
-    if (machineIndex === -1) return "";
-    return lotWeight * liquorRatioDyeing[machineIndex];
-  } else {
-    return lotWeight * liqRatio;
-  }
+  // Find the index for the selected machine
+  const machineIndex = dyeingMachineList.indexOf(winch);
+
+  // If machine not recognized, return empty or handle gracefully
+  if (machineIndex === -1) return "";
+
+  // Pick default ratio for this machine
+  const defaultLiqRatio = liquorRatioDyeing[machineIndex];
+
+  // If user didn't set a ratio or set it to  use default
+  const effectiveLiqRatio =
+    liqRatio && !isNaN(liqRatio) && liqRatio > 0 ? liqRatio : defaultLiqRatio;
+
+  // Compute starting water
+  return lotWeight * effectiveLiqRatio;
 }
+
 
 
 

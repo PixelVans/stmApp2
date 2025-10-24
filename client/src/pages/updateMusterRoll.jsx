@@ -7,15 +7,19 @@ export default function UpdateMusterRoll() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [attendanceData, setAttendanceData] = useState([]);
   const [dateRange, setDateRange] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [leaveSummary, setLeaveSummary] = useState({
-    LeaveDays: "",
-    SickDays: "",
-    MaternityDays: "",
-    HolidayDays: "",
-  });
+ const [leaveSummary, setLeaveSummary] = useState({
+  LeaveDays: "",
+  SickDays: "",
+  MaternityDays: "",
+  NightshiftAllowance: "",
+  ProductDeductions: "",
+  LeaveAllowance: "",
+});
 
-  // Local date string (YYYY-MM-DD) - avoids UTC drift
+
+  // Helper: consistent YYYY-MM-DD
   const localDateKey = (date) => {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -23,23 +27,19 @@ export default function UpdateMusterRoll() {
     return `${y}-${m}-${d}`;
   };
 
-  // Generate date range for selected month (27th → 26th next)
+  //  Generate date range for *previous* month (27th → 26th)
   const generateDateRange = (month) => {
-  const year = new Date().getFullYear();
+    const prevMonth = month === 0 ? 11 : month - 1;
+    const year = new Date().getFullYear() - (month === 0 ? 1 : 0);
+    const startDate = new Date(year, prevMonth, 26);
+    const endDate = new Date(year, month, 25);
 
-  // Start from 26th of the selected month
-  const startDate = new Date(year, month, 26);
-
-  // End at 25th of the following month
-  const endDate = new Date(year, month + 1, 25);
-
-  const dates = [];
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-    dates.push(new Date(d));
-  }
-  return dates;
-};
-
+    const dates = [];
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+      dates.push(new Date(d));
+    }
+    return dates;
+  };
 
   // ==============================
   // Fetch employee muster roll
@@ -49,15 +49,18 @@ export default function UpdateMusterRoll() {
 
     async function fetchEmployeeMusterRoll() {
       try {
+        //  Shift fetch one month back
+        const prevMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
+        const year = new Date().getFullYear() - (selectedMonth === 0 ? 1 : 0);
+
         const res = await fetch(
-          `/api/employees/report?employeeId=${selectedEmployee}&month=${selectedMonth}`
+          `/api/employees/report?employeeId=${selectedEmployee}&month=${prevMonth}&year=${year}`
         );
         if (!res.ok) throw new Error("Failed to fetch employee muster roll");
 
         const data = await res.json();
         console.log("Fetched existing muster roll:", data);
 
-        // Build attendance map using local date keys
         const attendanceMap = {};
         data.attendance?.forEach((rec) => {
           let recDate;
@@ -70,11 +73,12 @@ export default function UpdateMusterRoll() {
           }
 
           const key = localDateKey(recDate);
-
           const formatTime = (timeStr) => {
             if (!timeStr) return "";
             const d = new Date(timeStr);
-            return d.toTimeString().slice(0, 5); // "HH:MM"
+            const hh = d.getUTCHours().toString().padStart(2, "0");
+            const mm = d.getUTCMinutes().toString().padStart(2, "0");
+            return `${hh}:${mm}`;
           };
 
           attendanceMap[key] = {
@@ -84,29 +88,33 @@ export default function UpdateMusterRoll() {
           };
         });
 
-        //  Align attendanceData with dateRange
+        //  Align with shifted date range
         const prefilled = generateDateRange(selectedMonth).map((date) => {
           const dateKey = localDateKey(date);
           return attendanceMap[dateKey] || { TimeIn: "", TimeOut: "" };
         });
 
-        console.log("Prefilled attendance data:", prefilled);
         setAttendanceData(prefilled);
 
-        //  Leave summary
+        // Leave summary
         if (data.summary) {
           setLeaveSummary({
             LeaveDays: data.summary.LeaveDays || "",
             SickDays: data.summary.SickDays || "",
             MaternityDays: data.summary.MaternityDays || "",
-            HolidayDays: data.summary.HolidayDays || "",
+            NightshiftAllowance: data.summary.NightshiftAllowance || "",
+            ProductDeductions: data.summary.ProductDeductions || "",
+            LeaveAllowance: data.summary.LeaveAllowance || "",
           });
         } else {
           setLeaveSummary({
             LeaveDays: "",
             SickDays: "",
             MaternityDays: "",
-            HolidayDays: "",
+            NightshiftAllowance: "",
+            ProductDeductions: "",
+            LeaveAllowance: "",
+            
           });
         }
 
@@ -114,7 +122,7 @@ export default function UpdateMusterRoll() {
       } catch (err) {
         console.error(err);
         toast.error("Failed to load existing muster roll data");
-        setAttendanceData([]); // reset on error
+        setAttendanceData([]);
       }
     }
 
@@ -173,6 +181,8 @@ export default function UpdateMusterRoll() {
       return;
     }
 
+    setIsSaving(true);
+
     const preparedAttendance = dateRange.map((date, index) => {
       const record = attendanceData[index] || {};
       const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "short" });
@@ -187,13 +197,16 @@ export default function UpdateMusterRoll() {
 
     const payload = {
       EmployeeID: selectedEmployee,
-      Month: selectedMonth,
+      Month: selectedMonth, // UI month
       AttendanceRecords: preparedAttendance,
       LeaveDays: Number(leaveSummary.LeaveDays) || 0,
       SickDays: Number(leaveSummary.SickDays) || 0,
       MaternityDays: Number(leaveSummary.MaternityDays) || 0,
-      HolidayDays: Number(leaveSummary.HolidayDays) || 0,
+      NightshiftAllowance: Number(leaveSummary.NightshiftAllowance) || 0,
+      ProductDeductions: Number(leaveSummary.ProductDeductions) || 0,
+      LeaveAllowance: Number(leaveSummary.LeaveAllowance) || 0,
     };
+
 
     console.log("🟢 Sending attendance payload:", payload);
 
@@ -211,17 +224,16 @@ export default function UpdateMusterRoll() {
     } catch (err) {
       console.error("Error saving attendance:", err);
       toast.error("Failed to save attendance. Please try again.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  // ==============================
-  // RENDER
-  // ==============================
+  
   return (
     <div className="bg-gray-50 max-h-screen flex flex-col">
       <Toaster position="top-right" richColors />
 
-      {/* Fixed Control Panel */}
       <div className="fixed ml-[270px] mt-[70px] top-0 left-0 right-0 bg-white z-50 shadow-md py-4 px-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold text-gray-800">
           Update Muster Roll
@@ -264,17 +276,20 @@ export default function UpdateMusterRoll() {
           {/* Save Button */}
           <button
             onClick={handleSave}
-            disabled={!selectedEmployee}
-            className="bg-blue-600 text-white font-medium px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={!selectedEmployee || isSaving}
+            className={`${
+              isSaving
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            } text-white font-medium px-6 py-2 rounded-lg shadow transition disabled:bg-gray-400`}
           >
-            Save Attendance
+            {isSaving ? "Saving Attendance..." : "Save Attendance"}
           </button>
         </div>
       </div>
 
-      {/* 🧾 Main Scroll Area */}
+      {/* Main Table + Sidebar */}
       <div className="flex flex-1 mt-[120px] max-w-6xl mx-auto w-full gap-6 px-6">
-        {/* LEFT: Scrollable Attendance Table */}
         <div className="flex-1 bg-white rounded-xl shadow-lg border border-gray-200 overflow-y-auto max-h-[calc(550px)]">
           <table className="w-full text-sm">
             <thead className="bg-blue-100 text-gray-700 uppercase sticky top-0 z-10">
@@ -332,32 +347,38 @@ export default function UpdateMusterRoll() {
           </table>
         </div>
 
-        
-       {/* RIGHT: Sticky Leave Summary Panel */}
-      <div className="w-full lg:w-80">
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-5 sticky top-[120px]">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Leave & Absence Summary
-          </h2>
+        {/* RIGHT: Sticky Leave Summary */}
+        <div className="w-full lg:w-80">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-5 sticky top-[120px]">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Leave & Absence Summary
+            </h2>
 
-          {["LeaveDays", "SickDays", "MaternityDays"].map((field) => (
-            <div key={field} className="mb-4">
-              <label className="block text-gray-700 font-medium mb-1">
-                {field.replace("Days", " Days")}
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={leaveSummary[field]}
-                onChange={(e) => handleSummaryChange(field, e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-          ))}
+            {/* Leave & Allowance fields */}
+              {[
+                { key: "LeaveDays", label: "Annual Leave" },
+                { key: "SickDays", label: "Sick Leave" },
+                { key: "MaternityDays", label: "Maternity Leave" },
+                { key: "NightshiftAllowance", label: "Night Allowance (₦)" },
+                { key: "ProductDeductions", label: "Products (₦)" },
+                { key: "LeaveAllowance", label: "Leave Allowance (₦)" },
+              ].map(({ key, label }) => (
+                <div key={key} className="mb-4">
+                  <label className="block text-gray-700 font-medium mb-1">{label}</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={leaveSummary[key]}
+                    onChange={(e) => handleSummaryChange(key, e.target.value)}
+                    className="border border-gray-300 rounded-lg px-3 py-1 w-full focus:ring-2 text-sm focus:ring-blue-400"
+                  />
+                </div>
+              ))}
+
+          </div>
         </div>
-      </div>
-
       </div>
     </div>
   );
+
 }

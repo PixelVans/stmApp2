@@ -32,12 +32,13 @@ function App() {
           <Route path="/htg" element={<Countdown />} />
           <Route path="/update-stock" element={<UpdateStockPage />} />
           <Route path="/update-muster-roll" element={<UpdateMusterRoll />} />
+          <Route path="/mr" element={<PrintingMusterRollReport />} />
         </Route>
 
         {/* Standalone routes without layout */}
         <Route path="/dyeing/print" element={<DyeingCardCustomPrint />} />
         <Route path="/weaving-production/print" element={<WeavingProductionPrintout />} />
-        <Route path="/mr" element={<PrintingMusterRollReport />} />
+        
         <Route path="/prc" element={<ChemicalsStockPrintoutPage />} />
         <Route path="/prd" element={<DyestuffsStockPrintoutPage />} />
       </Routes>

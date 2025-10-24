@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { FiSearch, FiBell, FiUser, FiMenu } from "react-icons/fi";
+import { useRef, useState } from "react";
+import { FiSearch, FiBell, FiUser, FiMenu, FiPrinter } from "react-icons/fi";
 import { useLocation, Outlet } from "react-router-dom"; 
 import Sidebar from "../components/Sidebar";
 import DyeingControlPanel from "../components/DyeingControlPanel";
+import { useReactToPrint } from "react-to-print";
+import DyeingCardCustomPrint from "@/pages/dyeingCardCustomPrint";
 
 const MainLayout = ({ printRef }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -10,6 +12,23 @@ const MainLayout = ({ printRef }) => {
   
   const location = useLocation();
   const isDyeingPage = location.pathname === "/dyeing";
+
+   const componentRef = useRef(null);
+  
+    const handlePrint = useReactToPrint({
+      contentRef: componentRef, 
+      documentTitle: ".",
+      pageStyle: `
+        @page {
+          size: A4;
+          margin: 12mm;
+        }
+        body {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      `,
+    });
 
   return (
     <div className="flex min-h-screen">
@@ -27,7 +46,7 @@ const MainLayout = ({ printRef }) => {
       {/* Main content area */}
       <div className="flex-1 flex flex-col lg:ml-1/6 transition-all duration-300">
         {/* Navbar */}
-        <header className="fixed top-0 left-0 right-0 z-20  flex items-center justify-between h-14 2xl:h-16 bg-white shadow-md px-2 md:px-6">
+        <header className="fixed print:hidden top-0 left-0 right-0 z-20  flex items-center justify-between h-14 2xl:h-16 bg-white shadow-md px-2 md:px-6">
           <div className="flex items-center gap-4">
             <button
               className="lg:hidden p- rounded"
@@ -58,17 +77,31 @@ const MainLayout = ({ printRef }) => {
             </button>
 
             {isDyeingPage && (
-              <button
+              <div className="flex items-center gap-4">
+                <button
                 onClick={() => setControlPanelOpen((prev) => !prev)}
                 className="shrink-0 ml-2 p-2 rounded-lg bg-blue-400 text-white hover:bg-blue-500 transition text-xs sm:text-sm"
               >
                 {controlPanelOpen ? "Hide Panel" : "Show Panel"}
               </button>
+
+                <button
+                 onClick={handlePrint}
+                 className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
+                  >
+                  <FiPrinter className="w-4 h-4" />
+                    Print Card
+                  </button>
+                <div className="absolute -left-[9999px] top-0">
+                  <DyeingCardCustomPrint ref={componentRef} />
+                 </div>
+              </div>
+             
             )}
 
             <button className="p-2 rounded hover:bg-gray-100 flex items-center gap-2">
               <FiUser size={20} />
-              <span className="hidden sm:inline text-sm">Admin</span>
+              <span className="hidden sm:inline text-sm">User</span>
             </button>
           </div>
         </header>

@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import useChemicalSteps from "../hooks/dyeing/useChemicalSteps";
 import ChemicalStepTable from "../components/ChemicalStepTable";
 import usedyeingSummarySteps from "../hooks/dyeing/usedyeingSummarySteps";
@@ -12,9 +12,76 @@ const ChemicalTable = forwardRef((props, ref) => {
   const { scouring, softener } = useDyeingStore();
   const totals = getTotals(summarySteps);
 
+  const [isFetching, setIsFetching] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+
+  // ⏳ Timer (optional, like your weaving page)
+  useEffect(() => {
+    let timer;
+    if (isFetching) {
+      setSeconds(0);
+      timer = setInterval(() => setSeconds((s) => s + 1), 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isFetching]);
+
+  // 🔍 Detect "fetching" anywhere in the component
+  useEffect(() => {
+    const el = document.body;
+    if (!el) return;
+
+    const checkForFetchingText = () => {
+      const hasFetching = el.innerText.toLowerCase().includes("fetching");
+      setIsFetching(hasFetching);
+    };
+
+    // Run once immediately
+    checkForFetchingText();
+
+    // Watch DOM for updates
+    const observer = new MutationObserver(checkForFetchingText);
+    observer.observe(el, { childList: true, subtree: true, characterData: true });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // 🌐 Full-page loading overlay (like Weaving)
+  if (isFetching) {
+    return (
+      <div className="flex flex-col mt-[-220px] items-center justify-center h-screen bg-white">
+        <div className="flex space-x-1">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            ></div>
+          ))}
+        </div>
+
+        <p className="mt-6 text-lg font-semibold text-gray-800">
+          Loading Dyeing Data
+        </p>
+        <p className="mt-2 text-sm text-gray-600">
+          Timeout <span className="font-semibold">{seconds}</span> sec
+          {seconds !== 1 ? "s" : ""}
+        </p>
+
+        <style>{`
+          @keyframes wave {
+            0%, 40%, 100% { transform: scaleY(0.4); } 
+            20% { transform: scaleY(1.0); }
+          }
+        `}</style>
+      </div>
+);
+
+
+  }
+
+  // Normal page content once no "fetching" text
   return (
-    <div ref={ref} className="p-1 sm:p-2 bg-white ">
-      {/* Process Steps */}
+    <div ref={ref} className="p-1 sm:p-2 bg-white">
       {steps.map((step, sIdx) => (
         <div key={sIdx} className="sm:p-4">
           {step.step === "" && (
@@ -85,8 +152,10 @@ const ChemicalTable = forwardRef((props, ref) => {
       <div className="mt-5 overflow-x-auto">
         <table className="table-auto border-collapse border border-gray-400 w-full text-[9px] sm:text-[10px] md:text-xs lg:text-sm text-center">
           <thead>
-            <tr className="bg-gray-300 border  text-center">
-              <th className="border border-gray-600  px-2 py-1 w-40">Chemicals Summary</th>
+            <tr className="bg-gray-300 border text-center">
+              <th className="border border-gray-600 px-2 py-1 w-40">
+                Chemicals Summary
+              </th>
               <th className="border border-gray-600 px-2 py-1 w-32">Kgs Needed</th>
               <th className="border border-gray-600 px-2 py-1 w-32">Amt on Hand</th>
               <th className="border border-gray-600 px-2 py-1 w-32">Summary</th>
@@ -120,7 +189,7 @@ const ChemicalTable = forwardRef((props, ref) => {
               <td className="px-4 py-2 text-sm font-medium text-gray-700">
                 Chemicals Totals
               </td>
-              <td className="px-4 py-2 text-sm font-bold ">
+              <td className="px-4 py-2 text-sm font-bold">
                 Ksh {totals.chemicalsTotal}
               </td>
             </tr>
@@ -128,7 +197,7 @@ const ChemicalTable = forwardRef((props, ref) => {
               <td className="px-4 py-2 text-sm font-medium text-gray-700">
                 Dyestuffs Total
               </td>
-              <td className="px-4 py-2 text-sm font-bold ">
+              <td className="px-4 py-2 text-sm font-bold">
                 Ksh {totals.dyestuffsTotal}
               </td>
             </tr>
@@ -136,16 +205,8 @@ const ChemicalTable = forwardRef((props, ref) => {
               <td className="px-4 py-2 text-sm font-medium text-gray-700">
                 Chemicals & Dyes Total
               </td>
-              <td className="px-4 py-2 text-sm font-bold ">
+              <td className="px-4 py-2 text-sm font-bold">
                 Ksh {totals.chemicalsAndDyesTotal}
-              </td>
-            </tr>
-            <tr className="hidden">
-              <td className="px-4 py-2 text-sm font-medium text-gray-700">
-                Needed Totals
-              </td>
-              <td className="px-4 py-2 text-sm font-bold ">
-                Ksh {totals.totalsNeeded}
               </td>
             </tr>
           </tbody>
