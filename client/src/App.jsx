@@ -32,7 +32,7 @@ function App() {
           <Route path="/htg" element={<Countdown />} />
           <Route path="/update-stock" element={<UpdateStockPage />} />
           <Route path="/update-muster-roll" element={<UpdateMusterRoll />} />
-          <Route path="/mr" element={<PrintingMusterRollReport />} />
+          <Route path="/muster-roll-reports" element={<PrintingMusterRollReport />} />
         </Route>
 
         {/* Standalone routes without layout */}

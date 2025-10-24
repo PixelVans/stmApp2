@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { FiArrowRight, FiBarChart2, FiFileText } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 
 export default function UpdateMusterRoll() {
@@ -197,7 +199,7 @@ export default function UpdateMusterRoll() {
 
     const payload = {
       EmployeeID: selectedEmployee,
-      Month: selectedMonth, // UI month
+      Month: selectedMonth,
       AttendanceRecords: preparedAttendance,
       LeaveDays: Number(leaveSummary.LeaveDays) || 0,
       SickDays: Number(leaveSummary.SickDays) || 0,
@@ -234,21 +236,34 @@ export default function UpdateMusterRoll() {
     <div className="bg-gray-50 max-h-screen flex flex-col">
       <Toaster position="top-right" richColors />
 
-      <div className="fixed ml-[270px] mt-[70px] top-0 left-0 right-0 bg-white z-50 shadow-md py-4 px-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold text-gray-800">
-          Update Muster Roll
+      <div className="fixed lg:ml-[270px] mt-[70px] top-0 left-0 right-0 bg-white z-50 shadow-md py-4 px-6 flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-lg 2xl:text-2xl font-semibold text-gray-800">
+          Update Muster Roll 
+          <Link
+            to="/muster-roll-reports"
+            className="inline-flex group items-center gap-2 text-sm font-semibold text-blue-800 ml-4 hover:text-blue-500 underline"
+          >
+            
+            Go to Reports
+            <FiArrowRight className="w-5 h-5 transform transition-transform duration-200 group-hover:translate-x-3" />
+          </Link>
+
+
+
+
         </h1>
+       
 
         <div className="flex flex-wrap items-center gap-4">
           {/* Employee Selector */}
           <div className="flex items-center gap-2">
             <label className="font-medium text-gray-700">Employee:</label>
             <select
-              className="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 px-3 w-[100px] xl:w-auto py-2 rounded-lg focus:ring-2 focus:ring-blue-400"
               value={selectedEmployee}
               onChange={(e) => setSelectedEmployee(e.target.value)}
             >
-              <option value="">-- Select Employee --</option>
+              <option value="">-Select an Employee-</option>
               {employees.map((emp) => (
                 <option key={emp.EmployeeID} value={emp.EmployeeID}>
                   {emp.FirstName} {emp.LastName}
@@ -261,7 +276,7 @@ export default function UpdateMusterRoll() {
           <div className="flex items-center gap-2">
             <label className="font-medium text-gray-700">Month:</label>
             <select
-              className="border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400"
+              className="border border-gray-300 px-3 w-[100px] xl:w-auto py-2 rounded-lg focus:ring-2 focus:ring-blue-400"
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(Number(e.target.value))}
             >
@@ -283,14 +298,17 @@ export default function UpdateMusterRoll() {
                 : "bg-blue-600 hover:bg-blue-700"
             } text-white font-medium px-6 py-2 rounded-lg shadow transition disabled:bg-gray-400`}
           >
-            {isSaving ? "Saving Attendance..." : "Save Attendance"}
+            {isSaving ? "Updating..." : "Update"}
           </button>
         </div>
       </div>
 
       {/* Main Table + Sidebar */}
-      <div className="flex flex-1 mt-[120px] max-w-6xl mx-auto w-full gap-6 px-6">
-        <div className="flex-1 bg-white rounded-xl shadow-lg border border-gray-200 overflow-y-auto max-h-[calc(550px)]">
+      <div className="flex flex-1 mt-[150px] xl:mt-[120px] max-w-6xl mx-auto w-full gap-6 px-6">
+        <div className="flex-1 bg-white rounded-xl shadow-lg border border-gray-200 overflow-y-auto 
+            lg:max-h-[calc(350px)]
+            xl:max-h-[calc(440px)]
+            2xl:max-h-[calc(550px)]">
           <table className="w-full text-sm">
             <thead className="bg-blue-100 text-gray-700 uppercase sticky top-0 z-10">
               <tr>
@@ -349,9 +367,9 @@ export default function UpdateMusterRoll() {
 
         {/* RIGHT: Sticky Leave Summary */}
         <div className="w-full lg:w-80">
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-5 sticky top-[120px]">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Leave & Absence Summary
+          <div className="bg-blue-200 rounded-xl shadow-lg border border-gray-200 p-5 sticky top-[120px]">
+            <h2 className="text-lg flex font-semibold text-blue-900 mb-4 items-center mx-auto justify-center">
+              Summary
             </h2>
 
             {/* Leave & Allowance fields */}
@@ -363,14 +381,15 @@ export default function UpdateMusterRoll() {
                 { key: "ProductDeductions", label: "Products (₦)" },
                 { key: "LeaveAllowance", label: "Leave Allowance (₦)" },
               ].map(({ key, label }) => (
-                <div key={key} className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-1">{label}</label>
+                <div key={key} className="mb-2 flex flex-row gap-2 ">
+                  <label className="block flex-4/7 text-sm font-medium mb-2">{label}</label>
                   <input
                     type="number"
                     min="0"
                     value={leaveSummary[key]}
                     onChange={(e) => handleSummaryChange(key, e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-1 w-full focus:ring-2 text-sm focus:ring-blue-400"
+                    className="border bg-white flex-3/7 border-gray-300 rounded-lg px-3 py-1 w-full focus:ring-2 
+                    text-sm focus:ring-blue-400"
                   />
                 </div>
               ))}

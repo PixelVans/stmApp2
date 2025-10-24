@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FiFileText, FiPrinter } from "react-icons/fi";
+import { FiArrowLeft, FiFileText, FiPrinter } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 
 
@@ -88,12 +89,26 @@ const getEasterDate = (year) => {
 const formatTimeUTC = (timeStr) => {
   if (!timeStr) return "";
   const d = new Date(timeStr);
-  const hours = d.getUTCHours().toString().padStart(2, "0");
+  let hours = d.getUTCHours();
   const minutes = d.getUTCMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12; // convert 0 → 12
+  return `${hours}:${minutes} ${ampm}`;
 };
 
 
+const formatHoursToHM = (decimalHours) => {
+  if (decimalHours == null) return "";
+  const hours = Math.floor(decimalHours);
+  const minutes = Math.round((decimalHours - hours) * 60);
+  return `${hours}h ${minutes.toString().padStart(2, "0")}min`;
+};
+
+
+const formatCurrency = (amount) => {
+  if (amount == null || isNaN(amount)) return "";
+  return `Ksh ${new Intl.NumberFormat("en-KE").format(amount)}`;
+};
 
 
   // Generate range from 27th of current month to 26th of next
@@ -373,11 +388,19 @@ const totalPayableHours =
         <header className="print:hidden fixed top-14 lg:top-0 left-0 right-0 lg:ml-[250px] xl:ml-[265px]  z-10 lg:z-40
          bg-white border-b border-gray-200 shadow-sm mb-6">
           
-          <div className="max-w-5xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
             <div className="flex items-center gap-3">
               <FiFileText className="text-indigo-500 w-6 h-6" />
               <h1 className="xl:text-xl font-semibold text-gray-800 tracking-tight">
                 Muster Roll Report
+                <Link
+                to="/update-muster-roll"
+                className="inline-flex  items-center group gap-1 text-sm font-semibold text-blue-800 ml-5 hover:text-blue-500 underline"
+              >
+                <FiArrowLeft className="w-4 h-4 transform transition-transform duration-200 group-hover:translate-x-[-7px]" />
+                Back to Update
+              </Link>
+
               </h1>
               
             </div>
@@ -461,19 +484,19 @@ const totalPayableHours =
             <table className="w-full text-xs border border-gray-300">
               <thead className="bg-blue-100 text-gray-800 uppercase">
                 <tr>
-                  <th className="border border-gray-500 py-1  text-center w-10">
+                  <th className="border border-gray-500 py-0.5  text-center w-10">
                     Day
                   </th>
-                  <th className="border border-gray-500  py-1 text-center w-10">
+                  <th className="border border-gray-500  py-0.5 text-center w-10">
                     Date
                   </th>
-                  <th className="border border-gray-500 py-1  text-center w-10">
+                  <th className="border border-gray-500 py-0.5  text-center w-10">
                     Time In
                   </th>
-                  <th className="border border-gray-500 py-1  text-center w-10">
+                  <th className="border border-gray-500 py-0.5  text-center w-10">
                     Time Out
                   </th>
-                  <th className="border border-gray-500  py-1 text-center w-10">
+                  <th className="border border-gray-500  py-0.5 text-center w-10">
                     Total Hrs
                   </th>
                 </tr>
@@ -506,22 +529,23 @@ const totalPayableHours =
                       {dayName}
                     </td>
 
-                    <td className="border border-gray-500 text-[11px] py-0.5 text-center">
+                    <td className="border border-gray-500 text-[12px] py-0.5 text-center">
                       {`${date.getDate()}/${date.getMonth() + 1}`}
                     </td>
 
-                    <td className="border border-gray-500 text-[11px] text-center">
+                    <td className="border border-gray-500 text-[12px] text-center">
                         {formatTimeUTC(record?.TimeIn)}
                       </td>
 
-                      <td className="border border-gray-500 text-[11px] text-center">
+                      <td className="border border-gray-500 text-[12px] text-center">
                         {formatTimeUTC(record?.TimeOut)}
                       </td>
 
 
-                    <td className="border border-gray-500 text-[11px] text-center">
-                      {record?.TotalHours != null ? record.TotalHours.toFixed(2) : ""}
+                    <td className="border border-gray-500 text-[12px] text-center">
+                      {formatHoursToHM(record?.TotalHours)}
                     </td>
+
                   </tr>
 
                   {dayName === "Sun" && (
@@ -536,7 +560,7 @@ const totalPayableHours =
             })}
 
               <tr className="bg-blue-50 font-semibold">
-                <td colSpan="4" className="border border-gray-500 px-3 text-[11px] py-0.5">
+                <td colSpan="4" className="border border-gray-500 px-3 text-[12px] py-0.5">
                   Monthly Total (Payable Hours)
                 </td>
                 <td className="border border-gray-500 px-3 py-1 text-center">
@@ -633,7 +657,7 @@ const totalPayableHours =
                 <tr>
                   <td className="border border-gray-300  pl-1 py-0.5 font-semibold">Annual Leave</td>
                   <td className="border border-gray-300 pl-1  text-center">
-                    {(summary.LeaveDays) * 9 }
+                    {(Number(summary.LeaveDays) || 0) * 9}
                   </td>
                 </tr>
 
@@ -641,7 +665,7 @@ const totalPayableHours =
                 <tr>
                   <td className="border border-gray-300  pl-1 py-0.5 font-semibold">Sick Leave</td>
                   <td className="border border-gray-300  text-center">
-                    {(summary.SickDays) * 9 }
+                    {(Number(summary.SickDays) || 0) * 9}
                   </td>
                 </tr>
  
@@ -651,7 +675,7 @@ const totalPayableHours =
                     Maternity Leave
                   </td>
                   <td className="border border-gray-300  text-center">
-                    {(summary.MaternityDays) * 9}
+                    {(Number(summary.MaternityDays) || 0) * 9}
                   </td>
                 </tr>
 
@@ -697,7 +721,7 @@ const totalPayableHours =
                     Night Allowance
                   </td>
                   <td className="border border-gray-300  py- text-center">
-                    {summary.NightshiftAllowance }
+                    {formatCurrency(summary.NightshiftAllowance)}
                   </td>
                 </tr>
 
@@ -706,7 +730,7 @@ const totalPayableHours =
                     Products
                   </td>
                   <td className="border border-gray-300  py- text-center">
-                    {summary.ProductDeductions }
+                    {formatCurrency(summary.ProductDeductions)}
                   </td>
                 </tr>
 
@@ -715,7 +739,7 @@ const totalPayableHours =
                     Leave Allowance
                   </td>
                   <td className="border border-gray-300   text-center">
-                    {summary.LeaveAllowance }
+                     {formatCurrency(summary.LeaveAllowance)}
                   </td>
                 </tr>
               </tbody>
@@ -725,7 +749,33 @@ const totalPayableHours =
       </div>
       </div>
       
-  
+  <style>
+  {`
+    @page {
+      size: A4;
+      margin: 15mm 2mm 15mm 2mm; /* top, right, bottom, left */
+    }
+
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact; /* ensures background colors print */
+      }
+
+      /* Example: tighten up your card content margins */
+      .print-card {
+        margin: 0;
+        padding: 10mm;
+      }
+
+      /* Optional: remove shadows/borders if you want a clean print */
+      .no-print-shadow {
+        box-shadow: none !important;
+        border: none !important;
+      }
+    }
+  `}
+</style>
+
     </div>
 
     
