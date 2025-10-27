@@ -24,6 +24,7 @@ router.post("/update", async (req, res) => {
   const {
     EmployeeID,
     Month,
+    Year, 
     AttendanceRecords,
     LeaveDays,
     SickDays,
@@ -117,47 +118,61 @@ router.post("/update", async (req, res) => {
         `);
     }
 
-    // ==============================
-    // Update EmployeePayrolls table
-    // ==============================
-    const payrollMonth = `${new Date().getFullYear()}-${String(Month + 1).padStart(2, "0")}-01`;
+  // ==============================
+// Update EmployeePayrolls table
+// ==============================
+const currentYear = Number(Year) || new Date().getFullYear();
+const currentMonth = Number(Month) + 1;
 
+const req2 = new sql.Request(transaction);
+await req2
+  .input("EmployeeID", sql.Int, EmployeeID)
+  .input("Year", sql.Int, currentYear)
+  .input("Month", sql.Int, currentMonth)
+  .input("LeaveDays", sql.Int, LeaveDays || 0)
+  .input("SickDays", sql.Int, SickDays || 0)
+  .input("MaternityDays", sql.Int, MaternityDays || 0)
+  .input("NightshiftAllowance", sql.Decimal(10, 2), NightshiftAllowance || 0)
+  .input("ProductDeductions", sql.Decimal(10, 2), ProductDeductions || 0)
+  .input("LeaveAllowance", sql.Decimal(10, 2), LeaveAllowance || 0)
+  .query(`
+    MERGE [Specialised Systems].dbo.EmployeePayrolls AS target
+    USING (SELECT @EmployeeID AS EmployeeID, @Year AS Year, @Month AS Month) AS source
+    ON target.EmployeeID = source.EmployeeID 
+       AND YEAR(target.PayrollMonth) = source.Year
+       AND MONTH(target.PayrollMonth) = source.Month
+    WHEN MATCHED THEN
+      UPDATE SET 
+        LeaveDays = @LeaveDays,
+        SickDays = @SickDays,
+        MaternityDays = @MaternityDays,
+        NightshiftAllowance = @NightshiftAllowance,
+        ProductDeductions = @ProductDeductions,
+        LeaveAllowance = @LeaveAllowance,
+        UpdatedAt = GETDATE()
+    WHEN NOT MATCHED THEN
+      INSERT (EmployeeID, PayrollMonth, LeaveDays, SickDays, MaternityDays, NightshiftAllowance, ProductDeductions, LeaveAllowance)
+      VALUES (
+        @EmployeeID, 
+        DATEFROMPARTS(@Year, @Month, 1), 
+        @LeaveDays, 
+        @SickDays, 
+        @MaternityDays, 
+        @NightshiftAllowance, 
+        @ProductDeductions, 
+        @LeaveAllowance
+      );
+  `);
 
-    const req2 = new sql.Request(transaction);
-    await req2
-      .input("EmployeeID", sql.Int, EmployeeID)
-      .input("PayrollMonth", sql.Date, payrollMonth)
-      .input("LeaveDays", sql.Int, LeaveDays || 0)
-      .input("SickDays", sql.Int, SickDays || 0)
-      .input("MaternityDays", sql.Int, MaternityDays || 0)
-      .input("NightshiftAllowance", sql.Decimal(10, 2), NightshiftAllowance || 0)
-      .input("ProductDeductions", sql.Decimal(10, 2), ProductDeductions || 0)
-      .input("LeaveAllowance", sql.Decimal(10, 2), LeaveAllowance || 0)
-      .query(`
-        MERGE [Specialised Systems].dbo.EmployeePayrolls AS target
-        USING (SELECT @EmployeeID AS EmployeeID, @PayrollMonth AS PayrollMonth) AS source
-        ON target.EmployeeID = source.EmployeeID AND target.PayrollMonth = source.PayrollMonth
-        WHEN MATCHED THEN
-          UPDATE SET 
-            LeaveDays = @LeaveDays,
-            SickDays = @SickDays,
-            MaternityDays = @MaternityDays,
-            NightshiftAllowance = @NightshiftAllowance,
-            ProductDeductions = @ProductDeductions,
-            LeaveAllowance = @LeaveAllowance,
-            UpdatedAt = GETDATE()
-        WHEN NOT MATCHED THEN
-          INSERT (EmployeeID, PayrollMonth, LeaveDays, SickDays, MaternityDays, NightshiftAllowance, ProductDeductions, LeaveAllowance)
-          VALUES (@EmployeeID, @PayrollMonth, @LeaveDays, @SickDays, @MaternityDays, @NightshiftAllowance, @ProductDeductions, @LeaveAllowance);
-      `);
 
     await transaction.commit();
     res.json({ message: "Attendance and payroll successfully updated" });
 
   } catch (err) {
-    console.error("❌ Error saving attendance:", err);
+    console.error(" Error saving attendance:", err);
     res.status(500).json({ error: "Error saving attendance", details: err.message });
   }
 });
+
 
 module.exports = router;

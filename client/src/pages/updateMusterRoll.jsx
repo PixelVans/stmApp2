@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiArrowRight, FiBarChart2, FiFileText } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 
@@ -7,19 +7,20 @@ export default function UpdateMusterRoll() {
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [attendanceData, setAttendanceData] = useState([]);
   const [dateRange, setDateRange] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
- const [leaveSummary, setLeaveSummary] = useState({
-  LeaveDays: "",
-  SickDays: "",
-  MaternityDays: "",
-  NightshiftAllowance: "",
-  ProductDeductions: "",
-  LeaveAllowance: "",
-});
-
+  const [leaveSummary, setLeaveSummary] = useState({
+    LeaveDays: "",
+    SickDays: "",
+    MaternityDays: "",
+    NightshiftAllowance: "",
+    ProductDeductions: "",
+    LeaveAllowance: "",
+  });
 
   // Helper: consistent YYYY-MM-DD
   const localDateKey = (date) => {
@@ -29,11 +30,11 @@ export default function UpdateMusterRoll() {
     return `${y}-${m}-${d}`;
   };
 
-  //  Generate date range for *previous* month (27th → 26th)
-  const generateDateRange = (month) => {
+  // Generate date range for previous month (27th → 26th)
+  const generateDateRange = (month, year) => {
     const prevMonth = month === 0 ? 11 : month - 1;
-    const year = new Date().getFullYear() - (month === 0 ? 1 : 0);
-    const startDate = new Date(year, prevMonth, 26);
+    const actualYear = month === 0 ? year - 1 : year;
+    const startDate = new Date(actualYear, prevMonth, 26);
     const endDate = new Date(year, month, 25);
 
     const dates = [];
@@ -51,9 +52,10 @@ export default function UpdateMusterRoll() {
 
     async function fetchEmployeeMusterRoll() {
       try {
-        //  Shift fetch one month back
+        setIsFetching(true);
+
         const prevMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
-        const year = new Date().getFullYear() - (selectedMonth === 0 ? 1 : 0);
+        const year = selectedMonth === 0 ? selectedYear - 1 : selectedYear;
 
         const res = await fetch(
           `/api/employees/report?employeeId=${selectedEmployee}&month=${prevMonth}&year=${year}`
@@ -90,15 +92,13 @@ export default function UpdateMusterRoll() {
           };
         });
 
-        //  Align with shifted date range
-        const prefilled = generateDateRange(selectedMonth).map((date) => {
+        const prefilled = generateDateRange(selectedMonth, selectedYear).map((date) => {
           const dateKey = localDateKey(date);
           return attendanceMap[dateKey] || { TimeIn: "", TimeOut: "" };
         });
 
         setAttendanceData(prefilled);
 
-        // Leave summary
         if (data.summary) {
           setLeaveSummary({
             LeaveDays: data.summary.LeaveDays || "",
@@ -116,31 +116,33 @@ export default function UpdateMusterRoll() {
             NightshiftAllowance: "",
             ProductDeductions: "",
             LeaveAllowance: "",
-            
           });
         }
 
+        setIsFetching(false);
         toast.success("Loaded existing muster roll data");
       } catch (err) {
         console.error(err);
+        setIsFetching(false);
         toast.error("Failed to load existing muster roll data");
         setAttendanceData([]);
       }
     }
 
     fetchEmployeeMusterRoll();
-  }, [selectedEmployee, selectedMonth]);
+  }, [selectedEmployee, selectedMonth, selectedYear]);
 
   // ==============================
   // Other effects
   // ==============================
   useEffect(() => {
-    setDateRange(generateDateRange(selectedMonth));
-  }, [selectedMonth]);
+    setDateRange(generateDateRange(selectedMonth, selectedYear));
+  }, [selectedMonth, selectedYear]);
 
   useEffect(() => {
     async function fetchEmployees() {
       try {
+        setIsFetching(true);
         const res = await fetch("/api/employees");
         if (!res.ok) throw new Error("Failed to fetch employees");
 
@@ -149,8 +151,11 @@ export default function UpdateMusterRoll() {
       } catch (err) {
         console.error(err);
         toast.error("Failed to load employees.");
+      } finally {
+        setIsFetching(false);
       }
     }
+
     fetchEmployees();
   }, []);
 
@@ -200,6 +205,7 @@ export default function UpdateMusterRoll() {
     const payload = {
       EmployeeID: selectedEmployee,
       Month: selectedMonth,
+      Year: selectedYear,
       AttendanceRecords: preparedAttendance,
       LeaveDays: Number(leaveSummary.LeaveDays) || 0,
       SickDays: Number(leaveSummary.SickDays) || 0,
@@ -208,7 +214,6 @@ export default function UpdateMusterRoll() {
       ProductDeductions: Number(leaveSummary.ProductDeductions) || 0,
       LeaveAllowance: Number(leaveSummary.LeaveAllowance) || 0,
     };
-
 
     console.log("🟢 Sending attendance payload:", payload);
 
@@ -231,28 +236,55 @@ export default function UpdateMusterRoll() {
     }
   };
 
-  
+  // ==============================
+  // Loading UI
+  // ==============================
+  if (isFetching) {
+    return (
+      <div className="flex flex-col mt-[-100px] items-center justify-center h-screen bg-white">
+        <div className="flex space-x-1">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            ></div>
+          ))}
+        </div>
+
+        <p className="mt-6 text-lg font-semibold text-gray-800">
+          Loading Muster Roll Data
+        </p>
+
+        <style>{`
+          @keyframes wave {
+            0%, 40%, 100% { transform: scaleY(0.4); } 
+            20% { transform: scaleY(1.0); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  // ==============================
+  // Render
+  // ==============================
   return (
     <div className="bg-gray-50 max-h-screen flex flex-col">
       <Toaster position="top-right" richColors />
 
+      {/* HEADER */}
       <div className="fixed lg:ml-[270px] mt-[70px] top-0 left-0 right-0 bg-white z-50 shadow-md py-4 px-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-lg 2xl:text-2xl font-semibold text-gray-800">
-          Update Muster Roll 
+          Update Muster Roll{" "}
           <Link
             to="/muster-roll-reports"
             className="inline-flex group items-center gap-2 text-sm font-semibold text-blue-800 ml-4 hover:text-blue-500 underline"
           >
-            
             Go to Reports
             <FiArrowRight className="w-5 h-5 transform transition-transform duration-200 group-hover:translate-x-3" />
           </Link>
-
-
-
-
         </h1>
-       
 
         <div className="flex flex-wrap items-center gap-4">
           {/* Employee Selector */}
@@ -288,6 +320,25 @@ export default function UpdateMusterRoll() {
             </select>
           </div>
 
+          {/* Year Selector */}
+          <div className="flex items-center gap-2">
+            <label className="font-medium text-gray-700">Year:</label>
+            <select
+              className="border border-gray-300 px-3 w-[100px] xl:w-auto py-2 rounded-lg focus:ring-2 focus:ring-blue-400"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+            >
+              {Array.from({ length: 5 }, (_, i) => {
+                const y = new Date().getFullYear() - 2 + i;
+                return (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
           {/* Save Button */}
           <button
             onClick={handleSave}
@@ -303,8 +354,9 @@ export default function UpdateMusterRoll() {
         </div>
       </div>
 
-      {/* Main Table + Sidebar */}
+      {/* MAIN CONTENT */}
       <div className="flex flex-1 mt-[150px] xl:mt-[120px] max-w-6xl mx-auto w-full gap-6 px-6">
+        {/* Attendance Table */}
         <div className="flex-1 bg-white rounded-xl shadow-lg border border-gray-200 overflow-y-auto 
             lg:max-h-[calc(350px)]
             xl:max-h-[calc(440px)]
@@ -372,32 +424,29 @@ export default function UpdateMusterRoll() {
               Summary
             </h2>
 
-            {/* Leave & Allowance fields */}
-              {[
-                { key: "LeaveDays", label: "Annual Leave" },
-                { key: "SickDays", label: "Sick Leave" },
-                { key: "MaternityDays", label: "Maternity Leave" },
-                { key: "NightshiftAllowance", label: "Night Allowance (₦)" },
-                { key: "ProductDeductions", label: "Products (₦)" },
-                { key: "LeaveAllowance", label: "Leave Allowance (₦)" },
-              ].map(({ key, label }) => (
-                <div key={key} className="mb-2 flex flex-row gap-2 ">
-                  <label className="block flex-4/7 text-sm font-medium mb-2">{label}</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={leaveSummary[key]}
-                    onChange={(e) => handleSummaryChange(key, e.target.value)}
-                    className="border bg-white flex-3/7 border-gray-300 rounded-lg px-3 py-1 w-full focus:ring-2 
+            {[
+              { key: "LeaveDays", label: "Annual Leave" },
+              { key: "SickDays", label: "Sick Leave" },
+              { key: "MaternityDays", label: "Maternity Leave" },
+              { key: "NightshiftAllowance", label: "Night Allowance (₦)" },
+              { key: "ProductDeductions", label: "Products (₦)" },
+              { key: "LeaveAllowance", label: "Leave Allowance (₦)" },
+            ].map(({ key, label }) => (
+              <div key={key} className="mb-2 flex flex-row gap-2 ">
+                <label className="block flex-4/7 text-sm font-medium mb-2">{label}</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={leaveSummary[key]}
+                  onChange={(e) => handleSummaryChange(key, e.target.value)}
+                  className="border bg-white flex-3/7 border-gray-300 rounded-lg px-3 py-1 w-full focus:ring-2 
                     text-sm focus:ring-blue-400"
-                  />
-                </div>
-              ))}
-
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
     </div>
   );
-
 }

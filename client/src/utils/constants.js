@@ -95,6 +95,7 @@ export const Colour_Chart = [
     "Stripping",
     "Green - UPDF - New",
     "Green - UPDF",
+    "Green - UPDF",
     
   ];
 

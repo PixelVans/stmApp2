@@ -8,6 +8,7 @@ import { Toaster, toast } from "sonner";
 const PrintingMusterRollReport = () => {
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [attendanceData, setAttendanceData] = useState([]);
   const [summary, setSummary] = useState({
@@ -22,7 +23,7 @@ const PrintingMusterRollReport = () => {
   
   
   });
-  console.log('summarry:',summary)
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -154,11 +155,12 @@ async function fetchReport() {
     setError(null); // reset error before fetching
 
     const prevMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
-    const year = new Date().getFullYear() - (selectedMonth === 0 ? 1 : 0);
+const yearToSend = selectedMonth === 0 ? selectedYear - 1 : selectedYear;
 
-    const res = await fetch(
-    `/api/employees/report?employeeId=${selectedEmployee}&month=${prevMonth}&year=${year}`
-    );
+const res = await fetch(
+  `/api/employees/report?employeeId=${selectedEmployee}&month=${prevMonth}&year=${yearToSend}`
+);
+
 
     if (!res.ok) throw new Error("Failed to fetch muster roll report");
 
@@ -177,7 +179,7 @@ async function fetchReport() {
 
 
     fetchReport();
-  }, [selectedEmployee, selectedMonth]);
+  }, [selectedEmployee, selectedMonth, selectedYear]);
 
   // ---------------- CALCULATIONS ----------------
   const totalPresent = attendanceData.filter((r) => r.TimeIn).length;
@@ -265,10 +267,10 @@ const totalPayableHours =
     ? `${selectedEmp.FirstName} ${selectedEmp.LastName}`
     : "—";
   const employeeId = selectedEmp ? selectedEmp.EmployeeID : "—";
-  const monthLabel = new Date(
-    new Date().getFullYear(),
-    selectedMonth
-  ).toLocaleString("en-US", { month: "long", year: "numeric" });
+ const monthLabel = new Date(selectedYear, selectedMonth).toLocaleString("en-US", {
+  month: "long",
+  year: "numeric",
+});
 
 
  if (loading) {
@@ -320,6 +322,9 @@ const totalPayableHours =
                   ))}
                 </select>
               </div>
+
+             
+
 
               {/* Print Button */}
               <button
@@ -438,6 +443,24 @@ const totalPayableHours =
                   ))}
                 </select>
               </div>
+               {/* Year Selector */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700">Year:</label>
+                <select
+                  className="border border-gray-300 bg-white px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                >
+                  {Array.from({ length: 6 }, (_, i) => {
+                    const year = new Date().getFullYear() - i + 1; // last 5 years + next year
+                    return (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
 
               {/* Print Button */}
               <button
@@ -518,11 +541,11 @@ const totalPayableHours =
               return (
                 <React.Fragment key={index}>
                   <tr className={`border border-gray-500 px-1 text-xs font-medium text-center ${
-                        isKenyanHoliday(date) ? " border border-green-400" : ""
+                        isKenyanHoliday(date) ? " border border-green-300" : ""
                       }`}>
                     <td
                       className={`border border-gray-500 px-1 text-xs font-medium text-center ${
-                        isKenyanHoliday(date) ? "bg-green-400" : ""
+                        isKenyanHoliday(date) ? "bg-green-300" : ""
                       }`}
                       title={isKenyanHoliday(date) ? "Public Holiday" : ""}
                     >
