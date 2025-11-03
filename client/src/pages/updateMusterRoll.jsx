@@ -388,21 +388,44 @@ export default function UpdateMusterRoll() {
                       <input
                         type="time"
                         value={attendanceData[index]?.TimeIn || ""}
-                        onChange={(e) =>
-                          handleTimeChange(index, "TimeIn", e.target.value)
-                        }
+                        onChange={(e) => handleTimeChange(index, "TimeIn", e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Tab" && !e.shiftKey) {
+                            e.preventDefault();
+                            const nextInput = document.getElementById(`timeout-${index}`);
+                            nextInput?.focus();
+                          }
+                        }}
+                        id={`timein-${index}`}
                         className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
                       />
+
                     </td>
                     <td className="border-t px-3 py-2">
                       <input
-                        type="time"
-                        value={attendanceData[index]?.TimeOut || ""}
-                        onChange={(e) =>
-                          handleTimeChange(index, "TimeOut", e.target.value)
-                        }
-                        className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
-                      />
+                          type="time"
+                          id={`timeout-${index}`}
+                          value={attendanceData[index]?.TimeOut || ""}
+                          onChange={(e) => handleTimeChange(index, "TimeOut", e.target.value)}
+                          onKeyDown={(e) => {
+                            // Shift+Tab → go back to same row’s Time In
+                            if (e.key === "Tab" && e.shiftKey) {
+                              e.preventDefault();
+                              const prevInput = document.getElementById(`timein-${index}`);
+                              prevInput?.focus();
+                            }
+
+                            // Tab → go to next row’s Time In
+                            else if (e.key === "Tab" && !e.shiftKey) {
+                              e.preventDefault();
+                              const nextInput = document.getElementById(`timein-${index + 1}`);
+                              nextInput?.focus();
+                            }
+                          }}
+                          className="border border-gray-300 rounded-lg px-2 py-1 w-full focus:ring-2 focus:ring-blue-400"
+                        />
+
+
                     </td>
                   </tr>
 

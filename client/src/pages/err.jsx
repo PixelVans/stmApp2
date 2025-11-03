@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 
 
 export default function Countdown({
-  startMinutes = 19,
+  startMinutes = 26,
   title = "Connecting to Secure DB Cluster (Specialised Systems)",
-  subtitle = "Requesting elevated permissions and warming up pipelines [Form Validations syncing] (Dyestuffs)",
+  subtitle = "Requesting elevated permissions and warming up pipelines [Form Validations syncing] (attendance)",
 }) {
   const initialSeconds = Math.max(1, Math.floor(startMinutes * 60));
   const [remaining, setRemaining] = useState(initialSeconds);
@@ -150,7 +150,7 @@ export default function Countdown({
       
       <button
         onClick={() =>
-          (window.location.href = "http://localhost:5173/update-warping-data")
+          (window.location.href = "http://localhost:5173/update-muster-roll")
         }
         className="mt-6 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-md"
       >

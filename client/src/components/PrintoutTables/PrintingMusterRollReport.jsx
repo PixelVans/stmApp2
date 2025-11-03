@@ -186,42 +186,75 @@ const res = await fetch(
   const totalAbsent = attendanceData.filter((r) => !r.TimeIn).length;
 
   // Group attendance data by ISO week (Monday–Saturday)
-  const groupByWeek = (records) => {
-    const weeks = {};
-    records.forEach((r) => {
-      if (!r.AttendanceDate) return;
-      const date = new Date(r.AttendanceDate);
-      const yearStart = new Date(date.getFullYear(), 0, 1);
-      const weekNo = Math.floor(
-        ((date - yearStart) / 86400000 + yearStart.getDay() + 1) / 7
-      );
-      const key = `${date.getFullYear()}-W${weekNo}`;
-      if (!weeks[key]) weeks[key] = [];
-      weeks[key].push(r);
-    });
-    return weeks;
-  };
+// Helper: group records by Monday–Saturday week blocks
+const groupByWorkWeek = (records) => {
+  const sorted = [...records].sort(
+    (a, b) => new Date(a.AttendanceDate) - new Date(b.AttendanceDate)
+  );
 
-  const weeks = groupByWeek(attendanceData);
-  let totalRegularHours = 0;
-  let totalOvertimeHours = 0;
+  const weeks = [];
+  let currentWeek = [];
 
-  Object.values(weeks).forEach((records) => {
-    const weeklyHours = records
-      .filter(
-        (r) =>
-          ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].includes(r.DayOfWeek) &&
-          r.TotalHours
-      )
-      .reduce((sum, r) => sum + r.TotalHours, 0);
+  for (let i = 0; i < sorted.length; i++) {
+    const rec = sorted[i];
+    if (!rec.AttendanceDate) continue;
 
-    if (weeklyHours > 45) {
-      totalRegularHours += 45;
-      totalOvertimeHours += weeklyHours - 45;
-    } else {
-      totalRegularHours += weeklyHours;
+    const date = new Date(rec.AttendanceDate);
+    const day = date.getDay(); // Sun=0, Mon=1, ..., Sat=6
+
+    // If it's Monday and we already have records, start a new week
+    if (day === 1 && currentWeek.length > 0) {
+      weeks.push(currentWeek);
+      currentWeek = [];
     }
-  });
+
+    currentWeek.push(rec);
+
+    // If it's Saturday, push the current week
+    if (day === 6) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+  }
+
+  // Add last incomplete week
+  if (currentWeek.length > 0) {
+    weeks.push(currentWeek);
+  }
+
+  return weeks;
+};
+
+// --- Calculate Weekly Overtime ---
+const weeks = groupByWorkWeek(attendanceData);
+
+let totalRegularHours = 0;
+let totalOvertimeHours = 0;
+
+weeks.forEach((week) => {
+  // Only include Monday–Saturday, but skip holidays
+  const weeklyHours = week
+    .filter((r) => {
+      if (!r.TotalHours) return false;
+      if (!["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].includes(r.DayOfWeek)) return false;
+
+      // exclude holidays from regular/overtime
+      const date = new Date(r.AttendanceDate);
+      if (isKenyanHoliday(date)) return false;
+
+      return true;
+    })
+    .reduce((sum, r) => sum + r.TotalHours, 0);
+
+  if (weeklyHours > 45) {
+    totalRegularHours += 45;
+    totalOvertimeHours += weeklyHours - 45;
+  } else {
+    totalRegularHours += weeklyHours;
+  }
+});
+
+
 
   const overtimePayable = totalOvertimeHours * 1.5;
   const sundayHours = attendanceData
@@ -229,15 +262,29 @@ const res = await fetch(
     .reduce((sum, r) => sum + r.TotalHours, 0);
   const sundayPayable = sundayHours * 2;
   // Kenyan public holidays (×2 rule)
-const holidayHours = attendanceData
-  .filter((r) => {
-    if (!r.AttendanceDate || !r.TotalHours) return false;
-    const date = new Date(r.AttendanceDate);
-    return isKenyanHoliday(date);
-  })
-  .reduce((sum, r) => sum + r.TotalHours, 0);
+// --- Updated Holiday Hours Calculation ---
+const holidayDates = dateRange.filter((d) => isKenyanHoliday(d));
 
-const holidayPayable = holidayHours * 2;
+let totalHolidayPayable = 0;
+
+holidayDates.forEach((holiday) => {
+  // Find record for that date
+  const record = attendanceData.find(
+    (r) => new Date(r.AttendanceDate).toDateString() === holiday.toDateString()
+  );
+
+  if (record && record.TotalHours) {
+    // Worked → double the hours
+    totalHolidayPayable += record.TotalHours * 2;
+  } else {
+    // Did not work → default 9 hours
+    totalHolidayPayable += 9;
+  }
+});
+
+
+const holidayPayable = totalHolidayPayable;
+
 
   const totalHours = attendanceData
     .filter((r) => r.TotalHours)
@@ -277,67 +324,7 @@ const totalPayableHours =
       return (
       <div className="flex flex-col mt-[170px] items-center justify-center  bg-white">
          {/* Header */}
-        <header className="print:hidden fixed top-14 lg:top-0 left-0 right-0 lg:ml-[250px] xl:ml-[265px]  z-10 lg:z-40
-         bg-white border-b border-gray-200 shadow-sm mb-6">
-          
-          <div className="max-w-4xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
-            <div className="flex items-center gap-3">
-              <FiFileText className="text-indigo-500 w-6 h-6" />
-              <h1 className="xl:text-xl font-semibold text-gray-800 tracking-tight">
-                Muster Roll Report
-              </h1>
-              
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Employee Selector */}
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-gray-700">Employee:</label>
-                <select
-                  className="border border-gray-300 bg-white px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                  value={selectedEmployee}
-                  onChange={(e) => setSelectedEmployee(Number(e.target.value))}
-                >
-                  <option value="">Select...</option>
-                  {employees.map((emp) => (
-                    <option key={emp.EmployeeID} value={emp.EmployeeID}>
-                      {emp.FirstName} {emp.LastName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Month Selector */}
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-gray-700">Month:</label>
-                <select
-                  className="border border-gray-300 bg-white px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                >
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <option key={i} value={i}>
-                      {new Date(0, i).toLocaleString("en-US", { month: "long" })}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-             
-
-
-              {/* Print Button */}
-              <button
-                onClick={() => window.print()}
-                type="button"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
-              >
-                <FiPrinter className="w-4 h-4" />
-                Print Report
-              </button>
-            </div>
-          </div>
-        </header>
+        
         <div className="flex space-x-1">
           {[...Array(5)].map((_, i) => (
             <div
@@ -349,7 +336,7 @@ const totalPayableHours =
         </div>
 
         <p className="mt-6 text-lg font-semibold text-gray-800">
-          Loading Muster Roll...
+          Loading Muster Roll Report...
         </p>
 
         
@@ -461,12 +448,11 @@ const totalPayableHours =
                   })}
                 </select>
               </div>
-
               {/* Print Button */}
               <button
                 onClick={() => window.print()}
                 type="button"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
+                className="hidden items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
               >
                 <FiPrinter className="w-4 h-4" />
                 Print Report
@@ -541,11 +527,11 @@ const totalPayableHours =
               return (
                 <React.Fragment key={index}>
                   <tr className={`border border-gray-500 px-1 text-xs font-medium text-center ${
-                        isKenyanHoliday(date) ? " border border-green-300" : ""
+                        isKenyanHoliday(date) ? " border border-green-400" : ""
                       }`}>
                     <td
                       className={`border border-gray-500 px-1 text-xs font-medium text-center ${
-                        isKenyanHoliday(date) ? "bg-green-300" : ""
+                        isKenyanHoliday(date) ? "bg-green-400" : ""
                       }`}
                       title={isKenyanHoliday(date) ? "Public Holiday" : ""}
                     >
@@ -765,41 +751,49 @@ const totalPayableHours =
                      {formatCurrency(summary.LeaveAllowance)}
                   </td>
                 </tr>
+                <tr className="h-5 border "></tr>
+                <tr>
+                  <td className="border border-gray-300 pl-1 py-0.5 font-semibold">
+                    Adjustments
+                  </td>
+                  <td className="border border-gray-300   text-center">
+                     
+                  </td>
+                </tr>
+                
               </tbody>
             </table>
           </div>
         </div>
       </div>
       </div>
-      
-  <style>
-  {`
-    @page {
-      size: A4;
-      margin: 15mm 2mm 15mm 2mm; /* top, right, bottom, left */
-    }
+      <style>
+        {`
+          @page {
+            size: A4;
+            margin: 15mm 2mm 15mm 2mm; /* top, right, bottom, left */
+          }
 
-    @media print {
-      body {
-        -webkit-print-color-adjust: exact; /* ensures background colors print */
-      }
+          @media print {
+            body {
+              -webkit-print-color-adjust: exact; /* ensures background colors print */
+            }
 
-      /* Example: tighten up your card content margins */
-      .print-card {
-        margin: 0;
-        padding: 10mm;
-      }
+            /* Example: tighten up your card content margins */
+            .print-card {
+              margin: 0;
+              padding: 10mm;
+            }
 
-      /* Optional: remove shadows/borders if you want a clean print */
-      .no-print-shadow {
-        box-shadow: none !important;
-        border: none !important;
-      }
-    }
-  `}
-</style>
-
-    </div>
+            /* Optional: remove shadows/borders if you want a clean print */
+            .no-print-shadow {
+              box-shadow: none !important;
+              border: none !important;
+            }
+          }
+        `}
+      </style>
+  </div>
 
     
   );

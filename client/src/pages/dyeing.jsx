@@ -31,7 +31,7 @@ const ChemicalTable = forwardRef((props, ref) => {
     if (!el) return;
 
     const checkForFetchingText = () => {
-      const hasFetching = el.innerText.toLowerCase().includes("fetching");
+      const hasFetching = el.innerText.toLowerCase().includes("fetching..");
       setIsFetching(hasFetching);
     };
 
