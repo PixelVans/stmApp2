@@ -21,7 +21,22 @@ export default function UpdateMusterRoll() {
     ProductDeductions: "",
     LeaveAllowance: "",
   });
+const [adjustments, setAdjustments] = useState([]);
+const addAdjustment = () => {
+  setAdjustments((prev) => [...prev, { type: "", value: "", note: "" }]);
+};
 
+const removeAdjustment = (index) => {
+  setAdjustments((prev) => prev.filter((_, i) => i !== index));
+};
+
+const handleAdjustmentChange = (index, field, value) => {
+  setAdjustments((prev) => {
+    const updated = [...prev];
+    updated[index][field] = value;
+    return updated;
+  });
+};
   // Helper: consistent YYYY-MM-DD
   const localDateKey = (date) => {
     const y = date.getFullYear();
@@ -100,24 +115,38 @@ export default function UpdateMusterRoll() {
         setAttendanceData(prefilled);
 
         if (data.summary) {
-          setLeaveSummary({
-            LeaveDays: data.summary.LeaveDays || "",
-            SickDays: data.summary.SickDays || "",
-            MaternityDays: data.summary.MaternityDays || "",
-            NightshiftAllowance: data.summary.NightshiftAllowance || "",
-            ProductDeductions: data.summary.ProductDeductions || "",
-            LeaveAllowance: data.summary.LeaveAllowance || "",
-          });
-        } else {
-          setLeaveSummary({
-            LeaveDays: "",
-            SickDays: "",
-            MaternityDays: "",
-            NightshiftAllowance: "",
-            ProductDeductions: "",
-            LeaveAllowance: "",
-          });
-        }
+      setLeaveSummary({
+        LeaveDays: data.summary.LeaveDays || "",
+        SickDays: data.summary.SickDays || "",
+        MaternityDays: data.summary.MaternityDays || "",
+        NightshiftAllowance: data.summary.NightshiftAllowance || "",
+        ProductDeductions: data.summary.ProductDeductions || "",
+        LeaveAllowance: data.summary.LeaveAllowance || "",
+      });
+    } else {
+      setLeaveSummary({
+        LeaveDays: "",
+        SickDays: "",
+        MaternityDays: "",
+        NightshiftAllowance: "",
+        ProductDeductions: "",
+        LeaveAllowance: "",
+      });
+    }
+
+    //  Load any existing adjustments
+    if (Array.isArray(data.adjustments) && data.adjustments.length > 0) {
+      setAdjustments(
+        data.adjustments.map((adj) => ({
+          type: adj.AdjustmentType || "",
+          value: adj.AdjustmentValue || "",
+          note: adj.Note || "",
+        }))
+      );
+    } else {
+      setAdjustments([]);
+    }
+
 
         setIsFetching(false);
         toast.success("Loaded existing muster roll data");
@@ -182,59 +211,69 @@ export default function UpdateMusterRoll() {
   // ==============================
   // Save handler
   // ==============================
-  const handleSave = async () => {
-    if (!selectedEmployee) {
-      toast.warning("Please select an employee first.");
-      return;
-    }
+const handleSave = async () => {
+  if (!selectedEmployee) {
+    toast.warning("Please select an employee first.");
+    return;
+  }
 
-    setIsSaving(true);
+  setIsSaving(true);
 
-    const preparedAttendance = dateRange.map((date, index) => {
-      const record = attendanceData[index] || {};
-      const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "short" });
-      return {
-        EmployeeID: selectedEmployee,
-        AttendanceDate: localDateKey(date),
-        TimeIn: normalizeTime(record.TimeIn),
-        TimeOut: normalizeTime(record.TimeOut),
-        DayOfWeek: dayOfWeek,
-      };
+  const preparedAttendance = dateRange.map((date, index) => {
+    const record = attendanceData[index] || {};
+    const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "short" });
+    return {
+      EmployeeID: selectedEmployee,
+      AttendanceDate: localDateKey(date),
+      TimeIn: normalizeTime(record.TimeIn),
+      TimeOut: normalizeTime(record.TimeOut),
+      DayOfWeek: dayOfWeek,
+    };
+  });
+
+  const payload = {
+    EmployeeID: selectedEmployee,
+    Month: selectedMonth,
+    Year: selectedYear,
+    AttendanceRecords: preparedAttendance,
+    LeaveDays: Number(leaveSummary.LeaveDays) || 0,
+    SickDays: Number(leaveSummary.SickDays) || 0,
+    MaternityDays: Number(leaveSummary.MaternityDays) || 0,
+    NightshiftAllowance: Number(leaveSummary.NightshiftAllowance) || 0,
+    ProductDeductions: Number(leaveSummary.ProductDeductions) || 0,
+    LeaveAllowance: Number(leaveSummary.LeaveAllowance) || 0,
+  };
+
+  //  Include Adjustments (Hours or Amount)
+  payload.Adjustments = adjustments
+    .filter(adj => adj.type && adj.value && adj.note.trim() !== "")
+    .map(adj => ({
+      AdjustmentType: adj.type,
+      AdjustmentValue: Number(adj.value),
+      Note: adj.note.trim(),
+    }));
+
+  console.log("🟢 Sending attendance payload:", payload);
+
+  try {
+    const res = await fetch("/api/attendance/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
 
-    const payload = {
-      EmployeeID: selectedEmployee,
-      Month: selectedMonth,
-      Year: selectedYear,
-      AttendanceRecords: preparedAttendance,
-      LeaveDays: Number(leaveSummary.LeaveDays) || 0,
-      SickDays: Number(leaveSummary.SickDays) || 0,
-      MaternityDays: Number(leaveSummary.MaternityDays) || 0,
-      NightshiftAllowance: Number(leaveSummary.NightshiftAllowance) || 0,
-      ProductDeductions: Number(leaveSummary.ProductDeductions) || 0,
-      LeaveAllowance: Number(leaveSummary.LeaveAllowance) || 0,
-    };
+    if (!res.ok) throw new Error("Failed to save attendance");
 
-    console.log("🟢 Sending attendance payload:", payload);
+    const result = await res.json();
+    toast.success(`${result.message}`);
+  } catch (err) {
+    console.error("Error saving attendance:", err);
+    toast.error("Failed to save attendance. Please try again.");
+  } finally {
+    setIsSaving(false);
+  }
+};
 
-    try {
-      const res = await fetch("/api/attendance/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Failed to save attendance");
-
-      const result = await res.json();
-      toast.success(`${result.message}`);
-    } catch (err) {
-      console.error("Error saving attendance:", err);
-      toast.error("Failed to save attendance. Please try again.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   // ==============================
   // Loading UI
@@ -441,19 +480,19 @@ export default function UpdateMusterRoll() {
         </div>
 
         {/* RIGHT: Sticky Leave Summary */}
-        <div className="w-full lg:w-80">
-          <div className="bg-blue-200 rounded-xl shadow-lg border border-gray-200 p-5 sticky top-[120px]">
-            <h2 className="text-lg flex font-semibold text-blue-900 mb-4 items-center mx-auto justify-center">
+        <div className="w-full lg:w-80 ">
+          <div className="bg-blue-100 rounded-xl shadow-lg border border-gray-200 p-3 sticky top-[110px]">
+            <h2 className="text-l flex font-semibold text-blue-900 mb-2 items-center mx-auto justify-center">
               Summary
             </h2>
 
             {[
-              { key: "LeaveDays", label: "Annual Leave" },
-              { key: "SickDays", label: "Sick Leave" },
-              { key: "MaternityDays", label: "Maternity Leave" },
-              { key: "NightshiftAllowance", label: "Night Allowance (₦)" },
-              { key: "ProductDeductions", label: "Products (₦)" },
-              { key: "LeaveAllowance", label: "Leave Allowance (₦)" },
+              { key: "LeaveDays", label: "Annual Leave (days)" },
+              { key: "SickDays", label: "Sick Leave (days)" },
+              { key: "MaternityDays", label: "Maternity Leave (days)" },
+              { key: "NightshiftAllowance", label: "Night Allowance (Ksh)" },
+              { key: "ProductDeductions", label: "Products (Ksh)" },
+              { key: "LeaveAllowance", label: "Leave Allowance (Ksh)" },
             ].map(({ key, label }) => (
               <div key={key} className="mb-2 flex flex-row gap-2 ">
                 <label className="block flex-4/7 text-sm font-medium mb-2">{label}</label>
@@ -467,8 +506,80 @@ export default function UpdateMusterRoll() {
                 />
               </div>
             ))}
+
+
+                {/* Adjustments Section */}
+          
+            <h2 className="  font-semibold mt-5 text-blue-900 mb-2 text-center">
+              Adjustments
+            </h2>
+
+            {adjustments.length === 0 && (
+              <p className="text-gray-500 text-sm text-center mb-3">
+                No adjustments added yet.
+              </p>
+            )}
+
+            <div className="flex flex-col gap-3 mb-4">
+              {adjustments.map((adj, index) => (
+                <div
+                  key={index}
+                  className="flex flex-wrap gap-3 items-center bg-slate-50 rounded-lg p-3 border border-blue-200"
+                >
+                  <select
+                    value={adj.type}
+                    onChange={(e) => handleAdjustmentChange(index, "type", e.target.value)}
+                    className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-400"
+                  >
+                    <option value="">Type</option>
+                    <option value="Hours">Hours</option>
+                    <option value="Amount">Amount</option>
+                  </select>
+
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="+/- Value"
+                    value={adj.value}
+                    onChange={(e) => handleAdjustmentChange(index, "value", e.target.value)}
+                    className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm w-36 focus:ring-2 focus:ring-blue-400"
+                  />
+
+                  <textarea
+                    type="text"
+                    placeholder="Reason / Note"
+                    value={adj.note}
+                    onChange={(e) => handleAdjustmentChange(index, "note", e.target.value)}
+                    className=" w-full h-13 border bg-white border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-400"
+                  />
+
+                  <button
+                    onClick={() => removeAdjustment(index)}
+                    className="text-red-500 hover:text-red-700 text-sm font-semibold"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={addAdjustment}
+              className="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-lg 
+              text-sm shadow font-medium transition"
+            >
+              + New Adjustment
+            </button>
           </div>
+          
+
+                
+
         </div>
+
+
+
+
       </div>
     </div>
   );

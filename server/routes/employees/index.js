@@ -46,17 +46,14 @@ router.get("/report", async (req, res) => {
   const startDate = new Date(year, selectedMonth, 27);
   const endDate = new Date(year, selectedMonth + 1, 26);
 
-  const payrollDate = new Date(year, selectedMonth + 2, 1);
-
-  const payrollMonth = payrollDate.toISOString().slice(0, 10);
-  console.log('selectedMonth:', selectedMonth);
-  
+  // PayrollMonth = one month ahead of the attendance period (to match your MERGE logic)
+  const payrollMonth = new Date(year, selectedMonth + 2, 1); 
 
   try {
     const pool = await connectToDB2();
 
-    const [attendance, summary] = await Promise.all([
-      // Attendance records
+    const [attendance, summary, adjustments] = await Promise.all([
+      // 1️⃣ Attendance records
       pool.request()
         .input("EmployeeID", sql.Int, employeeId)
         .input("StartDate", sql.Date, startDate)
@@ -74,36 +71,61 @@ router.get("/report", async (req, res) => {
           ORDER BY AttendanceDate
         `),
 
-//  Payroll summary (match by month & year, not full date)
-pool.request()
-  .input("EmployeeID", sql.Int, employeeId)
-  .input("Year", sql.Int, year)
-  .input("Month", sql.Int, selectedMonth + 2  ) // +1 because JS months are 0-based
-  .query(`
-    SELECT 
-      LeaveDays, 
-      SickDays, 
-      MaternityDays, 
-      NightshiftAllowance,
-      ProductDeductions,
-      LeaveAllowance
-    FROM [Specialised Systems].dbo.EmployeePayrolls
-    WHERE EmployeeID = @EmployeeID
-      AND YEAR(PayrollMonth) = @Year
-      AND MONTH(PayrollMonth) = @Month
-  `)
-
+      // 2️⃣ Payroll summary (match by month & year)
+      pool.request()
+        .input("EmployeeID", sql.Int, employeeId)
+        .input("Year", sql.Int, year)
+        .input("Month", sql.Int, selectedMonth + 2) // +1 for 0-based JS month, +1 again for payroll offset
+        .query(`
+          SELECT 
+            ID AS PayrollID,
+            LeaveDays, 
+            SickDays, 
+            MaternityDays, 
+            NightshiftAllowance,
+            ProductDeductions,
+            LeaveAllowance
+          FROM [Specialised Systems].dbo.EmployeePayrolls
+          WHERE EmployeeID = @EmployeeID
+            AND YEAR(PayrollMonth) = @Year
+            AND MONTH(PayrollMonth) = @Month
+        `),
     ]);
 
+    // 3️⃣ Fetch Adjustments linked to this payroll record (if exists)
+    let adjustmentsData = [];
+    const payrollRecord = summary.recordset[0];
+    if (payrollRecord?.PayrollID) {
+      const adjResult = await pool.request()
+        .input("PayrollID", sql.Int, payrollRecord.PayrollID)
+        .query(`
+          SELECT 
+            AdjustmentID,
+            AdjustmentType,
+            AdjustmentValue,
+            Note,
+            CreatedAt,
+            CreatedBy
+          FROM [Specialised Systems].dbo.PayrollAdjustments
+          WHERE EmployeePayrollID = @PayrollID
+          ORDER BY CreatedAt DESC;
+        `);
+      adjustmentsData = adjResult.recordset;
+    }
+
+    // ✅ Return everything together
     res.json({
       attendance: attendance.recordset,
-      summary: summary.recordset[0] || {},
+      summary: payrollRecord || {},
+      adjustments: adjustmentsData,
     });
+
   } catch (err) {
-    console.error(" Report error:", err);
+    console.error("❌ Report error:", err);
     res.status(500).json({ error: "Error fetching report", details: err.message });
   }
 });
+
 
 
 module.exports = router;

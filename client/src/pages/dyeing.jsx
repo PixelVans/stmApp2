@@ -15,7 +15,7 @@ const ChemicalTable = forwardRef((props, ref) => {
   const [isFetching, setIsFetching] = useState(false);
   const [seconds, setSeconds] = useState(0);
 
-  // ⏳ Timer (optional, like your weaving page)
+  //  Timer (optional, like your weaving page)
   useEffect(() => {
     let timer;
     if (isFetching) {
@@ -31,9 +31,14 @@ const ChemicalTable = forwardRef((props, ref) => {
     if (!el) return;
 
     const checkForFetchingText = () => {
-      const hasFetching = el.innerText.toLowerCase().includes("fetching..");
-      setIsFetching(hasFetching);
-    };
+  const text = el.innerText.toLowerCase();
+  const hasFetching =
+    text.includes("fetching..") || text.includes("fetching data");
+  setIsFetching(hasFetching);
+};
+
+
+
 
     // Run once immediately
     checkForFetchingText();

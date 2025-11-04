@@ -23,7 +23,8 @@ const PrintingMusterRollReport = () => {
   
   
   });
-  
+  const [adjustments, setAdjustments] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -168,6 +169,7 @@ const res = await fetch(
     console.log( "fetched Report:", data)
     setAttendanceData(data.attendance || []);
     setSummary(data.summary || {});
+    setAdjustments(data.adjustments || []);
   } catch (err) {
     console.error(err);
     setError("Failed to load muster roll report. Please try again later.");
@@ -253,6 +255,9 @@ weeks.forEach((week) => {
     totalRegularHours += weeklyHours;
   }
 });
+
+//  Apply all hour-based adjustments ONCE, after totals are computed
+
 
 
 
@@ -450,9 +455,9 @@ const totalPayableHours =
               </div>
               {/* Print Button */}
               <button
-                onClick={() => window.print()}
+                // onClick={() => window.print()}
                 type="button"
-                className="hidden items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
               >
                 <FiPrinter className="w-4 h-4" />
                 Print Report
@@ -585,6 +590,10 @@ const totalPayableHours =
           <h1 className="font-semibold whitespace-nowrap">Employee Signature</h1>
           <div className="w-52 border-b-2 border-dotted border-gray-500"></div>
         </div>
+
+
+       
+
 
 
 
@@ -751,21 +760,122 @@ const totalPayableHours =
                      {formatCurrency(summary.LeaveAllowance)}
                   </td>
                 </tr>
-                <tr className="h-5 border "></tr>
-                <tr>
-                  <td className="border border-gray-300 pl-1 py-0.5 font-semibold">
-                    Adjustments
-                  </td>
-                  <td className="border border-gray-300   text-center">
-                     
-                  </td>
-                </tr>
+                {adjustments?.length > 0 && (() => {
+                // --- Aggregate Adjustments by Type ---
+                const totalHoursAdj = adjustments
+                  .filter(adj => adj.AdjustmentType?.toLowerCase() === "hours")
+                  .reduce((sum, adj) => sum + (Number(adj.AdjustmentValue) || 0), 0);
+
+                const totalAmountAdj = adjustments
+                  .filter(adj => adj.AdjustmentType?.toLowerCase() === "amount")
+                  .reduce((sum, adj) => sum + (Number(adj.AdjustmentValue) || 0), 0);
+
+                // --- Figure out which types exist ---
+                const hasHours = totalHoursAdj !== 0;
+                const hasAmount = totalAmountAdj !== 0;
+
+                return (
+                  <>
+                    {/* Spacer */}
+                    <tr className="h-5  borde-slate-50"></tr>
+
+                    {/* Full-width centered heading */}
+                    <tr>
+                      <td colSpan="2" className="text-center font-semibold text-sm py-1">
+                        Adjustments
+                      </td>
+                    </tr>
+
+                    {/* Dynamically show each adjustment type */}
+                    {hasHours && (
+                      <tr>
+                        <td className="border border-gray-300 pl-1 py-0.5 font-semibold">
+                          Hours
+                        </td>
+                        <td className="border border-gray-300 text-center">
+                          {totalHoursAdj > 0 ? "+" : ""}
+                          {totalHoursAdj} hrs
+                        </td>
+                      </tr>
+                    )}
+
+                    {hasAmount && (
+                      <tr>
+                        <td className="border border-gray-300 pl-1 py-0.5 font-semibold">
+                          Amount
+                        </td>
+                        <td className="border border-gray-300 text-center">
+                          {totalAmountAdj > 0 ? "+" : ""}
+                          {totalAmountAdj} Ksh
+                        </td>
+                      </tr>
+                    )}
+
+                    {/* In case no adjustments exist (all zero) */}
+                    {!hasHours && !hasAmount && (
+                      <tr>
+                        <td
+                          colSpan="2"
+                          className="border border-gray-300 text-center text-gray-500 py-0.5"
+                        >
+                          No adjustments
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                );
+              })()}
+
+
+
                 
               </tbody>
             </table>
+
+            
           </div>
+          
         </div>
+        
       </div>
+       {adjustments?.length > 0 && (
+        <div className="mt-20 w-full">
+          <h2 className="font-semibold mb-2 text-center">Adjustment Details</h2>
+          <table className="w-full border-collapse border border-gray-300 text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border border-gray-300 py-1 px-2 text-center">Type</th>
+                <th className="border border-gray-300 py-1 px-2 text-center">Value</th>
+                <th className="border border-gray-300 py-1 px-2 text-center">Note</th>
+                
+                <th className="border border-gray-300 py-1 px-2 text-center">Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              {adjustments.map((adj, index) => (
+                <tr key={index}>
+                  <td className="border border-gray-300 py-1 px-2 text-center">
+                    {adj.AdjustmentType}
+
+                  </td>
+                  <td className="border border-gray-300 py-1 px-2 text-center">
+                    {adj.Type?.toLowerCase() === "hours"
+                      ? `${adj.AdjustmentValue > 0 ? "+" : ""}${adj.AdjustmentValue}`
+                      : `${adj.AdjustmentValue > 0 ? "+" : ""}${adj.AdjustmentValue}`}
+                  </td>
+                  <td className="border border-gray-300 py-1 px-2 text-center">
+                    {adj.Note || "-"}
+                  </td>
+                  
+                  <td className="border border-gray-300 py-1 px-2 text-center">
+                    {new Date(adj.CreatedAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       </div>
       <style>
         {`

@@ -36,27 +36,32 @@ const DyeingCardCustomPrint = forwardRef((props, ref) => {
         <div
           className="
             grid 
-            grid-cols-[1.2fr_1.3fr_2.0fr_1.5fr] 
+            grid-cols-[2.0fr_1.3fr_1.2fr_1.5fr] 
             gap-x-2 gap-y-[2px]
             [&>div]:whitespace-nowrap 
             [&>div]:overflow-hidden 
             [&>div]:text-ellipsis
           "
         >
-          <div><strong>Client:</strong> {client ?? "-"}</div>
-          <div><strong>Article:</strong> {article ?? "-"}</div>
           <div><strong>Machine:</strong> {winch ?? "-"} @ {liqRatio ?? "-"}</div>
-          <div><strong>Dyeing System:</strong> {dyeingSystem ?? "-"}</div>
           
-          <div><strong>Softener:</strong> {softener ?? "-"}</div>
-          <div><strong>Scouring:</strong> {scouring ?? "-"}</div>
+           <div><strong>Dyeing System:</strong> {dyeingSystem ?? "-"}</div>
+             <div><strong>Salt Position:</strong> {saltPosition ?? "-"}</div>
+          <div><strong>Client:</strong> {client ?? "-"}</div>
           
           <div><strong>Shade:</strong> {selectedColour ?? "-"}</div>
+          <div><strong>Scouring:</strong> {scouring ?? "-"}</div>
           
+          <div><strong>Softener:</strong> {softener ?? "-"}</div>
+         <div><strong>Article:</strong> {article ?? "-"}</div>
+         
+          
+          <div><strong>Lot Weight:</strong> {lotWeight ? `${lotWeight} Kgs ` : "-"}</div>
+           <div><strong>Salt Option:</strong> {saltOption ?? "-"}</div>
           <div><strong>{liqRatio8 ?? "-"}</strong></div>
-          <div><strong>Salt Position:</strong> {saltPosition ?? "-"}</div>
-          <div><strong>Salt Option:</strong> {saltOption ?? "-"}</div>
-          <div><strong>Lot Weight:</strong> {lotWeight ? `${lotWeight} Kgs @ ${lotNo ?? "-"}` : "-"}</div>
+         
+          <div><strong>Lot Number:</strong> {lotNo ?? "-"}</div>
+          
         </div>
       </div>
 

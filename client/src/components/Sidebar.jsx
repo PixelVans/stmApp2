@@ -24,7 +24,7 @@ const navItems = [
   },
   { 
     name: "STM Muster Roll", 
-    icon: <FiClipboard size={18} className="text-orange-400" />, 
+    icon: <FiClipboard size={18} className="text-orange-300" />, 
     href: "/update-muster-roll" 
   },
  
