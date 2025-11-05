@@ -50,6 +50,8 @@ sodiumsulphateGramsPerL
 const UNIT_KG = " Kgs";
 const UNIT_G = " gms";
 
+
+
 export function computeAmount(gramsPerLt, lotWeight) {
   if (!gramsPerLt || !lotWeight) return "";
 
@@ -59,17 +61,19 @@ export function computeAmount(gramsPerLt, lotWeight) {
     const wholeKg = Math.trunc(totalGrams / 1000);
     const grams = totalGrams % 1000;
 
-    // Round grams to 4 decimal places to prevent floating-point errors
-    const roundedGrams = Number(grams.toFixed(4));
+    // Round grams to 4 decimal places and remove trailing zeros
+    const roundedGrams = parseFloat(grams.toFixed(4));
 
     return roundedGrams > 0
       ? `${wholeKg}${UNIT_KG} ${roundedGrams}${UNIT_G}`
       : `${wholeKg}${UNIT_KG}`;
   } else {
-    // If total is under 1kg, show with 4 decimal places
-    return `${totalGrams.toFixed(4)}${UNIT_G}`;
+    // Round to 4 decimals but drop unnecessary zeros
+    const cleanGrams = parseFloat(totalGrams.toFixed(4));
+    return `${cleanGrams}${UNIT_G}`;
   }
 }
+
 
 
 

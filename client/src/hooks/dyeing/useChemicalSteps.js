@@ -205,11 +205,14 @@ export default function useChemicalSteps() {
         return v ?? "";
       };
       const formatNumber = (val) => {
-        if (val === "" || val === null || val === undefined) return "";
-        const n = Number(val);
-        if (Number.isNaN(n)) return String(val);
-        return n.toFixed(3);
-      };
+  if (val === "" || val === null || val === undefined) return "";
+  const n = Number(val);
+  if (Number.isNaN(n)) return String(val);
+
+  // Keep up to 4 decimals but no forced zeros
+  return parseFloat(n.toFixed(5)).toString();
+};
+
 
    
 

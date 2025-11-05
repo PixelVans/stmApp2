@@ -135,10 +135,12 @@ const formatCurrency = (amount) => {
   useEffect(() => {
     async function fetchEmployees() {
       try {
+        setLoading(true);
         const res = await fetch("/api/employees");
         if (!res.ok) throw new Error("Failed to fetch employees");
         const data = await res.json();
         setEmployees(data);
+        setLoading(false);
       } catch {
         toast.error("Error fetching employees");
       }
@@ -382,7 +384,7 @@ const totalPayableHours =
       <Toaster position="top-center" richColors />
 
     {/* Header */}
-        <header className="print:hidden fixed top-14 lg:top-0 left-0 right-0 lg:ml-[250px] xl:ml-[265px]  z-10 lg:z-40
+        <header className="print:hidde fixed top-14 lg:top-0 left-0 right-0 lg:ml-[250px] xl:ml-[265px]  z-10 lg:z-40
          bg-white border-b border-gray-200 shadow-sm mb-6">
           
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">

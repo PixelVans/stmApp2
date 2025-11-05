@@ -508,7 +508,7 @@ const handleSave = async () => {
             ))}
 
 
-                {/* Adjustments Section */}
+            {/* Adjustments Section */}
           
             <h2 className="  font-semibold mt-5 text-blue-900 mb-2 text-center">
               Adjustments
@@ -520,11 +520,11 @@ const handleSave = async () => {
               </p>
             )}
 
-            <div className="flex flex-col gap-3 mb-4">
+            <div className="flex  flex-col gap-3 mb-4 ">
               {adjustments.map((adj, index) => (
                 <div
                   key={index}
-                  className="flex flex-wrap gap-3 items-center bg-slate-50 rounded-lg p-3 border border-blue-200"
+                  className="flex  flex-wrap gap-3 items-center bg-slate-50 rounded-lg p-3 border border-blue-200"
                 >
                   <select
                     value={adj.type}
@@ -571,16 +571,8 @@ const handleSave = async () => {
               + New Adjustment
             </button>
           </div>
-          
-
-                
-
-        </div>
-
-
-
-
-      </div>
+          </div>
+          </div>
     </div>
   );
 }
