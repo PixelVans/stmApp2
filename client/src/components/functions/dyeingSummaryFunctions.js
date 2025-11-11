@@ -453,10 +453,10 @@ function formatKgsGms(valueKg) {
 
 
 export function getDyeingChem1KgsNeeded(lotWeight, c29) {
-  console.log('getDyeingChem1KgsNeeded called with:', { lotWeight, c29 });
+  
   if(!c29)return ''
   try {
-    console.log('Calculating:', (c29 / 100) * lotWeight);
+    
     return formatKgsGms((c29 / 100) * lotWeight);  // <-- FIXED
   } catch {
     return "0";

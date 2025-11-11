@@ -15,6 +15,11 @@ const navItems = [
     icon: <FiEdit3 size={18} className="text-blue-400" />, 
     href: "/update-weaving-production" 
   },
+  { 
+    name: "Update Warping Data", 
+    icon: <FiEdit3 size={18} className="text-purple-400" />, 
+    href: "/update-warping-data" 
+  },
  { 
     name: "Update Stock", 
     icon: <FiBox size={18} className="text-green-400" />, 
@@ -25,14 +30,13 @@ const navItems = [
     icon: <FiClipboard size={18} className="text-orange-300" />, 
     href: "/update-muster-roll" 
   },
- {
-  name: "Warping",
-  icon: <FiLayers size={18} className="text-purple-400" />,
-  href: "/warping"
-}
+//  {
+//   name: "Warping",
+//   icon: <FiLayers size={18} className="text-purple-400" />,
+//   href: "/warping"
+// }
 
 
- 
 ];
 
 

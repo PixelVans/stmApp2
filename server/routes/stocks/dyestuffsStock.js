@@ -110,7 +110,7 @@ router.put("/bulk-update", async (req, res) => {
 });
 
 
-// Update Dyestuffs (full update of any field)
+// Update Dyestuffs 
 router.put("/:id", async (req, res) => {
   const {
     Description,

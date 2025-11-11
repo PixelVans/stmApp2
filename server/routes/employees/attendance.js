@@ -43,9 +43,9 @@
 //     const transaction = new sql.Transaction(pool);
 //     await transaction.begin();
 
-//     // ==============================
+//     
 //     // Update Attendance table
-//     // ==============================
+//     
 //     for (const record of AttendanceRecords) {
 //       const { AttendanceDate, TimeIn, TimeOut, DayOfWeek } = record;
 //       const safeTimeIn = normalizeTime(TimeIn);
@@ -118,9 +118,9 @@
 //         `);
 //     }
 
-//   // ==============================
+//   //
 // // Update EmployeePayrolls table
-// // ==============================
+// // 
 // const currentYear = Number(Year) || new Date().getFullYear();
 // const currentMonth = Number(Month) + 1;
 
@@ -224,9 +224,9 @@ router.post("/update", async (req, res) => {
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
 
-    // ==============================
+    
     // 1. Update Attendance table
-    // ==============================
+    
     for (const record of AttendanceRecords) {
       const { AttendanceDate, TimeIn, TimeOut, DayOfWeek } = record;
       const safeTimeIn = normalizeTime(TimeIn);
@@ -299,9 +299,9 @@ router.post("/update", async (req, res) => {
         `);
     }
 
-    // ==============================
+    
     // 2. Update EmployeePayrolls table
-    // ==============================
+ 
     const currentYear = Number(Year) || new Date().getFullYear();
     const currentMonth = Number(Month) + 1;
 
@@ -345,7 +345,7 @@ router.post("/update", async (req, res) => {
           );
       `);
 
-    // ✅ 3. Get Payroll ID (to link adjustments)
+    //  3. Get Payroll ID
     const req3 = new sql.Request(transaction);
     const payrollResult = await req3
       .input("EmployeeID", sql.Int, EmployeeID)
@@ -363,7 +363,7 @@ router.post("/update", async (req, res) => {
     if (payrollRecord && Adjustments?.length > 0) {
       const payrollID = payrollRecord.ID;
 
-      // Optional: Clear old adjustments for that month before inserting new ones
+      // Clear old adjustments  before inserting new ones
       const clearReq = new sql.Request(transaction);
       await clearReq
         .input("PayrollID", sql.Int, payrollID)
@@ -382,7 +382,7 @@ router.post("/update", async (req, res) => {
           .input("AdjustmentType", sql.VarChar(20), AdjustmentType)
           .input("AdjustmentValue", sql.Decimal(10, 2), AdjustmentValue)
           .input("Note", sql.NVarChar(255), Note)
-          .input("CreatedBy", sql.NVarChar(100), "system") // or req.user.name if using auth
+          .input("CreatedBy", sql.NVarChar(100), "system") 
           .query(`
             INSERT INTO [Specialised Systems].dbo.PayrollAdjustments 
               (EmployeePayrollID, AdjustmentType, AdjustmentValue, Note, CreatedBy)
@@ -392,13 +392,13 @@ router.post("/update", async (req, res) => {
       }
     }
 
-    // ==============================
-    // Commit everything
-    // ==============================
+    
+    // Commit 
+   
     await transaction.commit();
     res.json({ message: "Attendance, payroll, and adjustments successfully updated" });
   } catch (err) {
-    console.error("❌ Error saving attendance:", err);
+    console.error(" Error saving attendance:", err);
     res.status(500).json({ error: "Error saving attendance", details: err.message });
   }
 });

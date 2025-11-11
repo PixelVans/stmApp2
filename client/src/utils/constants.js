@@ -234,7 +234,7 @@ export  const Dyestuff_2 = [
     "IndoFix Red S-3B",
     "",
     "IndoFix Red S-3B",
-    "",
+    "",    //IndoFix Red S-3B  to be added for mathare
     "IndoFix Red S-3B",
     "Bezaktiv Red S-Matrix 150%",
     "IndoFix Turquoise Blue G 133%",
@@ -454,6 +454,9 @@ export const Dyestuff_3_Amt = [
 // Dyestuff 4 Amt
 export const Dyestuff_4_Amt = Array(98).fill(""); 
 Dyestuff_4_Amt[60] = "0.4000"; 
+
+
+
 
 
 // for dyeing system selectedd

@@ -449,9 +449,9 @@ const totalPayableHours =
               </div>
               {/* Print Button */}
               <button
-                // onClick={() => window.print()}
+                onClick={() => window.print()}
                 type="button"
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
+                className="hidden items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
               >
                 <FiPrinter className="w-4 h-4" />
                 Print Report
@@ -848,7 +848,10 @@ const totalPayableHours =
         </div>
       )}
       </div>
-      <style>
+
+
+
+      {/* <style>
         {`
           @page {
             size: A4;
@@ -873,7 +876,9 @@ const totalPayableHours =
             }
           }
         `}
-      </style>
+      </style> */}
+
+
   </div>
 
     

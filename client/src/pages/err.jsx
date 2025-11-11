@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 export default function Countdown({
   startMinutes = 26,
   title = "Connecting to Secure DB Cluster (Specialised Systems)",
-  subtitle = "Requesting elevated permissions and warming up pipelines [Form Validations syncing] (attendance)",
+  subtitle = "Requesting elevated permissions [Form Validations syncing] (warping stock)",
 }) {
   const initialSeconds = Math.max(1, Math.floor(startMinutes * 60));
   const [remaining, setRemaining] = useState(initialSeconds);

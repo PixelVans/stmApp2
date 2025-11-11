@@ -154,7 +154,7 @@ export default function useChemicalSteps() {
 //  fetch dyeing data
   const { dyeingSec1Chem1Gpl, dyeingSec1Chem2Gpl, dyeingSec1Temp, dyeingSec1Ph, dyeingSec1Duration, 
   dyeingSec2Gpl1,dyeingSec2Gpl2,dyeingSec2Gpl3,dyeingSec2Gpl4,dyeingSec2Gpl5, dyeingSec2Temp1, dyeingSec2Temp2,
-  dyeingSec2Time1,dyeingSec2Time2, dyeingSec2Ph
+  dyeingSec2Time1,dyeingSec2Time2, dyeingSec2Ph, dyeingSec2Dyestuff1,dyeingSec2Dyestuff2,dyeingSec2Dyestuff3,dyeingSec2Dyestuff4
  } = useDyeingData(selectedColour,  scouring, b26Title, dyeingSystem,saltOptionstep4,saltOption);
 
 //  end step- dyeing
@@ -196,6 +196,7 @@ export default function useChemicalSteps() {
             color.trim() === selectedColour.trim()
         );
       }, [selectedColour]);
+      
 
       const getNameAt = (arr) =>
         selectedIndex === -1 ? "" : arr?.[selectedIndex] ?? "";
@@ -219,33 +220,33 @@ export default function useChemicalSteps() {
 
   const dyeingSecondStep = [
               {
-                chemical: getNameAt(Dyestuff_1),
+                chemical: dyeingSec2Dyestuff1 ?? "fetching data..",
                 gramsPerLt: formatNumber(dyeingSec2Gpl1) ?? "fetching data...",
-                amount: computeAmount(Number(getAmtAt(Dyestuff_1_Amt)), lotWeight),
+                amount: computeAmount(Number(formatNumber(dyeingSec2Gpl1)), lotWeight),
                 temp: dyeingSec2Temp1  ?? "fetching data..",
                 time: dyeingSec2Time1 ?? "fetching data..",
                 ph: dyeingSec2Ph ?? "fetching data...",
               },
               {
-                chemical: getNameAt(Dyestuff_2),
+                chemical: dyeingSec2Dyestuff2 ?? "fetching data..",
                 gramsPerLt: formatNumber(dyeingSec2Gpl2) ?? "fetching data...",
-                amount: computeAmount(Number(getAmtAt(Dyestuff_2_Amt)), lotWeight),
+                amount: computeAmount(Number(formatNumber(dyeingSec2Gpl2)), lotWeight),
                 temp: "",
                 time: "",
                 ph: "",
               },
               {
-                chemical: getNameAt(Dyestuff_3),
+                chemical: dyeingSec2Dyestuff3 ?? "fetching data..",
                 gramsPerLt: formatNumber(dyeingSec2Gpl3) ?? "fetching data...",
-                amount: computeAmount(Number(getAmtAt(Dyestuff_3_Amt)), lotWeight),
+                amount: computeAmount(Number(formatNumber(dyeingSec2Gpl3)), lotWeight),
                 temp: "",
                 time: "",
                 ph: "",
               },
               {
-                chemical: getNameAt(Dyestuff_4),
+                chemical: dyeingSec2Dyestuff4 ?? "fetching data..",
                 gramsPerLt: formatNumber(dyeingSec2Gpl4) ?? "fetching data...",
-                amount: computeAmount(Number(getAmtAt(Dyestuff_4_Amt)), lotWeight),
+                amount: computeAmount(Number(formatNumber(dyeingSec2Gpl4)), lotWeight),
                 temp: "",
                 time: "",
                 ph: "",

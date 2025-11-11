@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { connectToDB2, sql } = require("../../config/db");
 
-// ==================== GET ALL WARPING STOCK ====================
+//  GET ALL WARPING STOCK 
 router.get("/", async (req, res) => {
   try {
     const pool = await connectToDB2();
@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ==================== ADD NEW WARPING STOCK ITEM ====================
+// ADD NEW WARPING STOCK ITEM 
 router.post("/", async (req, res) => {
   const { StockIndex, Description, Type, QuantityOnHand, UnitOfMeasure } = req.body;
 
@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ==================== BULK UPDATE WARPING STOCK ====================
+//  BULK UPDATE WARPING STOCK 
 router.put("/bulk-update", async (req, res) => {
   const rows = req.body;
 
@@ -92,7 +92,7 @@ router.put("/bulk-update", async (req, res) => {
   }
 });
 
-// ==================== UPDATE SINGLE WARPING STOCK ITEM ====================
+//  UPDATE SINGLE WARPING STOCK ITEM 
 router.put("/:id", async (req, res) => {
   const { StockIndex, Description, Type, QuantityOnHand, UnitOfMeasure } = req.body;
 
@@ -123,7 +123,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// ==================== DELETE WARPING STOCK ITEM ====================
+//  DELETE WARPING STOCK ITEM 
 router.delete("/:id", async (req, res) => {
   try {
     const pool = await connectToDB2();

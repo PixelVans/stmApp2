@@ -565,7 +565,7 @@ const handleSave = async () => {
 
             <button
               onClick={addAdjustment}
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-lg 
+              className="w-full hidden bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-lg 
               text-sm shadow font-medium transition"
             >
               + New Adjustment

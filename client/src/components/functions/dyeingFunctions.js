@@ -356,6 +356,45 @@ export async function getDyeingSec2TimePh(selectedColour, index, dyeingSystem ) 
 }
 
 
+export async function getDyeingSec2Dyestuff(selectedColour, dyePosition ) {
+
+  try {
+    const row = await fetchDyeingRow(selectedColour);
+    
+    if (!row) return "";
+    const rowValues = Object.values(row);
+    
+    const value = rowValues[dyePosition] ?? "";
+    console.log(rowValues)
+    return value ??''
+    
+  } catch (err) {
+    console.error("Failed to fetch dyestuff:", err);
+    return "";
+  }
+}
+
+export async function getDyeingSec2DyestuffAmt(selectedColour, dyePosition ) {
+
+  try {
+    const row = await fetchDyeingRow(selectedColour);
+    
+    if (!row) return "";
+    const rowValues = Object.values(row);
+    
+    const value = rowValues[dyePosition] ?? "";
+    
+    return value ??''
+    
+  } catch (err) {
+    console.error("Failed to fetch dyestuff Amt:", err);
+    return "";
+  }
+}
+
+ 
+
+
 
   
 

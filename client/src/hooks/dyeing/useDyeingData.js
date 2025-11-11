@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getDyeingSec1ChemGpl, getDyeingSec1ChemGpl1, getDyeingSec1ChemGpl2, 
-  getDyeingSec1Value, getDyeingSec2Temp, getDyeingSec2TimePh, getDyestuffGpl } from "../../components/functions/dyeingFunctions";
+  getDyeingSec1Value, getDyeingSec2Dyestuff, getDyeingSec2Temp, getDyeingSec2TimePh, getDyestuffGpl } from "../../components/functions/dyeingFunctions";
 
 export default function useDyeingData(selectedColour,  scouring, b26Title, dyeingSystem, saltOptionstep4 , saltOption) {
   
@@ -22,6 +22,12 @@ export default function useDyeingData(selectedColour,  scouring, b26Title, dyein
   const [dyeingSec2Time1, setdyeingSec2Time1] = useState(null);
   const [dyeingSec2Time2, setdyeingSec2Time2] = useState(null);
   const [dyeingSec2Ph, setdyeingSec2Ph] = useState(null);
+
+  const [dyeingSec2Dyestuff1, setdyeingSec2Dyestuff1] = useState(null);
+  const [dyeingSec2Dyestuff2, setdyeingSec2Dyestuff2] = useState(null);
+  const [dyeingSec2Dyestuff3, setdyeingSec2Dyestuff3] = useState(null);
+  const [dyeingSec2Dyestuff4, setdyeingSec2Dyestuff4] = useState(null);
+  
 
   
 
@@ -65,7 +71,12 @@ export default function useDyeingData(selectedColour,  scouring, b26Title, dyein
         let dyeingSec2Time1 = await getDyeingSec2TimePh(selectedColour, 24, dyeingSystem )
         let dyeingSec2Time2 = await getDyeingSec2TimePh(selectedColour, 23, dyeingSystem )
         let dyeingSec2Ph = await getDyeingSec2TimePh(selectedColour, 26, dyeingSystem )
-        
+
+        // dyestuffs
+        const dyeingSec2Dyestuff1 = getDyeingSec2Dyestuff(selectedColour, 1 )
+        const dyeingSec2Dyestuff2 = getDyeingSec2Dyestuff(selectedColour, 3 )
+        const dyeingSec2Dyestuff3 = getDyeingSec2Dyestuff(selectedColour, 5 )
+        const dyeingSec2Dyestuff4 = getDyeingSec2Dyestuff(selectedColour, 7 )
        
      if (mounted) {
           setdyeingSec1Chem1Gpl(dyeingSec1Chem1Gpl);
@@ -85,6 +96,11 @@ export default function useDyeingData(selectedColour,  scouring, b26Title, dyein
           setdyeingSec2Time1(dyeingSec2Time1);
           setdyeingSec2Time2(dyeingSec2Time2);
           setdyeingSec2Ph(dyeingSec2Ph);
+
+          setdyeingSec2Dyestuff1(dyeingSec2Dyestuff1)
+          setdyeingSec2Dyestuff2(dyeingSec2Dyestuff2)
+          setdyeingSec2Dyestuff3(dyeingSec2Dyestuff3)
+          setdyeingSec2Dyestuff4(dyeingSec2Dyestuff4)
           
         }
       } catch (err) {
@@ -109,6 +125,11 @@ export default function useDyeingData(selectedColour,  scouring, b26Title, dyein
           setdyeingSec2Time1("dbErr");
           setdyeingSec2Time2("dbErr");
           setdyeingSec2Ph("dbErr");
+
+          setdyeingSec2Dyestuff1('')
+          setdyeingSec2Dyestuff2('')
+          setdyeingSec2Dyestuff3('')
+          setdyeingSec2Dyestuff4('')
           
         }
       }
@@ -122,6 +143,6 @@ export default function useDyeingData(selectedColour,  scouring, b26Title, dyein
 
   return { dyeingSec1Chem1Gpl, dyeingSec1Chem2Gpl, dyeingSec1Temp , dyeingSec1Ph, dyeingSec1Duration,
     dyeingSec2Gpl1, dyeingSec2Gpl2, dyeingSec2Gpl3, dyeingSec2Gpl4, dyeingSec2Gpl5,dyeingSec2Temp1,dyeingSec2Temp2,
-    dyeingSec2Time1,dyeingSec2Time2, dyeingSec2Ph
+    dyeingSec2Time1,dyeingSec2Time2, dyeingSec2Ph, dyeingSec2Dyestuff1,dyeingSec2Dyestuff2,dyeingSec2Dyestuff3,dyeingSec2Dyestuff4
    };
 }

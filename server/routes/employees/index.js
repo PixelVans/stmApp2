@@ -3,9 +3,9 @@ const router = express.Router();
 const { connectToDB2, sql } = require("../../config/db");
 
 //
-// ==========================
+
 // GET all employees
-// ==========================
+
 router.get("/", async (req, res) => {
   try {
     const pool = await connectToDB2();
@@ -28,10 +28,10 @@ router.get("/", async (req, res) => {
 });
 
 //
-// ==========================
+
 // GET Employee Report
 // /api/employees/report?employeeId=1&month=9
-// ==========================
+
 router.get("/report", async (req, res) => {
   let { employeeId, month, year } = req.query;
 
@@ -53,7 +53,7 @@ router.get("/report", async (req, res) => {
     const pool = await connectToDB2();
 
     const [attendance, summary, adjustments] = await Promise.all([
-      // 1️⃣ Attendance records
+      // 1 Attendance records
       pool.request()
         .input("EmployeeID", sql.Int, employeeId)
         .input("StartDate", sql.Date, startDate)
@@ -71,7 +71,7 @@ router.get("/report", async (req, res) => {
           ORDER BY AttendanceDate
         `),
 
-      // 2️⃣ Payroll summary (match by month & year)
+      // 2 Payroll summary (match by month & year)
       pool.request()
         .input("EmployeeID", sql.Int, employeeId)
         .input("Year", sql.Int, year)
@@ -92,7 +92,7 @@ router.get("/report", async (req, res) => {
         `),
     ]);
 
-    // 3️⃣ Fetch Adjustments linked to this payroll record (if exists)
+    // Fetch Adjustments linked to this payroll record (if exists)
     let adjustmentsData = [];
     const payrollRecord = summary.recordset[0];
     if (payrollRecord?.PayrollID) {
@@ -113,7 +113,7 @@ router.get("/report", async (req, res) => {
       adjustmentsData = adjResult.recordset;
     }
 
-    // ✅ Return everything together
+    //  Return everything together
     res.json({
       attendance: attendance.recordset,
       summary: payrollRecord || {},
@@ -121,7 +121,7 @@ router.get("/report", async (req, res) => {
     });
 
   } catch (err) {
-    console.error("❌ Report error:", err);
+    console.error(" Report error:", err);
     res.status(500).json({ error: "Error fetching report", details: err.message });
   }
 });
