@@ -503,7 +503,7 @@ const handlePrint = useReactToPrint({
                       onChange={(e) =>
                         handleChange(i, "QuantityonHand", e.target.value)
                       }
-                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      className="w-full border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === "Tab") {
@@ -522,7 +522,7 @@ const handlePrint = useReactToPrint({
                       type="number"
                       value={row.in}
                       onChange={(e) => handleChange(i, "in", e.target.value)}
-                      className="w-full border rounded-md px-2 py-1 text-sm"
+                      className="w-full border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                       tabIndex={-1}
                     />
                   </td>

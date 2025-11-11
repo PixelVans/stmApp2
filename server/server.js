@@ -20,6 +20,7 @@ const weavingProduction = require('./routes/production/weavingProduction');
 // stocks routes
 const chemicalsStock = require('./routes/stocks/chemicalsStock');
 const dyestuffsStock = require('./routes/stocks/dyestuffsStock');
+const warpingStock = require('./routes/stocks/warpingStock');
 
 // employees route
 const employeeRoutes = require("./routes/employees/index");
@@ -48,6 +49,7 @@ app.use('/api/weaving-production', weavingProduction);
 // stocks
 app.use("/api/chemicals-stock", chemicalsStock);
 app.use("/api/dyestuffs-stock", dyestuffsStock);
+app.use("/api/warping-stock", warpingStock);
 
 // employees
 app.use("/api/employees", employeeRoutes);

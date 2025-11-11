@@ -15,3 +15,15 @@ CREATE TABLE dbo.ProductionData (
     [Date] DATE NOT NULL
 );
 
+
+
+CREATE TABLE dbo.WarpingStock (
+    ID INT IDENTITY(1,1) PRIMARY KEY,                -- main unique key
+    StockIndex INT NULL, 
+    Type NVARCHAR(50) NULL,                            -- e.g. 'Cones', 'Cheese', 'Bag', 'Yarn'
+    Description NVARCHAR(100) NOT NULL,
+    QuantityOnHand INT NOT NULL DEFAULT 0,
+    UnitOfMeasure NVARCHAR(20) NOT NULL,      -- e.g. 'kg', 'pieces'
+    UpdatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME()
+);
+

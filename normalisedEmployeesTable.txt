@@ -29,9 +29,11 @@ CREATE TABLE EmployeePayrolls (
     RegularHours DECIMAL(10,2) DEFAULT 0,
     DirectOverTime DECIMAL(10,2) DEFAULT 0,
     SundayHours DECIMAL(10,2) DEFAULT 0,
-    LeaveHours DECIMAL(10,2) DEFAULT 0,
-    SickHours DECIMAL(10,2) DEFAULT 0,
-    HolidayHours DECIMAL(10,2) DEFAULT 0,
+    LeaveDays INT DEFAULT 0,
+    LeaveAllowance DECIMAL(10,2) DEFAULT 0;
+    SickDays INT DEFAULT 0,
+    MaternityDays INT DEFAULT 0,
+    HolidayDays INT DEFAULT 0,
     TotalHours DECIMAL(10,2) DEFAULT 0,
 
     NightshiftAllowance DECIMAL(10,2) DEFAULT 0,
@@ -48,6 +50,27 @@ CREATE TABLE EmployeePayrolls (
 );
 GO
 
+
+
+
+CREATE TABLE PayrollAdjustments (
+    AdjustmentID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeePayrollID INT NOT NULL 
+        FOREIGN KEY REFERENCES EmployeePayrolls(ID),
+
+    AdjustmentType VARCHAR(20) NOT NULL 
+        CHECK (AdjustmentType IN ('Hours', 'Amount')),
+    AdjustmentValue DECIMAL(10,2) NOT NULL,   -- positive or negative
+    Note NVARCHAR(255) NOT NULL,              -- reason required
+
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    CreatedBy NVARCHAR(100) NULL
+);
+GO
+
+
+
+
 -- ===============================
 -- 3. SalaryAdvances Table
 -- ===============================
@@ -60,28 +83,30 @@ CREATE TABLE SalaryAdvances (
 GO
 
 -- ===============================
--- 4. Attendance Table
+-- 4. Attendance Table (Updated)
 -- ===============================
 CREATE TABLE Attendance (
     AttendanceID INT IDENTITY(1,1) PRIMARY KEY,
     EmployeeID INT NOT NULL FOREIGN KEY REFERENCES Employees(EmployeeID),
 
     AttendanceDate DATE NOT NULL,
+    DayOfWeek VARCHAR(10) NULL,        -- e.g. 'Mon', 'Tue', etc.
     TimeIn TIME NULL,
     TimeOut TIME NULL,
 
     TotalHours DECIMAL(10,2) NULL,     -- Calculated from TimeIn/TimeOut
     ShiftType VARCHAR(20) NULL,        -- 'Day' or 'Night' (can be derived)
-    LeaveDays INT DEFAULT 0,
-    SickDays INT DEFAULT 0,
-    MaternityDays INT DEFAULT 0,
-    HolidayDays INT DEFAULT 0,
-
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE(),
 
-    -- Prevent duplicate entries per employee per date
     CONSTRAINT UQ_Attendance_EmployeeDate UNIQUE (EmployeeID, AttendanceDate)
 );
 GO
+
+
+
+
+
+
+
 

@@ -260,10 +260,7 @@ weeks.forEach((week) => {
 
 //  Apply all hour-based adjustments ONCE, after totals are computed
 
-
-
-
-  const overtimePayable = totalOvertimeHours * 1.5;
+const overtimePayable = totalOvertimeHours * 1.5;
   const sundayHours = attendanceData
     .filter((r) => r.DayOfWeek === "Sun" && r.TotalHours)
     .reduce((sum, r) => sum + r.TotalHours, 0);
@@ -291,9 +288,7 @@ holidayDates.forEach((holiday) => {
 
 
 const holidayPayable = totalHolidayPayable;
-
-
-  const totalHours = attendanceData
+const totalHours = attendanceData
     .filter((r) => r.TotalHours)
     .reduce((sum, r) => sum + r.TotalHours, 0);
 
@@ -345,8 +340,7 @@ const totalPayableHours =
         <p className="mt-6 text-lg font-semibold text-gray-800">
           Loading Muster Roll Report...
         </p>
-
-        
+  
       <style>{`
           @keyframes wave {
             0%, 40%, 100% { transform: scaleY(0.4); } 
@@ -356,8 +350,6 @@ const totalPayableHours =
       </div>
     );
   }
-
-
 
 
   if (error) {
@@ -585,19 +577,11 @@ const totalPayableHours =
               </tr>
 
           </tbody>
-
-
-            </table>
+          </table>
           <div className="flex  justify-center gap-3 mt-10 mb-5">
           <h1 className="font-semibold whitespace-nowrap">Employee Signature</h1>
           <div className="w-52 border-b-2 border-dotted border-gray-500"></div>
         </div>
-
-
-       
-
-
-
 
           </div>
 
@@ -647,13 +631,7 @@ const totalPayableHours =
                 </tr>
               </thead>
               <tbody>
-                
-                
-              
-               
-                
-
-                <tr>
+                 <tr>
                   <td className="border text-[12px] border-gray-300 px-1 py-0.5">
                     Total Absent
                   </td>
@@ -779,15 +757,12 @@ const totalPayableHours =
                 return (
                   <>
                     {/* Spacer */}
-                    <tr className="h-5  borde-slate-50"></tr>
-
                     {/* Full-width centered heading */}
                     <tr>
                       <td colSpan="2" className="text-center font-semibold text-sm py-1">
                         Adjustments
                       </td>
                     </tr>
-
                     {/* Dynamically show each adjustment type */}
                     {hasHours && (
                       <tr>
@@ -828,16 +803,10 @@ const totalPayableHours =
                 );
               })()}
 
-
-
-                
               </tbody>
             </table>
-
-            
           </div>
-          
-        </div>
+         </div>
         
       </div>
        {adjustments?.length > 0 && (

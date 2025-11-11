@@ -14,6 +14,7 @@ import ChemicalsStockPrintoutPage from "./customPrintouts/chemicalsStockPrintout
 import DyestuffsStockPrintoutPage from "./customPrintouts/dyestuffsStockPrintout";
 import UpdateMusterRoll from "./pages/updateMusterRoll";
 import PrintingMusterRollReport from "./components/PrintoutTables/PrintingMusterRollReport";
+import WarpingPage from "./pages/warping";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/update-stock" element={<UpdateStockPage />} />
           <Route path="/update-muster-roll" element={<UpdateMusterRoll />} />
           <Route path="/muster-roll-reports" element={<PrintingMusterRollReport />} />
+          <Route path="/warping" element={<WarpingPage />} />
         </Route>
 
         {/* Standalone routes without layout */}
