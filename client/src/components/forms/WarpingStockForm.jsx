@@ -134,7 +134,7 @@ setRows(
   };
 
  const handleSubmit = async (e) => {
-    return
+    
   e.preventDefault();
   setSaving(true);
   try {
@@ -193,7 +193,7 @@ const handleSaveItem = async () => {
 
 
  const confirmDeleteItem = async () => {
-     return
+     
   if (!confirmDelete) return;
   try {
     const item = warpingStock.find(

@@ -304,7 +304,7 @@ export async function getDyestuffGpl(selectedColour, index, saltOptionstep4) {
 
     return value ?? "";
   } catch (err) {
-    console.error("Failed to fetch dyestuff amount:", err);
+    console.error("getDyestuffGpl err:", err);
     return "0";
   }
 }
@@ -328,7 +328,7 @@ export async function getDyeingSec2Temp(scouring, selectedColour, index, dyeingS
     return value ??'0'
     
   } catch (err) {
-    console.error("Failed to fetch dyestuff amount:", err);
+    console.error("getDyeingSec2Temp err:", err);
     return "0";
   }
 }
@@ -350,7 +350,7 @@ export async function getDyeingSec2TimePh(selectedColour, index, dyeingSystem ) 
     return value ??'0'
     
   } catch (err) {
-    console.error("Failed to fetch dyestuff amount:", err);
+    console.error("getDyeingSec2TimePh err:", err);
     return "0";
   }
 }
@@ -365,11 +365,10 @@ export async function getDyeingSec2Dyestuff(selectedColour, dyePosition ) {
     const rowValues = Object.values(row);
     
     const value = rowValues[dyePosition] ?? "";
-    console.log(rowValues)
     return value ??''
     
   } catch (err) {
-    console.error("Failed to fetch dyestuff:", err);
+    console.error("getDyeingSec2Dyestuff err:", err);
     return "";
   }
 }
@@ -387,7 +386,7 @@ export async function getDyeingSec2DyestuffAmt(selectedColour, dyePosition ) {
     return value ??''
     
   } catch (err) {
-    console.error("Failed to fetch dyestuff Amt:", err);
+    console.error("getDyeingSec2DyestuffAmt err:", err);
     return "";
   }
 }

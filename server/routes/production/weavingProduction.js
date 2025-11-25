@@ -192,10 +192,13 @@ router.post("/update-weaving-data", async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error saving weaving production data");
+    res.status(500).send("Error saving weaving  production data");
   }
 
 });
+
+
+
 
 
 

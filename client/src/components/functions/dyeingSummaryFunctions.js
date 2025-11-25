@@ -562,7 +562,7 @@ export async function getChemicalsAmtonHand(chemical) {
 
     return `${value} kgs`; 
   } catch (err) {
-    console.error("Failed to fetch chemicals row", err);
+    console.error("getChemicalsAmtonHand err", err);
     return ""; 
   }
 }
@@ -576,7 +576,7 @@ export async function getDyestuffAmtonHand(dye) {
     const value = rowValues[3] ?? "";
     return `${value} kgs`; 
   } catch (err) {
-    console.error("Failed to fetch chemicals row", err);
+    console.error("getDyestuffAmtonHand err", err);
     return ""; 
   }
 }
@@ -593,7 +593,7 @@ export async function getFinishingChemicalsAmtonHand(chemical) {
 
     return `${value} Ltrs`; 
   } catch (err) {
-    console.error("Failed to fetch chemicals row", err);
+    console.error("getFinishingChemicalsAmtonHand err", err);
     return ""; 
   }
 }
@@ -611,7 +611,7 @@ export async function getChemicalsCostPerLtorKg(chemical) {
 
     return `${value} `; 
   } catch (err) {
-    console.error("Failed to fetch chemicals row", err);
+    console.error("getChemicalsCostPerLtorKg err", err);
     return ""; 
   }
 }
@@ -626,7 +626,7 @@ export async function getDyestuffCostPerLtorKg(dye) {
     const value = rowValues[6] ?? "";
     return `${value}`; 
   } catch (err) {
-    console.error("Failed to fetch chemicals row", err);
+    console.error("getDyestuffCostPerLtorKg err", err);
     return ""; 
   }
 }

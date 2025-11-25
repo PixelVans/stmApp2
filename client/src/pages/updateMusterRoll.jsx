@@ -1,9 +1,11 @@
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import React, { useEffect, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 
 export default function UpdateMusterRoll() {
+
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
@@ -12,6 +14,8 @@ export default function UpdateMusterRoll() {
   const [dateRange, setDateRange] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [confirmAdjustmentDelete, setConfirmAdjustmentDelete] = useState(null);
+
 
   const [leaveSummary, setLeaveSummary] = useState({
     LeaveDays: "",
@@ -21,6 +25,7 @@ export default function UpdateMusterRoll() {
     ProductDeductions: "",
     LeaveAllowance: "",
   });
+
 const [adjustments, setAdjustments] = useState([]);
 const addAdjustment = () => {
   setAdjustments((prev) => [...prev, { type: "", value: "", note: "" }]);
@@ -78,7 +83,7 @@ const handleAdjustmentChange = (index, field, value) => {
         if (!res.ok) throw new Error("Failed to fetch employee muster roll");
 
         const data = await res.json();
-        console.log("Fetched existing muster roll:", data);
+        //console.log("Fetched existing muster roll:", data);
 
         const attendanceMap = {};
         data.attendance?.forEach((rec) => {
@@ -138,11 +143,15 @@ const handleAdjustmentChange = (index, field, value) => {
     if (Array.isArray(data.adjustments) && data.adjustments.length > 0) {
       setAdjustments(
         data.adjustments.map((adj) => ({
+          id: adj.AdjustmentID || null,               
           type: adj.AdjustmentType || "",
           value: adj.AdjustmentValue || "",
           note: adj.Note || "",
         }))
       );
+
+      console.log("Loaded adjustments:", data.adjustments);
+
     } else {
       setAdjustments([]);
     }
@@ -273,6 +282,39 @@ const handleSave = async () => {
     setIsSaving(false);
   }
 };
+
+const deleteAdjustment = (index, id) => {
+  setConfirmAdjustmentDelete({ index, id });
+};
+
+
+const confirmDeleteAdjustment = async () => {
+  if (!confirmAdjustmentDelete) return;
+
+  const { index, id } = confirmAdjustmentDelete;
+
+  try {
+    // Delete from DB only if the row is an existing adjustment
+    if (id) {
+      const res = await fetch(`/api/attendance/delete-adjustment/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Failed to delete adjustment");
+      toast.success("Adjustment deleted");
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to delete adjustment");
+  }
+
+  // Always remove the row locally
+  setAdjustments((prev) => prev.filter((_, i) => i !== index));
+
+  setConfirmAdjustmentDelete(null);
+};
+
+
 
 
   // ==============================
@@ -521,51 +563,73 @@ const handleSave = async () => {
             )}
 
             <div className="flex  flex-col gap-3 mb-4 ">
-              {adjustments.map((adj, index) => (
-                <div
-                  key={index}
-                  className="flex  flex-wrap gap-3 items-center bg-slate-50 rounded-lg p-3 border border-blue-200"
-                >
-                  <select
-                    value={adj.type}
-                    onChange={(e) => handleAdjustmentChange(index, "type", e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-400"
-                  >
-                    <option value="">Type</option>
-                    <option value="Hours">Hours</option>
-                    <option value="Amount">Amount</option>
-                  </select>
 
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="+/- Value"
-                    value={adj.value}
-                    onChange={(e) => handleAdjustmentChange(index, "value", e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm w-36 focus:ring-2 focus:ring-blue-400"
-                  />
 
-                  <textarea
-                    type="text"
-                    placeholder="Reason / Note"
-                    value={adj.note}
-                    onChange={(e) => handleAdjustmentChange(index, "note", e.target.value)}
-                    className=" w-full h-13 border bg-white border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-400"
-                  />
+           {adjustments.map((adj, index) => (
+          <div
+            key={index}
+            className="flex flex-col gap-3 items-center bg-slate-50 rounded-lg p-3 border border-blue-200"
+          >
+            <div className="flex gap-2 w-full justify-between">
+               <select
+              value={adj.type}
+              onChange={(e) => handleAdjustmentChange(index, "type", e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="">Type</option>
+              <option value="Hours">Hours</option>
+              <option value="Amount">Amount</option>
+            </select>
 
-                  <button
-                    onClick={() => removeAdjustment(index)}
-                    className="text-red-500 hover:text-red-700 text-sm font-semibold"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
+            <input
+              type="number"
+              step="0.01"
+              placeholder="+/- Value"
+              value={adj.value}
+              onChange={(e) => handleAdjustmentChange(index, "value", e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm w-36 focus:ring-2 focus:ring-blue-400"
+            />
+            </div>
+           
+
+            <textarea
+              placeholder="Reason / Note"
+              value={adj.note}
+              onChange={(e) => handleAdjustmentChange(index, "note", e.target.value)}
+              className="w-full h-13 border bg-white border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-400"
+            />
+
+            {/* Remove + Delete buttons */}
+            <div className="flex gap-3 justify-between w-full mt-2">
+              {/* REMOVE: local only */}
+              <button
+                onClick={() => removeAdjustment(index)}
+                className="text-blue-500 hover:text-blue-700 text-sm font-semibold"
+              >
+                Remove
+              </button>
+
+              {/* DELETE: only if row came from database */}
+              {adj.id && (
+              <button
+                onClick={() => deleteAdjustment(index, adj.id)}
+                className="text-red-500 hover:text-red-700 text-sm font-semibold"
+              >
+                Delete
+              </button>
+            )}
+
+            </div>
+          </div>
+        ))}
+
+
+                  
             </div>
 
             <button
               onClick={addAdjustment}
-              className="w-full hidden bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-lg 
+              className="w-full  bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-lg 
               text-sm shadow font-medium transition"
             >
               + New Adjustment
@@ -573,6 +637,35 @@ const handleSave = async () => {
           </div>
           </div>
           </div>
+
+         <AlertDialog
+        open={!!confirmAdjustmentDelete}
+        onOpenChange={() => setConfirmAdjustmentDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Adjustment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this adjustment?  
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setConfirmAdjustmentDelete(null)}>
+              Cancel
+            </AlertDialogCancel>
+
+            <AlertDialogAction
+              className="bg-red-500 hover:bg-red-600"
+              onClick={confirmDeleteAdjustment}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
   );
 }

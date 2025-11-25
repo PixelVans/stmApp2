@@ -16,13 +16,11 @@ const PrintingMusterRollReport = () => {
     SickDays: 0,
     MaternityDays: 0,
     HolidayDays: 0,
-    LeaveDays: "",
     NightshiftAllowance: "",
     ProductDeductions: "",
     LeaveAllowance: "",
-  
-  
-  });
+});
+
   const [adjustments, setAdjustments] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -56,7 +54,7 @@ const isKenyanHoliday = (date) => {
 
   if (fixedHolidays.includes(dateStr)) return true;
 
-  // --- Moveable holidays (rough logic) ---
+
   // Good Friday and Easter Monday – use Computus algorithm
   const easter = getEasterDate(year);
   const goodFriday = new Date(easter);
@@ -204,7 +202,7 @@ const groupByWorkWeek = (records) => {
     if (!rec.AttendanceDate) continue;
 
     const date = new Date(rec.AttendanceDate);
-    const day = date.getDay(); // Sun=0, Mon=1, ..., Sat=6
+    const day = date.getDay();
 
     // If it's Monday and we already have records, start a new week
     if (day === 1 && currentWeek.length > 0) {
@@ -372,11 +370,11 @@ const totalPayableHours =
 
   
   return (
-    <div className="bg-white min-h-screen  text-gray-800 print:mt-[-50px] hidde">
+    <div className="bg-white min-h-screen  text-gray-800 prin:mt-[-60px]">
       <Toaster position="top-center" richColors />
 
     {/* Header */}
-        <header className="print:hidde fixed top-14 lg:top-0 left-0 right-0 lg:ml-[250px] xl:ml-[265px]  z-10 lg:z-40
+        <header className="print:hidden fixed top-14 lg:top-0 left-0 right-0 lg:ml-[250px] xl:ml-[265px]  z-10 lg:z-40
          bg-white border-b border-gray-200 shadow-sm mb-6">
           
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
@@ -463,7 +461,7 @@ const totalPayableHours =
 
 
       {/* Dynamic Form Header Section */}
-      <div className="max-w-4xl mx-auto sm:mt-32 md:mt-20 lg:mt-5 p-8 print:mt-5 print:border-0 print:shadow-none border border-gray-400 mb-5 shadow-sm">
+      <div className="max-w-4xl mx-auto sm:mt-32 md:mt-20 lg:mt-5 p-8 print:mt-5 overflow-visible print:border-0 print:shadow-none border border-gray-400 mb-5 shadow-sm">
         <h1 className="text-center font-bold">SPECIALISED TOWEL MANUFACTURERS LTD.</h1>
         <h4 className="text-center font-bold text-xs mb-4" >MUSTEROLL FORM.</h4>
 
@@ -578,7 +576,7 @@ const totalPayableHours =
 
           </tbody>
           </table>
-          <div className="flex  justify-center gap-3 mt-10 mb-5">
+          <div className="flex  justify-center gap-3 mt-8 mb-5">
           <h1 className="font-semibold whitespace-nowrap">Employee Signature</h1>
           <div className="w-52 border-b-2 border-dotted border-gray-500"></div>
         </div>
@@ -851,7 +849,7 @@ const totalPayableHours =
 
 
 
-      {/* <style>
+      <style>
         {`
           @page {
             size: A4;
@@ -876,7 +874,7 @@ const totalPayableHours =
             }
           }
         `}
-      </style> */}
+      </style>
 
 
   </div>

@@ -68,7 +68,7 @@ const ChemicalTable = forwardRef((props, ref) => {
           Loading Dyeing Data
         </p>
         <p className="mt-2 text-sm text-gray-600">
-          Timeout <span className="font-semibold">{seconds}</span> sec
+          Duration <span className="font-semibold">{seconds}</span> sec
           {seconds !== 1 ? "s" : ""}
         </p>
 
