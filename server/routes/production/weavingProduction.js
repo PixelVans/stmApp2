@@ -199,11 +199,6 @@ router.post("/update-weaving-data", async (req, res) => {
 
 
 
-
-
-
-
-
 // update warping data
 router.post("/update-warping-data", async (req, res) => {
   const {
@@ -222,35 +217,72 @@ router.post("/update-warping-data", async (req, res) => {
   } = req.body;
 
   const normalize = (val, type = "string") => {
-    if (val === undefined || val === null || val === "") return null;
-    if (type === "int") {
-      const parsed = parseInt(val, 10);
-      return Number.isNaN(parsed) ? null : parsed;
-    }
-    if (type === "float") {
-      const parsed = parseFloat(val);
-      return Number.isNaN(parsed) ? null : parsed;
-    }
+    if (!val && val !== 0) return null;
+    if (type === "int") return isNaN(parseInt(val)) ? null : parseInt(val);
+    if (type === "float") return isNaN(parseFloat(val)) ? null : parseFloat(val);
     return val;
   };
 
-  
   try {
     const pool = await connectToDB2();
+    // Check if a row exists for same date + machine + beam
+    const existing = await pool.request()
+      .input("date", sql.Date, date)
+      .input("machine", sql.Int, machineNumber)
+      .input("beam", sql.VarChar(50), String(beamNumber))
+      .query(`
+        SELECT ID
+        FROM [Specialised Systems].dbo.WarpingData2025
+        WHERE Date = @date
+          AND MachineNumber = @machine
+          AND BeamNumber = @beam
+      `);
 
-    const insertQuery = `
+    if (existing.recordset.length > 0) {
+      
+      // UPDATE EXISTING ROW
+    const updateQuery = `
+        UPDATE [Specialised Systems].dbo.WarpingData2025
+        SET BeamPosition = @beamPosition,
+            Article = @article,
+            Yarn1 = @yarn1,
+            Yarn2 = @yarn2,
+            WeightofYarn1 = @weightYarn1,
+            WeightofYarn2 = @weightYarn2,
+            TotalEnds = @totalEnds,
+            Meters = @meters,
+            KnottingCounter = @knottingCounter
+        WHERE ID = ${existing.recordset[0].ID}
+      `;
+
+      await pool.request()
+        .input("beamPosition", sql.VarChar(50), normalize(beamPosition))
+        .input("article", sql.VarChar(255), normalize(article))
+        .input("yarn1", sql.VarChar(50), normalize(yarnCount1))
+        .input("yarn2", sql.VarChar(50), normalize(yarnCount2))
+        .input("weightYarn1", sql.Float, normalize(weightYarn1, "float"))
+        .input("weightYarn2", sql.Float, normalize(weightYarn2, "float"))
+        .input("totalEnds", sql.Int, normalize(totalEnds, "int"))
+        .input("meters", sql.Float, normalize(meters, "float"))
+        .input("knottingCounter", sql.Int, normalize(beamUnitCounter, "int"))
+        .query(updateQuery);
+
+      return res.json({ message: "Warping data updated successfully" });
+    }
+
+   
+    //  INSERT NEW ROW
+   const insertQuery = `
       INSERT INTO [Specialised Systems].dbo.WarpingData2025
-        (BeamNumber, Date, MachineNumber, BeamPosition, Article, Yarn1, Yarn2, 
-         WeightofYarn1, WeightofYarn2, TotalEnds, Meters, KnottingCounter)
+      (BeamNumber, Date, MachineNumber, BeamPosition, Article, Yarn1, Yarn2,
+       WeightofYarn1, WeightofYarn2, TotalEnds, Meters, KnottingCounter)
       VALUES
-        (@beamNumber, @date, @machineNumber, @beamPosition, @article, @yarn1, @yarn2,
-         @weightYarn1, @weightYarn2, @totalEnds, @meters, @knottingCounter)
+      (@beamNumber, @date, @machineNumber, @beamPosition, @article,
+       @yarn1, @yarn2, @weightYarn1, @weightYarn2,
+       @totalEnds, @meters, @knottingCounter)
     `;
 
-
-    
-    await pool
-      .request()
+    await pool.request()
       .input("beamNumber", sql.VarChar(50), normalize(beamNumber))
       .input("date", sql.Date, normalize(date))
       .input("machineNumber", sql.Int, normalize(machineNumber, "int"))
@@ -265,10 +297,39 @@ router.post("/update-warping-data", async (req, res) => {
       .input("knottingCounter", sql.Int, normalize(beamUnitCounter, "int"))
       .query(insertQuery);
 
-    res.json({ message: "Warping data saved successfully" });
+    res.json({ message: "Warping data inserted successfully" });
+
+  } catch (err) {
+  console.error(err);
+  res.status(500).json({ message: err.message });
+}
+
+});
+
+
+
+
+
+router.get("/warp/by-date/:date", async (req, res) => {
+  const { date } = req.params;
+
+  try {
+    const pool = await connectToDB2();
+
+    const result = await pool.request()
+      .input("date", sql.Date, date)
+      .query(`
+        SELECT *
+        FROM [Specialised Systems].dbo.WarpingData2025
+        WHERE Date = @date
+      `);
+
+    
+    res.json(result.recordset);
+
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error saving warping data");
+    res.status(500).send("Error fetching warping data by date");
   }
 });
 

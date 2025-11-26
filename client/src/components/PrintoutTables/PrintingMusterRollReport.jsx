@@ -153,7 +153,7 @@ const formatCurrency = (amount) => {
 async function fetchReport() {
   try {
     setLoading(true);
-    setError(null); // reset error before fetching
+    setError(null); 
 
     const prevMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
 const yearToSend = selectedMonth === 0 ? selectedYear - 1 : selectedYear;
@@ -183,7 +183,7 @@ const res = await fetch(
     fetchReport();
   }, [selectedEmployee, selectedMonth, selectedYear]);
 
-  // ---------------- CALCULATIONS ----------------
+  //  CALCULATIONS 
   const totalPresent = attendanceData.filter((r) => r.TimeIn).length;
   const totalAbsent = attendanceData.filter((r) => !r.TimeIn).length;
 
@@ -227,7 +227,7 @@ const groupByWorkWeek = (records) => {
   return weeks;
 };
 
-// --- Calculate Weekly Overtime ---
+// Calculate Weekly Overtime 
 const weeks = groupByWorkWeek(attendanceData);
 
 let totalRegularHours = 0;
@@ -263,8 +263,8 @@ const overtimePayable = totalOvertimeHours * 1.5;
     .filter((r) => r.DayOfWeek === "Sun" && r.TotalHours)
     .reduce((sum, r) => sum + r.TotalHours, 0);
   const sundayPayable = sundayHours * 2;
+
   // Kenyan public holidays (×2 rule)
-// --- Updated Holiday Hours Calculation ---
 const holidayDates = dateRange.filter((d) => isKenyanHoliday(d));
 
 let totalHolidayPayable = 0;
@@ -290,10 +290,17 @@ const totalHours = attendanceData
     .filter((r) => r.TotalHours)
     .reduce((sum, r) => sum + r.TotalHours, 0);
 
-    // Each leave day is equivalent to 9 hours (standard work day)
+// Each leave day to be equivalent to 9 hours (standard work day)
 const leaveHours = (summary.LeaveDays || 0) * 9;
 const sickHours = (summary.SickDays || 0) * 9;
 const maternityHours = (summary.MaternityDays || 0) * 9;
+
+
+// Aggregate adjustments of hours
+const totalHoursAdj = adjustments
+  .filter(adj => adj.AdjustmentType?.toLowerCase() === "hours")
+  .reduce((sum, adj) => sum + (Number(adj.AdjustmentValue) || 0), 0);
+
 
 // Combine everything for final total payable hours
 const totalPayableHours =
@@ -303,10 +310,12 @@ const totalPayableHours =
   holidayPayable +
   leaveHours +
   sickHours +
-  maternityHours;
+  maternityHours +
+  totalHoursAdj;
 
 
-  // ---------------- DYNAMIC HEADER VALUES ----------------
+
+  //  DYNAMIC HEADER VALUES 
   const selectedEmp = employees.find(
     (emp) => emp.EmployeeID === Number(selectedEmployee)
   );
@@ -436,7 +445,7 @@ const totalPayableHours =
                   onChange={(e) => setSelectedYear(Number(e.target.value))}
                 >
                   {Array.from({ length: 6 }, (_, i) => {
-                    const year = new Date().getFullYear() - i + 1; // last 5 years + next year
+                    const year = new Date().getFullYear() - i + 1; 
                     return (
                       <option key={year} value={year}>
                         {year}
@@ -739,7 +748,7 @@ const totalPayableHours =
                   </td>
                 </tr>
                 {adjustments?.length > 0 && (() => {
-                // --- Aggregate Adjustments by Type ---
+                // Aggregate Adjustments by Type
                 const totalHoursAdj = adjustments
                   .filter(adj => adj.AdjustmentType?.toLowerCase() === "hours")
                   .reduce((sum, adj) => sum + (Number(adj.AdjustmentValue) || 0), 0);
@@ -748,13 +757,12 @@ const totalPayableHours =
                   .filter(adj => adj.AdjustmentType?.toLowerCase() === "amount")
                   .reduce((sum, adj) => sum + (Number(adj.AdjustmentValue) || 0), 0);
 
-                // --- Figure out which types exist ---
+                // Figure out which types exist
                 const hasHours = totalHoursAdj !== 0;
                 const hasAmount = totalAmountAdj !== 0;
 
                 return (
                   <>
-                    {/* Spacer */}
                     {/* Full-width centered heading */}
                     <tr>
                       <td colSpan="2" className="text-center font-semibold text-sm py-1">

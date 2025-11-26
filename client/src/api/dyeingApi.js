@@ -93,9 +93,24 @@ export async function saveWarpingData(data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to save warping data");
-  return res.json();
+
+  const responseBody = await res.json(); // parse JSON from backend
+
+  if (!res.ok) {
+    // Use backend message if available
+    throw new Error(responseBody?.message || "Failed to save warping data");
+  }
+
+  return responseBody;
 }
 
+
+export async function fetchWarpingDataByDate(date) {
+  const res = await fetch(`/api/weaving-production/warp/by-date/${date}`);
+
+  if (!res.ok) throw new Error("Failed to fetch warping data");
+
+  return res.json();
+}
 
 

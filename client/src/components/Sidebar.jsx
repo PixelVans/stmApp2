@@ -1,4 +1,5 @@
 
+import { FaCogs } from "react-icons/fa";
 import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3, FiBox, FiClipboard, FiLayers,  } from "react-icons/fi";
 
 // or any icon you find that matches a spool/thread concept
@@ -34,7 +35,12 @@ const navItems = [
   name: "Warping",
   icon: <FiLayers size={18} className="text-purple-400" />,
   href: "/warping"
-}
+},
+ {
+  name: "Production",
+  icon: <FaCogs size={18} className="text-slate-300" />,
+  href: "/production"
+},
 
 
 ];
