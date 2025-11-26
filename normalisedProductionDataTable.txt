@@ -33,7 +33,6 @@ CREATE TABLE dbo.WarpingStock (
 CREATE TABLE dbo.GreyRolls (
 ID INT IDENTITY(1,1) PRIMARY KEY,         -- Unique row ID
 
-```
 RollNo INT NOT NULL,                      -- Roll Number
 [Date] DATE NOT NULL,                     -- Date of production
 
@@ -45,16 +44,13 @@ Weight DECIMAL(10,4) NOT NULL CHECK (Weight > 0),   -- e.g. 4.0000 (kg), must be
 
 -- Auto-calculated value: meters per kg, more precise
 MetersPerKg AS (CASE WHEN Weight <= 0 THEN NULL ELSE Length / Weight END) PERSISTED,
-
 Weaver NVARCHAR(100) NOT NULL,            -- e.g. Eliot
 Shift CHAR(1) NOT NULL CHECK (Shift IN ('A','B')), -- A or B
-
 Grade CHAR(1) NOT NULL CHECK (Grade IN ('A','B','C')),  -- Grade A/B/C
 Remarks NVARCHAR(200) NULL,               -- e.g. completed, etc.
-
 CreatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME()
-```
 
 );
+
 
 

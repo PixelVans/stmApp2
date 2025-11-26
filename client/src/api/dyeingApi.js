@@ -94,7 +94,7 @@ export async function saveWarpingData(data) {
     body: JSON.stringify(data),
   });
 
-  const responseBody = await res.json(); // parse JSON from backend
+  const responseBody = await res.json();
 
   if (!res.ok) {
     // Use backend message if available
@@ -112,5 +112,31 @@ export async function fetchWarpingDataByDate(date) {
 
   return res.json();
 }
+
+export async function fetchWarpingDataByBeam(beamNumber) {
+  const res = await fetch(`/api/weaving-production/warp/by-beam/${beamNumber}`);
+
+  if (!res.ok) {
+    let err = await res.text();
+    throw new Error(err || `Beam number ${beamNumber} not found`);
+  }
+
+  return await res.json();
+}
+
+
+
+export async function fetchGreyRollByRollNo(rollNo) {
+  const res = await fetch(`/api/grey-rolls-production/grey-rolls/by-roll/${rollNo}`);
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err || `Roll number ${rollNo} not found`);
+  }
+
+  return await res.json();
+}
+
+
 
 

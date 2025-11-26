@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { saveWarpingData, fetchWarpingDataByDate } from "@/api/dyeingApi";
+import { saveWarpingData, fetchWarpingDataByDate, fetchWarpingDataByBeam } from "@/api/dyeingApi";
 import { toast } from "sonner";
 
 // FUNC to format date 
@@ -27,6 +27,8 @@ function formatTodayDate() {
 export default function WarpingProductionForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [beamSearch, setBeamSearch] = useState("");
+
 
   const [formData, setFormData] = useState({
     beamNumber: "",
@@ -122,6 +124,46 @@ if (error?.response?.data?.message) {
 
   };
 
+
+
+  async function handleBeamSearch() {
+  if (!beamSearch.trim()) {
+    toast.error("Enter a beam number");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    const row = await fetchWarpingDataByBeam(beamSearch);
+
+    setHasExistingRow(true);
+
+    setFormData({
+      beamNumber: row.BeamNumber || "",
+      date: row.Date?.split("T")[0] || "",
+      machineNumber: row.MachineNumber?.toString() || "",
+      beamPosition: row.BeamPosition || "",
+      article: row.Article || "",
+      yarnCount1: row.Yarn1 || "",
+      yarnCount2: row.Yarn2 || "",
+      totalEnds: row.TotalEnds || "",
+      meters: row.Meters || "",
+      weightYarn1: row.WeightofYarn1 || "",
+      weightYarn2: row.WeightofYarn2 || "",
+      beamUnitCounter: row.KnottingCounter || "",
+    });
+
+    toast.success(`Beam ${beamSearch} data loaded`);
+
+  } catch (err) {
+    console.error(err);
+    toast.error(err.message || "Failed to fetch beam data");
+  } finally {
+    setLoading(false);
+  }
+}
+
+
   const handleReset = (resetDate = true) => {
     setFormData({
       beamNumber: "",
@@ -207,6 +249,24 @@ if (error?.response?.data?.message) {
       <div className="absolute top-3 right-4 text-xs font-medium text-slate-600">
         {formatTodayDate()}
       </div>
+
+      {/* SEARCH BY BEAM NUMBER */}
+      <div className="flex items-center gap-2 mb-4 w-fit mx-auto">
+      
+        <input
+          type="number"
+          placeholder="Search By Beam Number..."
+          value={beamSearch}
+          onChange={(e) => setBeamSearch(e.target.value)}
+          className="border border-slate-400 bg-white text-black rounded-md px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2
+           focus:ring-blue-300 focus:border-blue-300"
+        />
+
+        <button className="bg-slate-200 py-2 px-5 rounded-2xl hover:bg-green-200 " onClick={handleBeamSearch}>
+          Search
+        </button>
+      </div>
+
 
       <h1 className="text-lg sm:text-xl font-bold text-center mb-4">
         Update Warping Production

@@ -200,6 +200,7 @@ router.post("/update-weaving-data", async (req, res) => {
 
 
 // update warping data
+// update warping data
 router.post("/update-warping-data", async (req, res) => {
   const {
     beamNumber,
@@ -225,37 +226,39 @@ router.post("/update-warping-data", async (req, res) => {
 
   try {
     const pool = await connectToDB2();
-    // Check if a row exists for same date + machine + beam
+
+    // 🔥 NEW: Check ONLY by BeamNumber
     const existing = await pool.request()
-      .input("date", sql.Date, date)
-      .input("machine", sql.Int, machineNumber)
       .input("beam", sql.VarChar(50), String(beamNumber))
       .query(`
         SELECT ID
         FROM [Specialised Systems].dbo.WarpingData2025
-        WHERE Date = @date
-          AND MachineNumber = @machine
-          AND BeamNumber = @beam
+        WHERE BeamNumber = @beam
       `);
 
     if (existing.recordset.length > 0) {
       
-      // UPDATE EXISTING ROW
-    const updateQuery = `
+      // 🔥 UPDATE the row for this beam number
+      const updateQuery = `
         UPDATE [Specialised Systems].dbo.WarpingData2025
-        SET BeamPosition = @beamPosition,
-            Article = @article,
-            Yarn1 = @yarn1,
-            Yarn2 = @yarn2,
-            WeightofYarn1 = @weightYarn1,
-            WeightofYarn2 = @weightYarn2,
-            TotalEnds = @totalEnds,
-            Meters = @meters,
-            KnottingCounter = @knottingCounter
-        WHERE ID = ${existing.recordset[0].ID}
+        SET 
+          Date = @date,
+          MachineNumber = @machineNumber,
+          BeamPosition = @beamPosition,
+          Article = @article,
+          Yarn1 = @yarn1,
+          Yarn2 = @yarn2,
+          WeightofYarn1 = @weightYarn1,
+          WeightofYarn2 = @weightYarn2,
+          TotalEnds = @totalEnds,
+          Meters = @meters,
+          KnottingCounter = @knottingCounter
+        WHERE BeamNumber = @beam
       `;
 
       await pool.request()
+        .input("date", sql.Date, normalize(date))
+        .input("machineNumber", sql.Int, normalize(machineNumber, "int"))
         .input("beamPosition", sql.VarChar(50), normalize(beamPosition))
         .input("article", sql.VarChar(255), normalize(article))
         .input("yarn1", sql.VarChar(50), normalize(yarnCount1))
@@ -265,14 +268,14 @@ router.post("/update-warping-data", async (req, res) => {
         .input("totalEnds", sql.Int, normalize(totalEnds, "int"))
         .input("meters", sql.Float, normalize(meters, "float"))
         .input("knottingCounter", sql.Int, normalize(beamUnitCounter, "int"))
+        .input("beam", sql.VarChar(50), String(beamNumber))
         .query(updateQuery);
 
       return res.json({ message: "Warping data updated successfully" });
     }
 
-   
-    //  INSERT NEW ROW
-   const insertQuery = `
+    // INSERT NEW ROW IF BEAM NOT FOUND
+    const insertQuery = `
       INSERT INTO [Specialised Systems].dbo.WarpingData2025
       (BeamNumber, Date, MachineNumber, BeamPosition, Article, Yarn1, Yarn2,
        WeightofYarn1, WeightofYarn2, TotalEnds, Meters, KnottingCounter)
@@ -300,11 +303,11 @@ router.post("/update-warping-data", async (req, res) => {
     res.json({ message: "Warping data inserted successfully" });
 
   } catch (err) {
-  console.error(err);
-  res.status(500).json({ message: err.message });
-}
-
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
 });
+
 
 
 
@@ -312,8 +315,9 @@ router.post("/update-warping-data", async (req, res) => {
 
 router.get("/warp/by-date/:date", async (req, res) => {
   const { date } = req.params;
-
+ 
   try {
+    
     const pool = await connectToDB2();
 
     const result = await pool.request()
@@ -330,6 +334,33 @@ router.get("/warp/by-date/:date", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Error fetching warping data by date");
+  }
+});
+
+
+
+router.get("/warp/by-beam/:beamNumber", async (req, res) => {
+  const { beamNumber } = req.params;
+
+  try {
+    const pool = await connectToDB2();
+    console.log("Fetching warping data for beam number:", beamNumber);
+    const result = await pool.request()
+      .input("beamNumber", sql.VarChar(50), beamNumber)
+      .query(`
+        SELECT *
+        FROM [Specialised Systems].dbo.WarpingData2025
+        WHERE BeamNumber = @beamNumber
+      `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "Beam number not found" });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching warping data by beam number");
   }
 });
 

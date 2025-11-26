@@ -4,6 +4,7 @@ import PrintingItemsForm from "@/components/forms/PrintingItemsForm";
 import VatDyeingForm from "@/components/forms/VatDyeingForm";
 import WarpingStockForm from "@/components/forms/WarpingStockForm";
 import WeavingProductionPage from "@/components/forms/WeavingProductionForm";
+import GreyRollsForm from "@/components/forms/GreyRollsForm";
 
 const ProductionPage = () => {
    const today = new Date().toLocaleDateString("en-US", {
@@ -20,7 +21,7 @@ const ProductionPage = () => {
           <TabsTrigger value="warping-production">Weaving Production</TabsTrigger>
         </TabsList>
         <TabsContent value="warping-stock">
-          <WarpingStockForm />
+          <GreyRollsForm />
         </TabsContent>
         <TabsContent value="warping-production">
           <WeavingProductionPage />
