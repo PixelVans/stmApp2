@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { FaSearch } from "react-icons/fa";
 
 export default function GreyRollsForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // NEW: Search box value
   const [searchRollNo, setSearchRollNo] = useState("");
@@ -28,16 +30,20 @@ export default function GreyRollsForm() {
 
   const machineNumbers = ["1", "2", "3", "4"];
   const articleOptions = [
-    '30" Wide Towel',
-    '40" Wide Towel',
-    '20" Wide Towel',
-    '90" Wide Bed Sheet',
-  ];
+    'Cellular',
+    'Counterpane',
+    'Towel',
+    'Bed Sheet',
+ ];
   const shifts = ["A", "B"];
   const grades = ["A", "B", "C"];
 
-  const inputStyle =
-    "w-full border border-slate-400 bg-slate-50 text-slate-800 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+  const inputStyle ="w-full border border-slate-400 bg-slate-50 text-slate-800 rounded-md px-2 py-1 2xl:py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+  
+ const fieldRow = "flex items-center gap-2 w-full";
+const labelStyle = "text-sm font-medium text-slate-800 w-28 text-left bg-gray-200 px-4 py-1.5 rounded-sm";
+const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+
 
   function formatTodayDate() {
     const today = new Date();
@@ -152,26 +158,31 @@ export default function GreyRollsForm() {
   };
 
   // Submit form (save/update)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("/api/grey-rolls-production/update-grey-data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setSaving(true);
 
-      if (!res.ok) throw new Error("Failed to save Grey Roll data");
+  try {
+    const res = await fetch("/api/grey-rolls-production/update-grey-data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-      toast.success(
-        hasExistingRow ? "Grey Roll data updated!" : "Grey Roll data inserted!"
-      );
-      handleReset(false);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to save Grey Roll data");
-    }
-  };
+    if (!res.ok) throw new Error("Failed to save Grey Roll data");
+
+    toast.success(
+      hasExistingRow ? "Grey Roll data updated!" : "Grey Roll data inserted!"
+    );
+    handleReset(false);
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to save Grey Roll data");
+  } finally {
+    setSaving(false); // IMPORTANT
+  }
+};
+
 
   const handleReset = (resetDate = true) => {
     setFormData({
@@ -231,206 +242,228 @@ export default function GreyRollsForm() {
   }
 
   return (
-    <div className="relative max-w-4xl mx-auto py-5 px-5 md:px-8 mt-2 shadow-md shadow-slate-500 rounded-lg bg-white">
-      <div className="absolute top-3 right-4 text-xs font-medium text-slate-600">
+    <div className="relative max-w-4xl mx-auto py-5 pb-9 px-5 md:px-8 mt-2 shadow-md shadow-slate-300 rounded-lg bg-white">
+      <div className="absolute hidden lg:block top-3 right-4 text-xs font-medium text-slate-600">
         {formatTodayDate()}
       </div>
 
-      <h1 className="text-lg sm:text-xl font-bold text-center mb-4">
+      
+       {/* SEARCH BY BEAM NUMBER */}
+            <div className="flex items-center  bg-white mb-2 gap-2 w-fit mx-auto border border-slate-300 rounded-sm">
+            
+              <input
+                type="number"
+                placeholder="Search By Roll No..."
+                value={searchRollNo}
+                onChange={(e) => setSearchRollNo(e.target.value)}
+                className="  text-black  px-3 py-1.5 text-sm min-w-48 focus:outline-none focus:ring-1
+                 focus:ring-blue-400 focus:border-blue-400  focus:rounded-md"
+              />
+              
+              <button className="bg-slate-200 py-1.5 flex px-2 rounded-md items-center gap-1 cursor-pointer hover:bg-gray-300 " 
+              onClick={searchByRollNumber}>
+               <FaSearch className=" ml-2 text-slate-500 " /> <span className="mr-1"> Search</span>
+              </button>
+            </div>
+
+      <h1 className="text-lg sm:text-xl font-bold text-center my-5 text-slate-700">
         Update Grey Roll Production
       </h1>
+     
 
-      {/*  SEARCH BY ROLL NUMBER */}
-      <div className="flex gap-3 mb-6 w-fit mx-auto">
+     {/* onSubmit={handleSubmit} */}
+    <form 
+    >
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    {/* LEFT */}
+    <div className="space-y-4">
+
+      <div className={fieldRow}>
+        <label className={labelStyle}>Date</label>
         <input
-          type="number"
-          placeholder="Search By Roll No..."
-          value={searchRollNo}
-          onChange={(e) => setSearchRollNo(e.target.value)}
-          className={inputStyle + " w-40"}
+          type="date"
+          value={formData.Date}
+          onChange={(e) =>
+            setFormData({ ...formData, Date: e.target.value })
+          }
+          className={inputCompact}
+          required
         />
-        <Button type="button" onClick={searchByRollNumber}>
-          Search
-        </Button>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* LEFT */}
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium">Date</label>
-              <input
-                type="date"
-                value={formData.Date}
-                onChange={(e) =>
-                  setFormData({ ...formData, Date: e.target.value })
-                }
-                className={inputStyle}
-                required
-              />
-            </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>Roll No</label>
+        <input
+          type="number"
+          value={formData.RollNo}
+          onChange={(e) =>
+            setFormData({ ...formData, RollNo: e.target.value })
+          }
+          className={inputCompact}
+          required
+        />
+      </div>
 
-            <div>
-              <label className="text-sm font-medium">Roll Number</label>
-              <input
-                type="number"
-                value={formData.RollNo}
-                onChange={(e) =>
-                  setFormData({ ...formData, RollNo: e.target.value })
-                }
-                className={inputStyle}
-                required
-              />
-            </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>Machine No</label>
+        <select
+          value={formData.MachineNo}
+          onChange={(e) =>
+            setFormData({ ...formData, MachineNo: e.target.value })
+          }
+          className={inputCompact}
+          required
+        >
+          <option value="">Select</option>
+          {machineNumbers.map((m) => (
+            <option key={m} value={m}>{m}</option>
+          ))}
+        </select>
+      </div>
 
-            <div>
-              <label className="text-sm font-medium">Machine Number</label>
-              <select
-                value={formData.MachineNo}
-                onChange={(e) =>
-                  setFormData({ ...formData, MachineNo: e.target.value })
-                }
-                className={inputStyle}
-                required
-              >
-                <option value="">Select</option>
-                {machineNumbers.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>Article</label>
+        <select
+          value={formData.Article}
+          onChange={(e) =>
+            setFormData({ ...formData, Article: e.target.value })
+          }
+          className={inputCompact}
+          required
+        >
+          <option value="">Select</option>
+          {articleOptions.map((a) => (
+            <option key={a} value={a}>{a}</option>
+          ))}
+        </select>
+      </div>
 
-            <div>
-              <label className="text-sm font-medium">Article</label>
-              <select
-                value={formData.Article}
-                onChange={(e) =>
-                  setFormData({ ...formData, Article: e.target.value })
-                }
-                className={inputStyle}
-                required
-              >
-                <option value="">Select</option>
-                {articleOptions.map((a) => (
-                  <option key={a} value={a}>
-                    {a}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>Length (m)</label>
+        <input
+          type="number"
+          step="0.0001"
+          value={formData.Length}
+          onChange={(e) =>
+            setFormData({ ...formData, Length: e.target.value })
+          }
+          className={inputCompact}
+          required
+        />
+      </div>
+    </div>
 
-            <div>
-              <label className="text-sm font-medium">Length (m)</label>
-              <input
-                type="number"
-                step="0.0001"
-                value={formData.Length}
-                onChange={(e) =>
-                  setFormData({ ...formData, Length: e.target.value })
-                }
-                className={inputStyle}
-                required
-              />
-            </div>
-          </div>
+    {/* RIGHT */}
+    <div className="space-y-4">
 
-          {/* RIGHT */}
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium">Weaver</label>
-              <input
-                type="text"
-                value={formData.Weaver}
-                onChange={(e) =>
-                  setFormData({ ...formData, Weaver: e.target.value })
-                }
-                className={inputStyle}
-                required
-              />
-            </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>Weaver</label>
+        <input
+          type="text"
+          value={formData.Weaver}
+          onChange={(e) =>
+            setFormData({ ...formData, Weaver: e.target.value })
+          }
+          className={inputCompact}
+          required
+        />
+      </div>
 
-            <div>
-              <label className="text-sm font-medium">Shift</label>
-              <select
-                value={formData.Shift}
-                onChange={(e) =>
-                  setFormData({ ...formData, Shift: e.target.value })
-                }
-                className={inputStyle}
-                required
-              >
-                {shifts.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>Shift</label>
+        <select
+          value={formData.Shift}
+          onChange={(e) =>
+            setFormData({ ...formData, Shift: e.target.value })
+          }
+          className={inputCompact}
+          required
+        >
+          {shifts.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+      </div>
 
-            <div>
-              <label className="text-sm font-medium">Grade</label>
-              <select
-                value={formData.Grade}
-                onChange={(e) =>
-                  setFormData({ ...formData, Grade: e.target.value })
-                }
-                className={inputStyle}
-                required
-              >
-                {grades.map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>Grade</label>
+        <select
+          value={formData.Grade}
+          onChange={(e) =>
+            setFormData({ ...formData, Grade: e.target.value })
+          }
+          className={inputCompact}
+          required
+        >
+          {grades.map((g) => (
+            <option key={g} value={g}>{g}</option>
+          ))}
+        </select>
+      </div>
 
-            <div>
-              <label className="text-sm font-medium">Remarks</label>
-              <input
-                type="text"
-                value={formData.Remarks}
-                onChange={(e) =>
-                  setFormData({ ...formData, Remarks: e.target.value })
-                }
-                className={inputStyle}
-              />
-            </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>Weight (Kg)</label>
+        <input
+          type="number"
+          step="0.0001"
+          value={formData.Weight}
+          onChange={(e) =>
+            setFormData({ ...formData, Weight: e.target.value })
+          }
+          className={inputCompact}
+          required
+        />
+      </div>
 
-            <div>
-              <label className="text-sm font-medium">Meters per Kg</label>
-              <input
-                type="number"
-                step="0.0001"
-                value={
-                  formData.Weight > 0
-                    ? (formData.Length / formData.Weight).toFixed(4)
-                    : ""
-                }
-                className={inputStyle + " bg-slate-100"}
-                disabled
-              />
-            </div>
-          </div>
-        </div>
+      <div className={fieldRow}>
+        <label className={labelStyle}>M/Kg</label>
+        <input
+          type="number"
+          step="0.0001"
+          value={
+            formData.Weight > 0
+              ? (formData.Length / formData.Weight).toFixed(4)
+              : ""
+          }
+          className={inputCompact + " bg-slate-100"}
+          disabled
+        />
+      </div>
 
-        <div className="flex justify-center gap-4 mt-8">
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={() => handleReset(false)}
-          >
-            Clear
-          </Button>
+    </div>
+  </div>
 
-          <Button type="submit">
-            {hasExistingRow ? "Update" : "Submit"}
-          </Button>
-        </div>
-      </form>
+  {/* REMARKS AT BOTTOM CENTER */}
+  <div className="mt-6 w-full lg:w-2/3 mx-auto flex flex-col">
+    <label className="text-sm font-medium block text-center mb-1 text-slate-900">
+      Remarks
+    </label>
+    <input
+      type="text"
+      value={formData.Remarks}
+      onChange={(e) =>
+        setFormData({ ...formData, Remarks: e.target.value })
+      }
+      className={`${inputCompact} w-72 mx-auto`}
+    />
+  </div>
+
+  {/* BUTTONS */}
+  <div className="flex justify-center gap-4 mt-6">
+    <Button type="button" variant="destructive" onClick={() => handleReset(false)}>
+      Clear
+    </Button>
+
+    <Button type="submit" disabled={saving}>
+      {saving ? "Saving..." : hasExistingRow ? "Update" : "Submit"}
+    </Button>
+  </div>
+</form>
+
+
+
+     
     </div>
   );
 }

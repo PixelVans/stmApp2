@@ -141,7 +141,7 @@ export default function DyestuffsForm() {
   
   // Save stock updates
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     setSaving(true);
     try {
       const res = await fetch("/api/dyestuffs-stock/bulk-update", {

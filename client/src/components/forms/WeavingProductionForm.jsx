@@ -159,7 +159,7 @@ export default function WeavingProductionPage() {
     "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
 
   return (
-    <div className=" lg:relative max-w-xl mx-auto py-3 px-3 md:px-6  border-t-3 shadow-md shadow-slate-500 rounded-lg">
+    <div className=" lg:relative max-w-[600px] mx-auto py-3 px-3 md:px-6 lg:px-9    shadow-md shadow-slate-300 rounded-lg">
       {/* Today date top-right */}
       <div className="absolute top-3 right-4 text-xs font-medium text-slate-500">
         {formatTodayDate()}
@@ -179,7 +179,7 @@ export default function WeavingProductionPage() {
             onChange={(e) =>
               setFormData({ ...formData, weekNo: Number(e.target.value) })
             }
-            className={`border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm w-28 ${focusRing}`}
+            className={`border border-slate-300 bg-slate-50 rounded-md px-2 py-1 text-sm w-28 ${focusRing}`}
           >
             {Array.from({ length: 52 }, (_, i) => i + 1).map((week) => (
               <option key={week} value={week}>
@@ -195,7 +195,7 @@ export default function WeavingProductionPage() {
           <select
             value={formData.day}
             onChange={(e) => setFormData({ ...formData, day: e.target.value })}
-            className={`border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm w-28 ${focusRing}`}
+            className={`border border-slate-300 bg-slate-50 rounded-md px-2 py-1 text-sm w-28 ${focusRing}`}
           >
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
               <option key={d} value={d}>
@@ -208,10 +208,10 @@ export default function WeavingProductionPage() {
 
       {/* Machine number with status */}
       {formData.machineNo && (
-        <p className="text-md xl:text-lg font-semibold text-center 2xl:mb-2 flex items-center justify-center gap-2">
+        <p className="text-md xl:text-lg font-semibold text-center my-5 2xl:mb-2 flex items-center justify-center gap-2">
           Machine No: {formData.machineNo}
           {machineStatus === "success" && (
-            <CheckCircle className="w-5 h-5 text-green-500" />
+            <CheckCircle className="w-5 h-5 text-green-700 font-semibold" />
           )}
           {machineStatus === "error" && (
             <XCircle className="w-5 h-5 text-red-500" />
@@ -221,14 +221,15 @@ export default function WeavingProductionPage() {
 
       {/* Form */}
       <form className="space-y-1 2xl:space-y-3" onSubmit={handleSubmit}>
+
         {/* Machine Dropdown */}
-        <div>
-          <label className="text-sm font-medium">Select Machine:</label>
+        <div className="items-center text-center flex gap-4 mx-auto justify-center">
+          <label className="text-sm font-medium bg-gray-200 p-2 px-4 w-48 rounded-md">Select Machine:</label>
           <select
             required
             value={formData.machineNo}
             onChange={(e) => handleMachineChange(e.target.value)}
-            className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
+            className={`w-40 border border-slate-300 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
           >
             {[1, 2, 3, 4].map((num) => (
               <option key={num} value={num}>
@@ -239,14 +240,14 @@ export default function WeavingProductionPage() {
         </div>
 
         {/* Article Dropdown */}
-        <div className="text-center">
-          <label className="text-xs font-medium">Select Article:</label>
+        <div className="items-center text-center flex gap-4 mx-auto justify-center ">
+          <label className="text-sm font-medium bg-gray-200 p-2 px-4 w-48 rounded-md">Select Article:</label>
           <select
             value={formData.article}
             onChange={(e) =>
               setFormData({ ...formData, article: e.target.value })
             }
-            className={`w-56 border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm mx-auto block ${focusRing}`}
+            className={`w-40 border border-slate-300 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
           >
             {articleOptions.map((opt) => (
               <option key={opt} value={opt}>
@@ -257,12 +258,12 @@ export default function WeavingProductionPage() {
         </div>
 
         {/* Shifts */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-9">
           {/* Shift A */}
           <div className="space-y-2 border bg-yellow-50 rounded-md p-4 sm:p-4 shadow-md ">
             <h3 className="text-sm font-semibold text-blue-700 text-center">Shift A</h3>
             <div>
-              <label className="text-xs font-medium">Meter Reading</label>
+              <label className="text-sm font-medium">Meter Reading</label>
               <input
                 required
                 type="number"
@@ -270,17 +271,17 @@ export default function WeavingProductionPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, machineReadingShiftA: e.target.value })
                 }
-                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-300 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
               />
             </div>
             <div>
-              <label className="text-xs font-medium ">Stop Reason</label>
+              <label className="text-sm font-medium ">Stop Reason</label>
               <select
                 value={formData.stopReasonShiftA}
                 onChange={(e) =>
                   setFormData({ ...formData, stopReasonShiftA: e.target.value })
                 }
-                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2  py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-300 bg-slate-50 rounded-md px-2  py-1 text-sm ${focusRing}`}
               >
                 {stopReasons.map((r) => (
                   <option key={r} value={r}>
@@ -295,7 +296,7 @@ export default function WeavingProductionPage() {
           <div className="space-y-2 border rounded-md p-4 sm:p-4 bg-slate-300  shadow-md">
             <h3 className="text-sm font-semibold text-blue-700 text-center">Shift B</h3>
             <div>
-              <label className="text-xs font-medium">Meter Reading</label>
+              <label className="text-sm font-medium">Meter Reading</label>
               <input
                 required
                 type="number"
@@ -303,17 +304,17 @@ export default function WeavingProductionPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, machineReadingShiftB: e.target.value })
                 }
-                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-300 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
               />
             </div>
             <div>
-              <label className="text-xs font-medium">Stop Reason</label>
+              <label className="text-sm font-medium">Stop Reason</label>
               <select
                 value={formData.stopReasonShiftB}
                 onChange={(e) =>
                   setFormData({ ...formData, stopReasonShiftB: e.target.value })
                 }
-                className={`w-full border border-slate-400 bg-slate-50 rounded-md px-2 py-0.5 text-sm ${focusRing}`}
+                className={`w-full border border-slate-300 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
               >
                 {stopReasons.map((r) => (
                   <option key={r} value={r}>
@@ -335,12 +336,12 @@ export default function WeavingProductionPage() {
             onChange={(e) =>
               setFormData({ ...formData, counter: e.target.value })
             }
-            className={`w-56 border border-slate-400 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
+            className={`w-56 border border-slate-300 bg-slate-50 rounded-md px-2 py-1 text-sm ${focusRing}`}
           />
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-center mb-2 mt-5 lg:mt-4 sm:mb-2 gap-4">
+        <div className="flex justify-center mb-2 mt-5 lg:mt-4 sm:mb-5 gap-4">
           <Button
             type="button"
             variant="destructive"

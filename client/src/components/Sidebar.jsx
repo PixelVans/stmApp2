@@ -37,7 +37,7 @@ const navItems = [
   href: "/warping"
 },
  {
-  name: "Production",
+  name: "Weaving",
   icon: <FaCogs size={18} className="text-slate-300" />,
   href: "/production"
 },

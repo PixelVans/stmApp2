@@ -17,7 +17,7 @@ const ProductionPage = () => {
     <div className="max-w-5xl mx-auto mt-2 px-2 sm:px-4  ">
     <Tabs defaultValue="warping-stock" className="w-full">
         <TabsList className="flex gri-cols-2 sm:grid-cols-4 gap-2 justify-baseline w-full mb-12 md:mb-5">
-          <TabsTrigger value="warping-stock" className='px-4'>Grey Rolls</TabsTrigger>
+          <TabsTrigger value="warping-stock" className='px-4'>Grey Rolls Update</TabsTrigger>
           <TabsTrigger value="warping-production">Weaving Production</TabsTrigger>
         </TabsList>
         <TabsContent value="warping-stock">

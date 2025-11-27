@@ -137,7 +137,7 @@ const handlePrint = useReactToPrint({
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     setSaving(true);
     try {
       const res = await fetch("/api/chemicals-stock/bulk-update", {
