@@ -11,11 +11,11 @@ const navItems = [
   { name: "Home", icon: <FiHome size={18} className="text-white" />, href: "/" },
   { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
   { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving-production" },
-  { 
-    name: "Update Production Data", 
-    icon: <FiEdit3 size={18} className="text-blue-400" />, 
-    href: "/update-weaving-production" 
-  },
+  // { 
+  //   name: "Update Production Data", 
+  //   icon: <FiEdit3 size={18} className="text-blue-400" />, 
+  //   href: "/update-weaving-production" 
+  // },
   // { 
   //   name: "Update Warping Data", 
   //   icon: <FiEdit3 size={18} className="text-purple-400" />, 
@@ -26,11 +26,7 @@ const navItems = [
     icon: <FiBox size={18} className="text-green-400" />, 
     href: "/update-stock" 
   },
-  { 
-    name: "STM Muster Roll", 
-    icon: <FiClipboard size={18} className="text-orange-300" />, 
-    href: "/update-muster-roll" 
-  },
+ 
  {
   name: "Warping",
   icon: <FiLayers size={18} className="text-purple-400" />,
@@ -41,7 +37,11 @@ const navItems = [
   icon: <FaCogs size={18} className="text-slate-300" />,
   href: "/production"
 },
-
+ { 
+    name: "Muster Roll", 
+    icon: <FiClipboard size={18} className="text-orange-300" />, 
+    href: "/update-muster-roll" 
+  },
 
 ];
 

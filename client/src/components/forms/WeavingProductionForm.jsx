@@ -155,8 +155,7 @@ export default function WeavingProductionPage() {
     resetShiftData(false);
   };
 
-  const focusRing =
-    "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
+  const focusRing = "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
 
   return (
     <div className=" lg:relative max-w-[600px] mx-auto py-3 px-3 md:px-6 lg:px-9    shadow-md shadow-slate-300 rounded-lg">
@@ -165,7 +164,7 @@ export default function WeavingProductionPage() {
         {formatTodayDate()}
       </div>
 
-      <h1 className="text-lg 2xl:text-xl   font-bold text-center mb-5">
+      <h1 className="text-lg 2xl:text-xl text-blue-800  font-bold text-center mb-5">
         Update Weaving Production
       </h1>
 
@@ -224,7 +223,7 @@ export default function WeavingProductionPage() {
 
         {/* Machine Dropdown */}
         <div className="items-center text-center flex gap-4 mx-auto justify-center">
-          <label className="text-sm font-medium bg-gray-200 p-2 px-4 w-48 rounded-md">Select Machine:</label>
+          <label className="text-sm font-semibold bg-blue-100 p-2 px-4 w-48 rounded-md">Select Machine:</label>
           <select
             required
             value={formData.machineNo}
@@ -258,7 +257,7 @@ export default function WeavingProductionPage() {
         </div>
 
         {/* Shifts */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-9">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
           {/* Shift A */}
           <div className="space-y-2 border bg-yellow-50 rounded-md p-4 sm:p-4 shadow-md ">
             <h3 className="text-sm font-semibold text-blue-700 text-center">Shift A</h3>

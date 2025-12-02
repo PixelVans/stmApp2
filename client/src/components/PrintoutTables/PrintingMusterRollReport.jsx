@@ -379,7 +379,7 @@ const totalPayableHours =
 
   
   return (
-    <div className="bg-white min-h-screen  text-gray-800 prin:mt-[-60px]">
+    <div className="bg-white min-h-screen  text-gray-800 print:mt-[-30px]">
       <Toaster position="top-center" richColors />
 
     {/* Header */}
@@ -458,7 +458,7 @@ const totalPayableHours =
               <button
                 onClick={() => window.print()}
                 type="button"
-                className="hidden items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-all shadow-sm"
               >
                 <FiPrinter className="w-4 h-4" />
                 Print Report
@@ -470,9 +470,9 @@ const totalPayableHours =
 
 
       {/* Dynamic Form Header Section */}
-      <div className="max-w-4xl mx-auto sm:mt-32 md:mt-20 lg:mt-5 p-8 print:mt-5 overflow-visible print:border-0 print:shadow-none border border-gray-400 mb-5 shadow-sm">
-        <h1 className="text-center font-bold">SPECIALISED TOWEL MANUFACTURERS LTD.</h1>
-        <h4 className="text-center font-bold text-xs mb-4" >MUSTEROLL FORM.</h4>
+      <div className="max-w-4xl mx-auto  lg:mt-5 p-8 print:mt-5 overflow-visible print:border-0 print:shadow-none border border-gray-400 mb-5 shadow-sm">
+        <h1 className="text-center font-bold  mt-2 ">SPECIALISED TOWEL MANUFACTURERS LTD.</h1>
+        <h4 className="text-center font-bold text-xs mb-4" >MUSTEROLL REPORT.</h4>
 
       <div className="text-center mb-6 ">
         <div className="flex justify-center items-center gap-20">
@@ -499,19 +499,19 @@ const totalPayableHours =
             <table className="w-full text-xs border border-gray-300">
               <thead className="bg-blue-100 text-gray-800 uppercase">
                 <tr>
-                  <th className="border border-gray-500 py-0.5  text-center w-10">
+                  <th className="border border-gray-500 py-[1px]  text-center w-10">
                     Day
                   </th>
-                  <th className="border border-gray-500  py-0.5 text-center w-10">
+                  <th className="border border-gray-500  py-[1px] text-center w-10">
                     Date
                   </th>
-                  <th className="border border-gray-500 py-0.5  text-center w-10">
+                  <th className="border border-gray-500 py-[1px]  text-center w-10">
                     Time In
                   </th>
-                  <th className="border border-gray-500 py-0.5  text-center w-10">
+                  <th className="border border-gray-500 py-[1px]  text-center w-10">
                     Time Out
                   </th>
-                  <th className="border border-gray-500  py-0.5 text-center w-10">
+                  <th className="border border-gray-500  py-[1px] text-center w-10">
                     Total Hrs
                   </th>
                 </tr>
@@ -544,15 +544,15 @@ const totalPayableHours =
                       {dayName}
                     </td>
 
-                    <td className="border border-gray-500 text-[12px] py-0.5 text-center">
+                    <td className="border border-gray-500 text-[12px] py-[1px] text-center">
                       {`${date.getDate()}/${date.getMonth() + 1}`}
                     </td>
 
-                    <td className="border border-gray-500 text-[12px] text-center">
+                    <td className="border border-gray-500 text-[12px] text-gray-600 text-center">
                         {formatTimeUTC(record?.TimeIn)}
                       </td>
 
-                      <td className="border border-gray-500 text-[12px] text-center">
+                      <td className="border border-gray-500 text-[12px] text-gray-600 text-center">
                         {formatTimeUTC(record?.TimeOut)}
                       </td>
 
@@ -566,7 +566,7 @@ const totalPayableHours =
                   {dayName === "Sun" && (
                     <tr>
                       <td colSpan="5">
-                        <div className="h-3 bg-gray-200" />
+                        <div className="h-3 bg-gray-100" />
                       </td>
                     </tr>
                   )}
@@ -575,7 +575,7 @@ const totalPayableHours =
             })}
 
               <tr className="bg-blue-50 font-semibold">
-                <td colSpan="4" className="border border-gray-500 px-3 text-[12px] py-0.5">
+                <td colSpan="4" className="border border-gray-500 px-3 text-[12px] py-[1px]">
                   Monthly Total (Payable Hours)
                 </td>
                 <td className="border border-gray-500 px-3 py-1 text-center">
@@ -585,7 +585,7 @@ const totalPayableHours =
 
           </tbody>
           </table>
-          <div className="flex  justify-center gap-3 mt-8 mb-5">
+          <div className="flex  justify-center gap-3 mt-12 mb-5">
           <h1 className="font-semibold whitespace-nowrap">Employee Signature</h1>
           <div className="w-52 border-b-2 border-dotted border-gray-500"></div>
         </div>
@@ -629,16 +629,16 @@ const totalPayableHours =
             <table className="w-full text-sm border border-gray-500">
               <thead className="bg-blue-100 text-gray-800 ">
                 <tr>
-                  <th className="border  border-gray-500  py-0.5 text-center w-22">
+                  <th className="border  border-gray-500  py-[1px] text-center w-22">
                     Type
                   </th>
-                  <th className="border  border-gray-500  py-0.5 text-center w-10">
+                  <th className="border  border-gray-500  py-[1px] text-center w-10">
                     Duration
                   </th>
                 </tr>
               </thead>
               <tbody>
-                 <tr>
+                 <tr classname="hidden">
                   <td className="border text-[12px] border-gray-300 px-1 py-0.5">
                     Total Absent
                   </td>

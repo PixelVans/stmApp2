@@ -28,84 +28,65 @@ import {
   PackageSearch,
 } from "lucide-react";
 import { FiPrinter } from "react-icons/fi";
-import { Package,  } from "lucide-react";
 import WarpingStockPrintoutPage from "@/customPrintouts/warpingStockPrintout";
 import { useReactToPrint } from "react-to-print";
 
-
-
-export default function WarpingStockForm() {
+export default function BagsAndConesForm() {
   const [rows, setRows] = useState([]);
   const [warpingStock, setWarpingStock] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingItem, setSavingItem] = useState(false);
   const [error, setError] = useState(false);
-
+ 
   const [manageOpen, setManageOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
-  const [editingIdx, setEditingIdx] = useState(null);
+  const [editingIdx, setEditingIdx] = useState(null); // index in warpingStock (for editing convenience)
   const [formData, setFormData] = useState({});
 
+  // Fields (note: "Yarn" removed from the Type options)
+  const warpingFields = [
+    { key: "Description", label: "Description", type: "text" },
+    {
+      key: "Type",
+      label: "Type",
+      type: "select",
+      options: ["Cones", "Cheeses", "Bags", "Other"],
+    },
+    {
+      key: "UnitOfMeasure",
+      label: "Unit of Measure",
+      type: "select",
+      options: ["Kgs", "Pieces"],
+    },
+    { key: "QuantityOnHand", label: "Quantity On Hand", type: "number" },
+    { key: "StockIndex", label: "Stock Index (optional)", type: "number" },
+  ];
 
+  const fetchWarpingStock = async () => {
+    setError(false);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/warping-stock", { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to fetch WarpingStock");
+      const data = await res.json();
 
-const warpingFields = [
-  { key: "Description", label: "Description", type: "text" },
-  {
-    key: "Type",
-    label: "Type",
-    type: "select",
-    options: ["Cones", "Cheeses", "Bags", "Yarn", "Other"],
-  },
-  {
-    key: "UnitOfMeasure",
-    label: "Unit of Measure",
-    type: "select",
-    options: ["Kgs", "Pieces"],
-  },
-  { key: "QuantityOnHand", label: "Quantity On Hand", type: "number" },
-  { key: "StockIndex", label: "Stock Index (optional)", type: "number" },
-];
+      // Keep full master for management operations, but rows (the editable table) must exclude yarn
+      setWarpingStock(data || []);
 
+      const nonYarn = (data || [])
+        .filter((it) => it.Type?.toLowerCase() !== "yarn")
+        .sort((a, b) => (a.StockIndex || 0) - (b.StockIndex || 0))
+        .map((item) => ({ ...item }));
 
-
-  // Simulate fetching warping stock data
-const fetchWarpingStock = async () => {
-  setError(false);
-  setLoading(true);
-  try {
-    const res = await fetch("/api/warping-stock", { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch WarpingStock");
-    const data = await res.json();
-
-    setWarpingStock(data);
-setRows(
-  data
-    .sort((a, b) => {
-      // 1 Yarns first
-      const isYarnA = a.Type?.toLowerCase() === "yarn";
-      const isYarnB = b.Type?.toLowerCase() === "yarn";
-
-      if (isYarnA && !isYarnB) return -1; // Yarn comes first
-      if (!isYarnA && isYarnB) return 1;
-
-      // 2 Then sort by StockIndex (ascending)
-      return (a.StockIndex || 0) - (b.StockIndex || 0);
-    })
-    .map((item) => ({
-      ...item,
-    }))
-);
-
-
-  } catch (err) {
-    console.error(err);
-    setError(true);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      setRows(nonYarn);
+    } catch (err) {
+      console.error(err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchWarpingStock();
@@ -127,94 +108,100 @@ setRows(
     );
   };
 
- const handleSubmit = async (e) => {
-    
-  e.preventDefault();
-  setSaving(true);
-  try {
-    const res = await fetch("/api/warping-stock/bulk-update", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(rows),
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      // rows already exclude yarn. Send only these.
+      const res = await fetch("/api/warping-stock/bulk-update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(rows),
+      });
 
-    if (!res.ok) throw new Error("Bulk update failed");
+      if (!res.ok) throw new Error("Bulk update failed");
 
-    toast.success("Warping stock data updated successfully!");
-    await fetchWarpingStock();
-  } catch (err) {
-    console.error(err);
-    toast.error("Could not update warping stock data");
-  } finally {
-    setSaving(false);
-  }
-};
+      toast.success("Cones & Bags stock updated successfully!");
+      await fetchWarpingStock();
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not update warping stock data");
+    } finally {
+      setSaving(false);
+    }
+  };
 
+  const handleSaveItem = async () => {
+    setSavingItem(true);
+    try {
+      // Prevent adding/updating Yarn type (defensive)
+      if (formData.Type?.toLowerCase() === "yarn") {
+        toast.error("Yarn items are not managed in this form.");
+        setSavingItem(false);
+        return;
+      }
 
-const handleSaveItem = async () => {
-    
-  setSavingItem(true);
-  try {
-    const method = editingIdx === "new" ? "POST" : "PUT";
-    const url =
-      editingIdx === "new"
-        ? "/api/warping-stock"
-        : `/api/warping-stock/${formData.ID}`;
+      const method = editingIdx === "new" ? "POST" : "PUT";
+      const url =
+        editingIdx === "new"
+          ? "/api/warping-stock"
+          : `/api/warping-stock/${formData.ID}`;
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    if (!res.ok) throw new Error("Save failed");
+      if (!res.ok) throw new Error("Save failed");
 
-    toast.success(
-      editingIdx === "new"
-        ? "New warping stock item added!"
-        : "Warping stock item updated!"
-    );
+      toast.success(
+        editingIdx === "new"
+          ? "New warping stock item added!"
+          : "Warping stock item updated!"
+      );
 
-    await fetchWarpingStock();
-  } catch (err) {
-    console.error(err);
-    toast.error("Error saving warping stock item");
-  } finally {
-    setSavingItem(false);
-    setEditingIdx(null);
-  }
-};
+      await fetchWarpingStock();
+    } catch (err) {
+      console.error(err);
+      toast.error("Error saving warping stock item");
+    } finally {
+      setSavingItem(false);
+      setEditingIdx(null);
+    }
+  };
 
+  const confirmDeleteItem = async () => {
+    if (!confirmDelete) return;
+    try {
+      // Only allow deleting non-yarn items from this modal
+      const item = warpingStock.find(
+        (s) =>
+          s.Description === confirmDelete &&
+          s.Type?.toLowerCase() !== "yarn"
+      );
 
- const confirmDeleteItem = async () => {
-     
-  if (!confirmDelete) return;
-  try {
-    const item = warpingStock.find(
-      (s) => s.Description === confirmDelete
-    );
-    if (!item) throw new Error("Item not found");
+      if (!item) throw new Error("Item not found or is yarn (cannot delete here)");
 
-    const res = await fetch(`/api/warping-stock/${item.ID}`, {
-      method: "DELETE",
-    });
+      const res = await fetch(`/api/warping-stock/${item.ID}`, {
+        method: "DELETE",
+      });
 
-    if (!res.ok) throw new Error("Delete failed");
+      if (!res.ok) throw new Error("Delete failed");
 
-    toast.success(`Deleted stock item: ${confirmDelete}`);
-    await fetchWarpingStock();
-  } catch (err) {
-    console.error(err);
-    toast.error("Error deleting stock item");
-  } finally {
-    setConfirmDelete(null);
-  }
-};
+      toast.success(`Deleted stock item: ${confirmDelete}`);
+      await fetchWarpingStock();
+    } catch (err) {
+      console.error(err);
+      toast.error("Error deleting stock item");
+    } finally {
+      setConfirmDelete(null);
+    }
+  };
 
-
-  // Render loading
+  // Loading UI
   if (loading) {
-      return (
+    return (
       <div className="flex flex-col mt-[170px] items-center justify-center  bg-white">
         <div className="flex space-x-1">
           {[...Array(5)].map((_, i) => (
@@ -222,15 +209,15 @@ const handleSaveItem = async () => {
               key={i}
               className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
               style={{ animationDelay: `${i * 0.1}s` }}
-            ></div>
+            />
           ))}
         </div>
 
         <p className="mt-6 text-lg font-semibold text-gray-800">
-          Loading Warping Stock Data..
+          Loading Bags & Cones Stock Data...
         </p>
-        
-      <style>{`
+
+        <style>{`
           @keyframes wave {
             0%, 40%, 100% { transform: scaleY(0.4); } 
             20% { transform: scaleY(1.0); }
@@ -240,7 +227,7 @@ const handleSaveItem = async () => {
     );
   }
 
-  // Render error
+  // Error UI
   if (error)
     return (
       <div className="flex flex-col items-center justify-center mt-36 text-center">
@@ -254,14 +241,19 @@ const handleSaveItem = async () => {
       </div>
     );
 
+  // Filtered master list for Manage modal: only non-yarn
+  const manageList = warpingStock.filter(
+    (s) => s.Type?.toLowerCase() !== "yarn"
+  );
+
   return (
     <form
       onSubmit={handleSubmit}
       className="space-y-4 border rounded-xl bg-slate-50 p-2 sm:p-5 shadow-md mb-5"
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="font-semibold text-blue-800 text-lg">
-          Update Warping Stock
+        <h2 className="font-semibold text-blue-800 text-lg ml-2">
+          Update Cones & Bags Stock
         </h2>
 
         <div className="flex items-center gap-2">
@@ -285,7 +277,7 @@ const handleSaveItem = async () => {
           </Button>
 
           <button
-             onClick={handlePrint}
+            onClick={handlePrint}
             type="button"
             className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm"
           >
@@ -297,21 +289,21 @@ const handleSaveItem = async () => {
           </div>
         </div>
       </div>
-  
-      {/* Manage Modal */}
+
+      {/* Manage Modal (ONLY non-yarn items shown) */}
       <Dialog open={manageOpen} onOpenChange={setManageOpen}>
         <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col">
           <DialogHeader className="flex justify-between items-center pb-3 border-b">
             <DialogTitle className="flex items-center gap-2 text-blue-800">
               <PackageSearch className="text-black" />
-              Warping Stock Master List
+              Bags & Cones Master List
             </DialogTitle>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto mt-3 border rounded-md">
-            {warpingStock.length === 0 ? (
+            {manageList.length === 0 ? (
               <p className="text-sm text-slate-500 p-3">
-                No warping stock found.
+                No Bags & Cones  stock (non-yarn) found.
               </p>
             ) : (
               <table className="w-full text-sm">
@@ -322,7 +314,7 @@ const handleSaveItem = async () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {warpingStock.map((item, idx) => (
+                  {manageList.map((item, idx) => (
                     <tr
                       key={item.ID}
                       className="border-t even:bg-slate-50 hover:bg-slate-100"
@@ -334,7 +326,11 @@ const handleSaveItem = async () => {
                           size="icon"
                           variant="ghost"
                           onClick={() => {
-                            setEditingIdx(idx);
+                            // set editingIdx to index in warpingStock for PUT URL usage
+                            const originalIdx = warpingStock.findIndex(
+                              (w) => w.ID === item.ID
+                            );
+                            setEditingIdx(originalIdx);
                             setFormData(item);
                           }}
                         >
@@ -452,124 +448,55 @@ const handleSaveItem = async () => {
         </DialogContent>
       </Dialog>
 
-   {/* Editable Table */}
-<div className="border rounded-md overflow-hidden">
-  <div className="max-h-[400px] 2xl:max-h-[472px] overflow-y-auto">
-    <table className="w-full border-separate border-spacing-0 text-sm">
-      <thead className="bg-slate-200 sticky top-0 z-30">
-        <tr>
-          <th className="border px-2 py-1 text-center w-36">Type</th>
-          <th className="border px-2 py-1 text-center w-48 ">Description</th>
-          <th className="border px-2 py-1 text-center w-36">Current Stock</th>
-          <th className="border px-2 py-1 text-center w-28">Unit</th>
-        </tr>
-      </thead>
-       <tbody>
-      {(() => {
-        const yarnRows = rows.filter(
-          (r) => r.Type?.toLowerCase() === "yarn"
-        );
-        const otherRows = rows.filter(
-          (r) => r.Type?.toLowerCase() !== "yarn"
-        );
+      {/* Editable Table */}
+      <div className="border rounded-md overflow-hidden">
+        <div className="max-h-[400px] 2xl:max-h-[472px] overflow-y-auto">
+          <table className="w-full border-separate border-spacing-0 text-sm">
+            <thead className="bg-slate-200 sticky top-0 z-30">
+              <tr>
+                <th className="border px-2 py-1 text-center w-36">Type</th>
+                <th className="border px-2 py-1 text-center w-48 ">Description</th>
+                <th className="border px-2 py-1 text-center w-36">Current Stock</th>
+                <th className="border px-2 py-1 text-center w-28">Unit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Only non-yarn rows are rendered here */}
+              {rows.length > 0 ? (
+                <>
+                  
 
-        return (
-          <>
-            {/* Yarn Section */}
-            {yarnRows.length > 0 && (
-              <>
-                <tr className="bg-green-200  sticky top-0 z-10">
-                  <td
-                    colSpan={4}
-                    className="flex items-center gap-2 text-center px-3 py-2 font-semibold text-blue-900 border-2 border-gray-400"
-                  >
-                    
-                    Yarn Stock
-                  </td>
-                </tr>
-
-                {yarnRows.map((row, i) => (
-                  <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-                    <td className="border px-2 py-1 text-gray-700 font-medium text-left">
-                      {row.Type || "-"}
-                    </td>
-                    <td className="border px-2 py-1 text-center">{row.Description}</td>
-                    <td className="border px-2 py-1 text-center">
-                      <input
-                        type="number"
-                        value={row.QuantityOnHand}
-                        onChange={(e) =>
-                          handleChange(
-                            rows.indexOf(row),
-                            "QuantityOnHand",
-                            e.target.value
-                          )
-                        }
-                        className="w-28 border rounded-md px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
-                      />
-                    </td>
-                    <td className="border px-2 py-1 text-center text-gray-700 font-medium">
-                      {row.UnitOfMeasure || "-"}
-                    </td>
-                  </tr>
-                ))}
-
-                {/* Divider */}
+                  {rows.map((row, i) => (
+                    <tr key={row.ID || i} className="bg-white even:bg-slate-50">
+                      <td className="border px-2 py-1 text-gray-700 font-medium text-left">
+                        {row.Type || "-"}
+                      </td>
+                      <td className="border px-2 py-1 text-left">{row.Description}</td>
+                      <td className="border px-2 py-1 text-center">
+                        <input
+                          type="number"
+                          value={row.QuantityOnHand ?? ""}
+                          onChange={(e) => handleChange(i, "QuantityOnHand", e.target.value)}
+                          className="w-28 border rounded-md px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </td>
+                      <td className="border px-2 py-1 text-center text-gray-700 font-medium">
+                        {row.UnitOfMeasure || "-"}
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : (
                 <tr>
-                  <td colSpan={4} className=" h-10 border "></td>
-                </tr>
-              </>
-            )}
-
-            {/* Other Items Section */}
-            {otherRows.length > 0 && (
-              <>
-                <tr className="bg-green-200  sticky top-0 z-10">
-                  <td
-                    colSpan={4}
-                    className="flex items-center gap-2 text-center px-3 py-2 font-semibold text-blue-900 border-2 border-gray-400"
-                  >
-                    
-                    Other Stock Items
+                  <td colSpan={4} className="p-4 text-center text-sm text-slate-500">
+                    No Cones/Bags/ stock available.
                   </td>
                 </tr>
-
-                {otherRows.map((row, i) => (
-                  <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-                    <td className="border px-2 py-1 text-gray-700 font-medium text-left">
-                      {row.Type || "-"}
-                    </td>
-                    <td className="border px-2 py-1 text-left">{row.Description}</td>
-                    <td className="border px-2 py-1 text-center">
-                      <input
-                        type="number"
-                        value={row.QuantityOnHand}
-                        onChange={(e) =>
-                          handleChange(
-                            rows.indexOf(row),
-                            "QuantityOnHand",
-                            e.target.value
-                          )
-                        }
-                        className="w-28 border rounded-md px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
-                      />
-                    </td>
-                    <td className="border px-2 py-1 text-center text-gray-700 font-medium">
-                      {row.UnitOfMeasure || "-"}
-                    </td>
-                  </tr>
-                ))}
-              </>
-            )}
-          </>
-        );
-      })()}
-    </tbody>
-
-    </table>
-  </div>
-</div>
-
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!confirmDelete} onOpenChange={() => setConfirmDelete(null)}>

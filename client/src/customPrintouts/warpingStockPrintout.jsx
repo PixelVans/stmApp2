@@ -71,13 +71,13 @@ const WarpingStockPrintoutPage = forwardRef((props, ref) => {
   }
 
   return (
-    <div ref={ref} className="p-6 bg-white text-black max-w-[794px] mx-auto">
+    <div ref={ref} className="p-6 bg-white text-black max-w-[794px] mx-auto mt-5">
       {/* Header */}
       <div className="text-center mb-2">
         <h2 className="font-semibold text-xl text-blue-900">
-          Warping Stock Report
+          Yarn Stock Report
         </h2>
-        <p className="text-sm p-2 text-gray-600">As of {formatDate()}</p>
+        <p className="text-sm p-2 text-gray-600"> <span className="italic mr-2">As of</span> {formatDate()}</p>
       </div>
 
       {/* Table */}
@@ -123,7 +123,7 @@ const WarpingStockPrintoutPage = forwardRef((props, ref) => {
         {/* Divider after yarns */}
             {rows.some((r) => r.Type?.toLowerCase() !== "yarn") && (
               <tr>
-                <td colSpan={4} className="h-10"></td>
+                <td colSpan={4} className="h-14"></td>
               </tr>
             )}
 

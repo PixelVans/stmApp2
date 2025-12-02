@@ -242,7 +242,7 @@ const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 r
   }
 
   return (
-    <div className="relative max-w-4xl mx-auto py-5 pb-9 px-5 md:px-8 mt-2 shadow-md shadow-slate-300 rounded-lg bg-white">
+    <div className="relative hidden max-w-4xl mx-auto py-5 pb-9 px-5 md:px-8 mt-2 shadow-md shadow-slate-300 rounded-lg bg-white">
       <div className="absolute hidden lg:block top-3 right-4 text-xs font-medium text-slate-600">
         {formatTodayDate()}
       </div>
