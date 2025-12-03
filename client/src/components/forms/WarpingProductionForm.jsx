@@ -182,27 +182,37 @@ const articleOptions = [
 const yarnCounts1 = ["20/2", "9/4", "6/4", "6/2", "13.5/6", "24/2", "30/2 PC"];
 const yarnCounts2 = ["24/2 Dyed", "13.5/6", "9/4", "6/4", "6/2"];
 
-if (loading)
-return ( 
-<div className="flex flex-col mt-[170px] items-center justify-center bg-white"> 
-  
-  <div className="flex space-x-1">
-      {[...Array(5)].map((_, i) => (
-      <div
-          key={i}
-          className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
-          style={{ animationDelay: `${i * 0.1}s` }}
-          >
 
+
+
+  if (loading) {
+    return (
+      <div className="flex flex-col mt-[170px] items-center justify-center bg-white">
+        <div className="flex space-x-1">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="w-[2px] h-5 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.5}s` }}
+            ></div>
+          ))}
+        </div>
+
+        <p className="mt-6 text-sm  text-gray-800">
+          Loading Warping Production Data.. 
+        </p>
+
+        <style>{`
+          @keyframes wave {
+            0%, 40%, 100% { transform: scaleY(0.4); } 
+            20% { transform: scaleY(1.0); }
+          }
+        `}</style>
       </div>
-      ))} 
-</div> 
-  <p className="mt-6 text-lg font-semibold text-gray-800">
-    Loading Warping Production Data.. 
-  </p>
+    );
+  }
 
- </div>
-);
+  
 
 if (error)
 

@@ -205,11 +205,11 @@ const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 r
     return (
       <div className="flex flex-col mt-[170px] items-center justify-center bg-white">
         <div className="flex space-x-1">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
-              style={{ animationDelay: `${i * 0.1}s` }}
+              className="w-[2px] h-5 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.5}s` }}
             ></div>
           ))}
         </div>
@@ -227,6 +227,8 @@ const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 r
       </div>
     );
   }
+
+
 
   if (error) {
     return (

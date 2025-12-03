@@ -204,16 +204,16 @@ export default function BagsAndConesForm() {
     return (
       <div className="flex flex-col mt-[170px] items-center justify-center  bg-white">
         <div className="flex space-x-1">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
-              style={{ animationDelay: `${i * 0.1}s` }}
+              className="w-[2px] h-5 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.5}s` }}
             />
           ))}
         </div>
 
-        <p className="mt-6 text-lg font-semibold text-gray-800">
+        <p className="mt-6 text-sm  text-gray-800">
           Loading Bags & Cones Stock Data...
         </p>
 
@@ -461,26 +461,26 @@ export default function BagsAndConesForm() {
               </tr>
             </thead>
             <tbody>
-              {/* Only non-yarn rows are rendered here */}
+              {/* Render only non - yarn rows */}
               {rows.length > 0 ? (
                 <>
                   
 
                   {rows.map((row, i) => (
                     <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-                      <td className="border px-2 py-1 text-gray-700 font-medium text-left">
+                      <td className="border px-2 py-1 text-gray-700 font-medium text-center">
                         {row.Type || "-"}
                       </td>
-                      <td className="border px-2 py-1 text-left">{row.Description}</td>
+                      <td className="border px-2 py-1 text-center">{row.Description}</td>
                       <td className="border px-2 py-1 text-center">
                         <input
                           type="number"
                           value={row.QuantityOnHand ?? ""}
                           onChange={(e) => handleChange(i, "QuantityOnHand", e.target.value)}
-                          className="w-28 border rounded-md px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          className=" border rounded-md px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                       </td>
-                      <td className="border px-2 py-1 text-center text-gray-700 font-medium">
+                      <td className="border w-32 px-2 py-1 text-center text-gray-700 font-medium">
                         {row.UnitOfMeasure || "-"}
                       </td>
                     </tr>

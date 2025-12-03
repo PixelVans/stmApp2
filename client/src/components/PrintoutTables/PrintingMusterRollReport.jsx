@@ -335,16 +335,16 @@ const totalPayableHours =
          {/* Header */}
         
         <div className="flex space-x-1">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
-              style={{ animationDelay: `${i * 0.1}s` }}
+              className="w-[2px] h-5 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.5}s` }}
             ></div>
           ))}
         </div>
 
-        <p className="mt-6 text-lg font-semibold text-gray-800">
+        <p className="mt-6 text-sm  text-gray-800">
           Loading Muster Roll Report...
         </p>
   

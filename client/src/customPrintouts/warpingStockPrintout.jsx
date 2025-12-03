@@ -108,7 +108,7 @@ const WarpingStockPrintoutPage = forwardRef((props, ref) => {
               <td className="border border-gray-600 px-2 py-1 text-center font-medium">
                 {row.Type || "-"}
               </td>
-              <td className="border border-gray-600 px-2 py-1">
+              <td className="border border-gray-600 px-2 py-1 text-center w-40">
                 {row.Description}
               </td>
               <td className="border border-gray-600 px-2 py-1 text-center">
@@ -135,7 +135,7 @@ const WarpingStockPrintoutPage = forwardRef((props, ref) => {
                   <td className="border border-gray-600 px-2 py-1 text-center font-medium">
                     {row.Type || "-"}
                   </td>
-                  <td className="border border-gray-600 px-2 py-1">
+                  <td className="border border-gray-600 px-2 py-1 text-center w-40">
                     {row.Description}
                   </td>
                   <td className="border border-gray-600 px-2 py-1 text-center">

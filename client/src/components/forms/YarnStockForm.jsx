@@ -189,21 +189,21 @@ export default function YarnStockForm() {
 
   // ------------------- UI STATES --------------------
 
-  if (loading) {
+if (loading) {
     return (
       <div className="flex flex-col mt-[170px] items-center justify-center bg-white">
         <div className="flex space-x-1">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
-              style={{ animationDelay: `${i * 0.1}s` }}
+              className="w-[2px] h-5 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.5}s` }}
             ></div>
           ))}
         </div>
 
         <p className="mt-6 text-lg font-semibold text-gray-800">
-          Loading Yarn Stock...
+          Loading Yarn Stock Data..
         </p>
 
         <style>{`
@@ -452,10 +452,10 @@ export default function YarnStockForm() {
             <tbody>
               {rows.map((row, i) => (
                 <tr key={row.ID || i} className="bg-white even:bg-slate-50">
-                  <td className="border px-2 py-1 text-left text-gray-700 font-medium">
+                  <td className="border px-2 py-1 text-center text-gray-700 font-medium ">
                     Yarn
                   </td>
-                  <td className="border px-2 py-1">{row.Description}</td>
+                  <td className="border px-2 py-1 text-center w-">{row.Description}</td>
                   <td className="border px-2 py-1 text-center">
                     <input
                       type="number"
@@ -463,10 +463,10 @@ export default function YarnStockForm() {
                       onChange={(e) =>
                         handleChange(i, "QuantityOnHand", e.target.value)
                       }
-                      className="w-28 border rounded-md px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w- border rounded-md px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   </td>
-                  <td className="border px-2 py-1 text-center">
+                  <td className="border px-2 py-1 w-32 text-center">
                     {row.UnitOfMeasure}
                   </td>
                 </tr>

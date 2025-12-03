@@ -213,24 +213,26 @@ const handlePrint = useReactToPrint({
 
 
   // render loading state
-  if (loading) {
-      return (
-      <div className="flex flex-col mt-[170px] items-center justify-center  bg-white">
+  
+
+ if (loading) {
+    return (
+      <div className="flex flex-col mt-[170px] items-center justify-center bg-white">
         <div className="flex space-x-1">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="w-2 h-6 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
-              style={{ animationDelay: `${i * 0.1}s` }}
+              className="w-[2px] h-5 bg-blue-500 rounded animate-[wave_1.2s_ease-in-out_infinite]"
+              style={{ animationDelay: `${i * 0.5}s` }}
             ></div>
           ))}
         </div>
 
-        <p className="mt-6 text-lg font-semibold text-gray-800">
-          Loading Chemicals Stock Data
+        <p className="mt-6 text-sm  text-gray-800">
+          Loading Chemicals Stock Data...
         </p>
-        
-      <style>{`
+
+        <style>{`
           @keyframes wave {
             0%, 40%, 100% { transform: scaleY(0.4); } 
             20% { transform: scaleY(1.0); }
@@ -239,6 +241,8 @@ const handlePrint = useReactToPrint({
       </div>
     );
   }
+
+
 
   // render error state
    if (error) {
