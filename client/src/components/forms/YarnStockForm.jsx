@@ -238,7 +238,7 @@ export default function YarnStockForm() {
     >
       {/* HEADER + BUTTONS */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="font-semibold text-blue-800 text-lg ml-2">
+        <h2 className=" text-blue-900 text-lg ml-2">
           Update Yarn Stock
         </h2>
 

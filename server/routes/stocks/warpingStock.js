@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
       .input("StockIndex", sql.Int, stockIndexToUse)
       .input("Description", sql.NVarChar(100), Description)
       .input("Type", sql.NVarChar(50), Type || null)
-      .input("QuantityOnHand", sql.Int, QuantityOnHand)
+      .input("QuantityOnHand", sql.Decimal(10, 2), QuantityOnHand)
       .input("UnitOfMeasure", sql.NVarChar(20), UnitOfMeasure)
       .query(`
         INSERT INTO [Specialised Systems].dbo.WarpingStock
@@ -76,7 +76,7 @@ router.put("/bulk-update", async (req, res) => {
 
       await new sql.Request(transaction)
         .input("ID", sql.Int, id)
-        .input("QuantityOnHand", sql.Int, qty)
+        .input("QuantityOnHand", sql.Decimal(10, 2), qty)
         .query(`
           UPDATE [Specialised Systems].dbo.WarpingStock
           SET QuantityOnHand = @QuantityOnHand
@@ -104,7 +104,7 @@ router.put("/:id", async (req, res) => {
       .input("StockIndex", sql.Int, StockIndex)
       .input("Description", sql.NVarChar(100), Description)
       .input("Type", sql.NVarChar(50), Type || null)
-      .input("QuantityOnHand", sql.Int, QuantityOnHand)
+      .input("QuantityOnHand", sql.Decimal(10, 2), QuantityOnHand)
       .input("UnitOfMeasure", sql.NVarChar(20), UnitOfMeasure)
       .query(`
         UPDATE [Specialised Systems].dbo.WarpingStock

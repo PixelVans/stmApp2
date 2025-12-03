@@ -244,7 +244,7 @@ return (
     </button>
   </div>
 
-  <h1 className="text-lg sm:text-xl font-bold text-center my-5">
+  <h1 className="text-lg sm:text-xl text-blue-900 text-center my-5">
     Update Warping Production
   </h1>
 

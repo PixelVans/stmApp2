@@ -379,7 +379,7 @@ const totalPayableHours =
 
   
   return (
-    <div className="bg-white min-h-screen  text-gray-800 print:mt-[-30px]">
+    <div className="bg-white min-h-screen  text-gray-800 ">
       <Toaster position="top-center" richColors />
 
     {/* Header */}
@@ -499,19 +499,19 @@ const totalPayableHours =
             <table className="w-full text-xs border border-gray-300">
               <thead className="bg-blue-100 text-gray-800 uppercase">
                 <tr>
-                  <th className="border border-gray-500 py-[1px]  text-center w-10">
+                  <th className="border border-gray-500 py-[1.5px]  text-center w-10">
                     Day
                   </th>
-                  <th className="border border-gray-500  py-[1px] text-center w-10">
+                  <th className="border border-gray-500  py-[1.5px] text-center w-10">
                     Date
                   </th>
-                  <th className="border border-gray-500 py-[1px]  text-center w-10">
+                  <th className="border border-gray-500 py-[1.5px]  text-center w-10">
                     Time In
                   </th>
-                  <th className="border border-gray-500 py-[1px]  text-center w-10">
+                  <th className="border border-gray-500 py-[1.5px]  text-center w-10">
                     Time Out
                   </th>
-                  <th className="border border-gray-500  py-[1px] text-center w-10">
+                  <th className="border border-gray-500  py-[1.5px] text-center w-10">
                     Total Hrs
                   </th>
                 </tr>
@@ -638,18 +638,11 @@ const totalPayableHours =
                 </tr>
               </thead>
               <tbody>
-                 <tr classname="hidden">
-                  <td className="border text-[12px] border-gray-300 px-1 py-0.5">
-                    Total Absent
-                  </td>
-                  <td className="border border-gray-300 px-3 py- text-center">
-                    {totalAbsent}
-                  </td>
-                </tr>
+                 
 
                 <tr>
                   <td className="border text-[12px] border-gray-300 px-1 py-0.5">
-                    Total Present
+                    Days Present
                   </td>
                   <td className="border border-gray-300  py- text-center">
                     {totalPresent}
@@ -817,7 +810,8 @@ const totalPayableHours =
       </div>
        {adjustments?.length > 0 && (
         <div className="mt-20 w-full">
-          <h2 className="font-semibold mb-2 text-center">Adjustment Details</h2>
+          <h2 className="font-semibold mb-20 h-10 text-center"></h2>
+          <h2 className="font-semibold mb-2 text-center print:mt-20">Adjustment Details</h2>
           <table className="w-full border-collapse border border-gray-300 text-sm">
             <thead>
               <tr className="bg-gray-100">
@@ -861,7 +855,7 @@ const totalPayableHours =
         {`
           @page {
             size: A4;
-            margin: 15mm 2mm 15mm 2mm; /* top, right, bottom, left */
+            margin: 0mm 2mm 0mm 2mm; /* top, right, bottom, left */
           }
 
           @media print {

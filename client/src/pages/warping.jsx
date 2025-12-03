@@ -18,7 +18,6 @@ const WarpingPage = () => {
     <div className="max-w-5xl mx-auto mt-2 2xl:mt-5 px-2 sm:px-4  ">
     <Tabs defaultValue="warping-production" className="w-full">
         <TabsList className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-12 md:mb-5">
-          
           <TabsTrigger value="warping-production">Warping Production</TabsTrigger>
           <TabsTrigger value="warping-stock">Yarn Stock</TabsTrigger>
           <TabsTrigger value="bags&cones">Bags & Cones</TabsTrigger>

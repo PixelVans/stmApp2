@@ -73,6 +73,8 @@ export default function WeavingProductionPage() {
     "Passing Knots",
     "Setting",
     "Stopped",
+    "Pulling",
+    "Let-Off",
   ];
 
   const articleOptions = ["Cellular", "CreamStripe Blue", "Bedsheet", "Towels"];
@@ -164,7 +166,7 @@ export default function WeavingProductionPage() {
         {formatTodayDate()}
       </div>
 
-      <h1 className="text-lg 2xl:text-xl text-blue-800  font-bold text-center mb-5">
+      <h1 className="text-lg 2xl:text-xl text-blue-900  font-semibol text-center mb-5">
         Update Weaving Production
       </h1>
 
@@ -172,7 +174,7 @@ export default function WeavingProductionPage() {
       <div className="mb-4 text-center flex items-center justify-center gap-4">
         {/* Week Selector */}
         <div>
-          <label className="text-sm font-medium mr-2">Week:</label>
+          <label className="text-sm font-medium mr-2 text-slate-800">Week:</label>
           <select
             value={formData.weekNo}
             onChange={(e) =>
@@ -190,7 +192,7 @@ export default function WeavingProductionPage() {
 
         {/* Day Selector */}
         <div>
-          <label className="text-sm font-medium mr-2">Day:</label>
+          <label className="text-sm font-medium mr-2 text-slate-800">Day:</label>
           <select
             value={formData.day}
             onChange={(e) => setFormData({ ...formData, day: e.target.value })}
@@ -207,7 +209,7 @@ export default function WeavingProductionPage() {
 
       {/* Machine number with status */}
       {formData.machineNo && (
-        <p className="text-md xl:text-lg font-semibold text-center my-5 2xl:mb-2 flex items-center justify-center gap-2">
+        <p className="text-md xl:text-lg  text-center my-5 2xl:mb-2 flex items-center justify-center gap-2">
           Machine No: {formData.machineNo}
           {machineStatus === "success" && (
             <CheckCircle className="w-5 h-5 text-green-700 font-semibold" />
@@ -223,7 +225,7 @@ export default function WeavingProductionPage() {
 
         {/* Machine Dropdown */}
         <div className="items-center text-center flex gap-4 mx-auto justify-center">
-          <label className="text-sm font-semibold bg-blue-100 p-2 px-4 w-48 rounded-md">Select Machine:</label>
+          <label className="text-sm font-semibold text-slate-800 bg-blue-100 p-2 px-4 w-48 rounded-md rounded-r-full">Select Machine:</label>
           <select
             required
             value={formData.machineNo}
@@ -240,7 +242,7 @@ export default function WeavingProductionPage() {
 
         {/* Article Dropdown */}
         <div className="items-center text-center flex gap-4 mx-auto justify-center ">
-          <label className="text-sm font-medium bg-gray-200 p-2 px-4 w-48 rounded-md">Select Article:</label>
+          <label className="text-sm font-medium text-slate-800 bg-blue-100 p-2 px-4 w-48 rounded-md rounded-r-full">Select Article:</label>
           <select
             value={formData.article}
             onChange={(e) =>
@@ -262,7 +264,7 @@ export default function WeavingProductionPage() {
           <div className="space-y-2 border bg-yellow-50 rounded-md p-4 sm:p-4 shadow-md ">
             <h3 className="text-sm font-semibold text-blue-700 text-center">Shift A</h3>
             <div>
-              <label className="text-sm font-medium">Meter Reading</label>
+              <label className="text-sm font-medium text-slate-800">Meter Reading</label>
               <input
                 required
                 type="number"
@@ -274,7 +276,7 @@ export default function WeavingProductionPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium ">Stop Reason</label>
+              <label className="text-sm font-medium text-slate-800 ">Stop Reason</label>
               <select
                 value={formData.stopReasonShiftA}
                 onChange={(e) =>
@@ -295,7 +297,7 @@ export default function WeavingProductionPage() {
           <div className="space-y-2 border rounded-md p-4 sm:p-4 bg-slate-300  shadow-md">
             <h3 className="text-sm font-semibold text-blue-700 text-center">Shift B</h3>
             <div>
-              <label className="text-sm font-medium">Meter Reading</label>
+              <label className="text-sm font-medium text-slate-800">Meter Reading</label>
               <input
                 required
                 type="number"
@@ -307,7 +309,7 @@ export default function WeavingProductionPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Stop Reason</label>
+              <label className="text-sm font-medium text-slate-800">Stop Reason</label>
               <select
                 value={formData.stopReasonShiftB}
                 onChange={(e) =>
@@ -327,7 +329,7 @@ export default function WeavingProductionPage() {
 
         {/* Counter */}
         <div className="mt-3 2xl:mt-5 text-center">
-          <label className="text-sm font-medium block mb-1">Counter</label>
+          <label className="text-sm font-medium block mb-1 text-slate-800">Counter</label>
           <input
             required
             type="number"

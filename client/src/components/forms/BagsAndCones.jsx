@@ -252,7 +252,7 @@ export default function BagsAndConesForm() {
       className="space-y-4 border rounded-xl bg-slate-50 p-2 sm:p-5 shadow-md mb-5"
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="font-semibold text-blue-800 text-lg ml-2">
+        <h2 className=" text-blue-900 text-lg ml-2">
           Update Cones & Bags Stock
         </h2>
 
