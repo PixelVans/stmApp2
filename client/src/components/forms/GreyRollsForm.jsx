@@ -252,8 +252,7 @@ const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 r
       
        {/* SEARCH BY BEAM NUMBER */}
             <div className="flex items-center  bg-white mb-2 gap-2 w-fit mx-auto border border-slate-300 rounded-sm">
-            
-              <input
+            <input
                 type="number"
                 placeholder="Search By Roll No..."
                 value={searchRollNo}
@@ -273,9 +272,9 @@ const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 r
       </h1>
      
 
-     {/* onSubmit={handleSubmit} */}
-    <form 
-    >
+     {/* */}
+    <form onSubmit={handleSubmit} > 
+   
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
     {/* LEFT */}
@@ -463,9 +462,6 @@ const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 r
   </div>
 </form>
 
-
-
-     
-    </div>
+</div>
   );
 }
