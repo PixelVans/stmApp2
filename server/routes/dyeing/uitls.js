@@ -1,12 +1,12 @@
 
 const express = require("express");
 const router = express.Router();
-const { connectToDB1, sql } = require('../../config/db'); 
+const { connectToDB2, sql } = require('../../config/db'); 
 
 router.get("/:colour", async (req, res) => {
   const { colour } = req.params;
   try {
-    const pool = await connectToDB1();
+    const pool = await connectToDB2();
     const result = await pool.request()
       .input("colour", colour)
       .query("SELECT * FROM Ingredients_Finishing WHERE Colour_Chart = @colour");

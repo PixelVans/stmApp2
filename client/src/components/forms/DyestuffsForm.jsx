@@ -142,16 +142,18 @@ export default function DyestuffsForm() {
     });
 
   const handlePrintClick = () => {
-  setRefreshKey(prev => prev + 1);  // to trigger child refresh
-  handlePrint();
+      setRefreshKey(prev => prev + 1);  // to trigger child refresh
+      handlePrint();
 };
 
   
   // Save stock updates
   const handleSubmit = async (e) => {
+    
     e.preventDefault();
-    setRefreshKey(prev => prev + 1); // to refresh printout data
     setSaving(true);
+    setRefreshKey(prev => prev + 1);
+    
     try {
       const res = await fetch("/api/dyestuffs-stock/bulk-update", {
         method: "PUT",
@@ -312,9 +314,9 @@ export default function DyestuffsForm() {
 
         <div className="absolute -left-[9999px] top-0">
           <DyestuffsStockPrintoutPage 
-                            ref={componentRef} 
-                            refreshKey={refreshKey} 
-                          />
+            ref={componentRef} 
+            refreshKey={refreshKey} 
+            />
         </div>
 
         

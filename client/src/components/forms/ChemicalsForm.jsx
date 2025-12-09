@@ -114,6 +114,7 @@ const VATUnitCost = round4(UnitCost + UnitCost * 0.16);
 }, [formData.CostperKgLt, formData.SellingUnits]);
 
 const componentRef = useRef(null);
+
   // react to print
 const handlePrint = useReactToPrint({
     contentRef: componentRef, 
@@ -131,9 +132,9 @@ const handlePrint = useReactToPrint({
   });
 
   const handlePrintClick = () => {
-  setRefreshKey(prev => prev + 1);  // to trigger child refresh
-  handlePrint();
-};
+    setRefreshKey(prev => prev + 1);
+    handlePrint();
+}; 
 
 
 

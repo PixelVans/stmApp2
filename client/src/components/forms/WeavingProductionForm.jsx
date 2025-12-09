@@ -77,12 +77,12 @@ export default function WeavingProductionPage() {
     "Let-Off",
   ];
 
-  const articleOptions = ["Cellular", "CreamStripe Blue", "Bedsheet", "Towels"];
+  const articleOptions = ["Cellular", "Plain CounterPane", "CreamStripe Blue", "Bed Sheet", "Towels"];
 
   const machineArticles = {
     1: "Cellular",
     2: "CreamStripe Blue",
-    3: "Bedsheet",
+    3: "Bed Sheet",
     4: "Towels",
   };
 

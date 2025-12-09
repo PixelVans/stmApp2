@@ -38,6 +38,7 @@ const ChemicalsStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
     }
   };
 
+  
    useEffect(() => {
     fetchChemicals();
   }, [refreshKey]);

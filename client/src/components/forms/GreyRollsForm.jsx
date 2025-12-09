@@ -31,7 +31,8 @@ export default function GreyRollsForm() {
   const machineNumbers = ["1", "2", "3", "4"];
   const articleOptions = [
     'Cellular',
-    'Counterpane',
+    "Plain CounterPane", 
+    "CreamStripe Blue",
     'Towel',
     'Bed Sheet',
  ];
