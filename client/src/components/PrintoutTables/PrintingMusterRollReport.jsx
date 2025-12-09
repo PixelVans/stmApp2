@@ -579,7 +579,8 @@ const totalPayableHours =
                   Monthly Total (Payable Hours)
                 </td>
                 <td className="border border-gray-500 px-3 py-1 text-center">
-                  {totalPayableHours.toFixed(2)}
+                  {Math.round(totalPayableHours * 100) / 100}
+
                 </td>
               </tr>
 
