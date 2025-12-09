@@ -10,7 +10,7 @@ const formatDate = () => {
   return today.toLocaleDateString("en-GB"); 
 };
 
-const DyestuffsStockPrintoutPage = forwardRef((props, ref) => {
+const DyestuffsStockPrintoutPage = forwardRef(({ refreshKey }, ref)  => {
 const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -36,6 +36,11 @@ const [rows, setRows] = useState([]);
       setLoading(false);
     }
   };
+
+// Refresh dyestuffs when refreshKey changes
+   useEffect(() => {
+    fetchDyestuffs();
+  }, [refreshKey]);
 
   // Load Dyestuffs on mount
   useEffect(() => {

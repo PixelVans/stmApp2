@@ -31,6 +31,8 @@ export default function DyestuffsForm() {
   const [saving, setSaving] = useState(false);
   const [savingDyestuff, setSavingDyestuff] = useState(false);
   const [error, setError] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
 
   // Manage modal state
   const [manageOpen, setManageOpen] = useState(false);
@@ -138,10 +140,17 @@ export default function DyestuffsForm() {
         }
       `,
     });
+
+  const handlePrintClick = () => {
+  setRefreshKey(prev => prev + 1);  // to trigger child refresh
+  handlePrint();
+};
+
   
   // Save stock updates
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setRefreshKey(prev => prev + 1); // to refresh printout data
     setSaving(true);
     try {
       const res = await fetch("/api/dyestuffs-stock/bulk-update", {
@@ -293,7 +302,7 @@ export default function DyestuffsForm() {
         </Button>
 
          <button
-          onClick={handlePrint}
+          onClick={handlePrintClick}
            type="button"
            className=" items-center flex gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
             >
@@ -302,8 +311,13 @@ export default function DyestuffsForm() {
         </button>
 
         <div className="absolute -left-[9999px] top-0">
-          <DyestuffsStockPrintoutPage ref={componentRef} />
+          <DyestuffsStockPrintoutPage 
+                            ref={componentRef} 
+                            refreshKey={refreshKey} 
+                          />
         </div>
+
+        
 
       </div>
               

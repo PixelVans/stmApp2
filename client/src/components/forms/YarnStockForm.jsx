@@ -38,7 +38,8 @@ export default function YarnStockForm() {
   const [saving, setSaving] = useState(false);
   const [savingItem, setSavingItem] = useState(false);
   const [error, setError] = useState(false);
-
+  const [refreshKey, setRefreshKey] = useState(0);
+  
   const [manageOpen, setManageOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [editingIdx, setEditingIdx] = useState(null);
@@ -86,6 +87,7 @@ export default function YarnStockForm() {
   }, []);
 
   const componentRef = useRef(null);
+
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
     documentTitle: "Yarn Stock Report",
@@ -94,6 +96,11 @@ export default function YarnStockForm() {
       body { -webkit-print-color-adjust: exact !important; }
     `,
   });
+
+    const handlePrintClick = () => {
+      setRefreshKey(prev => prev + 1);  // to trigger child refresh
+      handlePrint();
+};
 
   const handleChange = (index, field, value) => {
     setRows((prev) =>
@@ -104,6 +111,7 @@ export default function YarnStockForm() {
   // UPDATE  ONLY YARN ROWS 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setRefreshKey(prev => prev + 1);
     setSaving(true);
     try {
       const res = await fetch("/api/warping-stock/bulk-update", {
@@ -262,7 +270,7 @@ if (loading) {
           </Button>
 
             <button
-             onClick={handlePrint}
+             onClick={handlePrintClick}
             type="button"
             className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm"
           >
@@ -270,7 +278,11 @@ if (loading) {
           </button>
 
           <div className="absolute -left-[9999px] top-0">
-            <WarpingStockPrintoutPage ref={componentRef} />
+            
+            <WarpingStockPrintoutPage 
+              ref={componentRef} 
+              refreshKey={refreshKey} 
+              />
           </div>
         </div>
       </div>

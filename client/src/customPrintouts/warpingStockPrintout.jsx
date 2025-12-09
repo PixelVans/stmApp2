@@ -10,7 +10,7 @@ const formatDate = () => {
   return today.toLocaleDateString("en-GB");
 };
 
-const WarpingStockPrintoutPage = forwardRef((props, ref) => {
+const WarpingStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -40,6 +40,10 @@ const WarpingStockPrintoutPage = forwardRef((props, ref) => {
       setLoading(false);
     }
   };
+
+    useEffect(() => {
+    fetchWarpingStock();
+  }, [refreshKey]);
 
   useEffect(() => {
     fetchWarpingStock();

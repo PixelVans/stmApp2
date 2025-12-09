@@ -30,7 +30,8 @@ export default function ChemicalsForm() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingChemical, setSavingChemical] = useState(false);
-   const [error, setError] = useState(false);
+  const [error, setError] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Manage modal state
   const [manageOpen, setManageOpen] = useState(false);
@@ -129,6 +130,12 @@ const handlePrint = useReactToPrint({
     `,
   });
 
+  const handlePrintClick = () => {
+  setRefreshKey(prev => prev + 1);  // to trigger child refresh
+  handlePrint();
+};
+
+
 
   const handleChange = (index, field, value) => {
     setRows((prev) =>
@@ -139,6 +146,7 @@ const handlePrint = useReactToPrint({
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
+    setRefreshKey(prev => prev + 1); 
     try {
       const res = await fetch("/api/chemicals-stock/bulk-update", {
         method: "PUT",
@@ -293,7 +301,7 @@ const handlePrint = useReactToPrint({
           </Button>
 
           <button
-              onClick={handlePrint}
+              onClick={handlePrintClick}
               type="button"
               className=" flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition text-sm"
               >
@@ -302,8 +310,12 @@ const handlePrint = useReactToPrint({
              </button>
 
               <div className="absolute -left-[9999px] top-0">
-                   <ChemicalsStockPrintoutPage ref={componentRef} />
+                <ChemicalsStockPrintoutPage 
+                  ref={componentRef} 
+                  refreshKey={refreshKey} 
+                />
               </div>
+
 
         </div>
 

@@ -11,7 +11,8 @@ const formatDate = () => {
 };
 
 
-const ChemicalsStockPrintoutPage = forwardRef((props, ref) => {
+const ChemicalsStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
+
  const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -36,6 +37,10 @@ const ChemicalsStockPrintoutPage = forwardRef((props, ref) => {
       setLoading(false);
     }
   };
+
+   useEffect(() => {
+    fetchChemicals();
+  }, [refreshKey]);
 
   // fetch chemicals on mount
   useEffect(() => {
