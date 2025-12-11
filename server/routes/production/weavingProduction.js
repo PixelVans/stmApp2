@@ -339,6 +339,30 @@ router.get("/warp/by-date/:date", async (req, res) => {
 
 
 
+
+router.get("/warp/latest", async (req, res) => {
+  try {
+    const pool = await connectToDB2();
+    
+
+    const result = await pool.request().query(`
+      SELECT TOP 5 *
+      FROM [Specialised Systems].dbo.WarpingData2025
+      WHERE BeamNumber IS NOT NULL
+      ORDER BY Date DESC, ID DESC
+    `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Error fetching latest warping records:", err);
+    res.status(500).send("Error fetching latest warping records");
+  }
+});
+
+
+
+
+
 router.get("/warp/by-beam/:beamNumber", async (req, res) => {
   const { beamNumber } = req.params;
 
