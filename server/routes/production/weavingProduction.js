@@ -346,7 +346,7 @@ router.get("/warp/latest", async (req, res) => {
     
 
     const result = await pool.request().query(`
-      SELECT TOP 5 *
+      SELECT TOP 10 *
       FROM [Specialised Systems].dbo.WarpingData2025
       WHERE BeamNumber IS NOT NULL
       ORDER BY Date DESC, ID DESC

@@ -130,8 +130,10 @@ const WarpingStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
         </table>
 
         <div className="mt-20">
-          <h3 className=" text-sm text-blue-900 text-center mb-3">Recent Warping Production History
-  </h3>
+        <h3 className="text-sm text-blue-900 text-center mb-3">
+  Warping Output – Recent Records
+</h3>
+
 
   <table className="w-full border-collapse text-xs">
     <thead className="bg-slate-200">
@@ -155,25 +157,38 @@ const WarpingStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
 
           {/* Yarn 1 column */}
           <td className="border border-gray-600 px-1 py-1 text-center">
-            {row.Yarn1 ? `${row.Yarn1} @ ${row.WeightofYarn1 || 0} kg` : "-"}
-          </td>
+          <div className="flex mx-auto gap-1 w-full items-center justify center">
+            <span className="font-medium  text-left">{row.Yarn1 ? row.Yarn1 : "-"}</span>
+            <span className="text-left text-xs">{row.Yarn1 ? `@ ${Number(row.WeightofYarn1).toFixed(0) || 0} kg` : ""}</span>
+          </div>
+        </td>
+
 
           {/* Yarn 2 column */}
           <td className="border border-gray-600 px-1 py-1 text-center">
-            {row.Yarn2 ? `${row.Yarn2} @ ${row.WeightofYarn2 || 0} kg` : "-"}
+            <div className="flex mx-auto gap-1 w-full items-center justify center">
+              <span className="font-medium text-left">{row.Yarn2 ? row.Yarn2 : "-"}</span>
+              <span className="text-left text-xs">{row.Yarn2 ? `@ ${Number(row.WeightofYarn2).toFixed(0) || 0} kg` : ""}</span>
+            </div>
           </td>
 
-          <td className="border border-gray-600 px-1 py-1 text-center">
-            {row.KnottingCounter && row.KnottingCounter > 0 ? row.KnottingCounter : "not started"}
-            </td>
+
+          <td
+            className={`border border-gray-600 px-1 py-1 text-center ${
+              !row.KnottingCounter || row.KnottingCounter === 0 ? "bg-yellow-400 text-white" : ""
+            }`}
+          >
+            {row.KnottingCounter && row.KnottingCounter > 0 ? row.KnottingCounter : ""}
+          </td>
+
 
 
           <td className="border border-gray-600 px-1 py-1 text-center">{row.Meters}</td>
           <td className="border border-gray-600 px-1 py-1 ">
-            <div className='flex mx-auto  w-full items-center justify center'>
+            <div className='flex mx-auto gap-1 w-full items-center justify center'>
             
               <span className="font-medium ml-1 text-left  "> {row.MachineNumber ? `${row.MachineNumber} -` : '-' }</span>
-              <span className='text-left' > {row.BeamPosition ? row.BeamPosition  : "-" }</span>
+              <span className='text-left text-xs ' > {row.BeamPosition ? row.BeamPosition  : "" }</span>
             </div>
              
           </td>
