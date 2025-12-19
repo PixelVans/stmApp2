@@ -16,6 +16,7 @@ const finishing = require('./routes/dyeing/finishing');
 const chemicals = require('./routes/dyeing/chemicals');
 const dyestuffs = require('./routes/dyeing/dyestuffs');
 const weavingProduction = require('./routes/production/weavingProduction');
+const weavingProduction26 = require('./routes/production/weavingProduction2026');
 const greyRollsProduction = require('./routes/production/greyRolls');
 
 // stocks routes
@@ -46,6 +47,7 @@ app.use('/api/finishing', finishing);
 app.use('/api/chemicals', chemicals);
 app.use('/api/dyestuff', dyestuffs);
 app.use('/api/weaving-production', weavingProduction);
+app.use('/api/weaving-production26', weavingProduction26);
 app.use('/api/grey-rolls-production', greyRollsProduction);
 
 // stocks

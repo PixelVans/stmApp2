@@ -17,6 +17,7 @@ import PrintingMusterRollReport from "./components/PrintoutTables/PrintingMuster
 import WarpingPage from "./pages/warping";
 import ProductionPage from "./pages/production";
 import WarpingStockPrintoutPage from "./customPrintouts/warpingStockPrintout";
+import WeavingProductionTable26 from "./pages/weavingProduction26";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <Route path="/" element={<StmHome />} />
           <Route path="/dyeing" element={<ChemicalTable />} />
           <Route path="/weaving-production" element={<WeavingProductionTable />} />
+          <Route path="/weaving-production26" element={<WeavingProductionTable26 />} />
           <Route path="/update-weaving-production" element={<UpdateWeavingProductionPage />} />
           <Route path="/update-warping-data" element={<UpdateWarpingData />} />
           <Route path="/htg" element={<Countdown />} />

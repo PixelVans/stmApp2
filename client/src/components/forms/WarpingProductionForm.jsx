@@ -1,5 +1,5 @@
 "use client";
-
+import { useRef } from "react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { saveWarpingData, fetchWarpingDataByDate, fetchWarpingDataByBeam } from "@/api/dyeingApi";
@@ -20,6 +20,7 @@ const day = today.getDate();
 const month = today.toLocaleString("en-US", { month: "short" });
 const year = today.getFullYear();
 
+
 const suffix =
 day % 10 === 1 && day !== 11
 ? "st"
@@ -36,6 +37,7 @@ export default function WarpingProductionForm() {
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState(false);
 const [beamSearch, setBeamSearch] = useState("");
+const isBeamSearchRef = useRef(false);
 
 const [formData, setFormData] = useState({
 beamNumber: "",
@@ -55,100 +57,112 @@ beamUnitCounter: "",
 const [hasExistingRow, setHasExistingRow] = useState(false);
 
 useEffect(() => {
-async function loadData() {
-setLoading(true);
-setError(false);
-try {
-const data = await fetchWarpingDataByDate(formData.date);
-if (data.length > 0) {
-const row = data[0];
-setHasExistingRow(true);
-setFormData({
-    beamNumber: row.BeamNumber || "",
-    date: formData.date,
-    machineNumber: row.MachineNumber?.toString() || "",
-    beamPosition: row.BeamPosition || "",
-    article: row.Article || "",
-    yarnCount1: row.Yarn1 || "",
-    yarnCount2: row.Yarn2 || "",
-    totalEnds: row.TotalEnds || "",
-    meters: row.Meters || "",
-    weightYarn1: row.WeightofYarn1 || "",
-    weightYarn2: row.WeightofYarn2 || "",
-    beamUnitCounter: row.KnottingCounter || "",
-    });
-} else {
-  setHasExistingRow(false);
-  handleReset(false);
-}
-} catch (err) {
-  console.error(err);
-  setError(true);
-} finally {
-setLoading(false);
-}
-}
+  async function loadData() {
+    if (isBeamSearchRef.current) {
+      isBeamSearchRef.current = false; // reset after skip
+      return;
+    }
 
+    setLoading(true);
+    setError(false);
 
-loadData();
+    try {
+      const data = await fetchWarpingDataByDate(formData.date);
+      if (data.length > 0) {
+        const row = data[0];
+        setHasExistingRow(true);
+        setFormData(prev => ({
+          ...prev,
+          beamNumber: row.BeamNumber || "",
+          machineNumber: row.MachineNumber?.toString() || "",
+          beamPosition: row.BeamPosition || "",
+          article: row.Article || "",
+          yarnCount1: row.Yarn1 || "",
+          yarnCount2: row.Yarn2 || "",
+          totalEnds: row.TotalEnds || "",
+          meters: row.Meters || "",
+          weightYarn1: row.WeightofYarn1 || "",
+          weightYarn2: row.WeightofYarn2 || "",
+          beamUnitCounter: row.KnottingCounter || "",
+        }));
+      } else {
+        setHasExistingRow(false);
+        handleReset(false);
+      }
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-
+  loadData();
 }, [formData.date]);
 
+
 const handleSubmit = async (e) => {
-e.preventDefault();
-try {
-await saveWarpingData(formData, hasExistingRow);
-toast.success(
-hasExistingRow
-? "Warping data updated successfully!"
-: "Warping data inserted successfully!"
-);
-handleReset(false);
-} 
-catch (err) {
-console.error(err);
-let errorMessage = "Failed to save data";
-if (err?.message) errorMessage = err.message;
-if (err?.response?.data?.message) errorMessage = err.response.data.message;
-toast.error(errorMessage);
-}
+  e.preventDefault();
+
+  try {
+    const res = await saveWarpingData(formData);
+
+    if (res.action === "updated") {
+      toast.warning(res.message || "Beam existed — data updated");
+      setHasExistingRow(true);
+    } 
+    else if (res.action === "inserted") {
+      toast.success(res.message || "Warping data inserted successfully");
+      setHasExistingRow(true);
+    } 
+    else {
+      toast.success("Warping data saved");
+    }
+
+    handleReset(false);
+
+  } catch (err) {
+    console.error(err);
+    toast.error(err.message || "Failed to save data");
+  }
 };
 
+
 async function handleBeamSearch() {
-if (!beamSearch.trim()) {
-toast.error("Enter a beam number");
-return;
+  if (!beamSearch.trim()) {
+    toast.error("Enter a beam number");
+    return;
+  }
+
+  try {
+    isBeamSearchRef.current = true; // 👈 BLOCK date effect
+    setLoading(true);
+
+    const row = await fetchWarpingDataByBeam(beamSearch);
+
+    setHasExistingRow(true);
+    setFormData({
+      beamNumber: row.BeamNumber || "",
+      date: row.Date?.split("T")[0] || "",
+      machineNumber: row.MachineNumber?.toString() || "",
+      beamPosition: row.BeamPosition || "",
+      article: row.Article || "",
+      yarnCount1: row.Yarn1 || "",
+      yarnCount2: row.Yarn2 || "",
+      totalEnds: row.TotalEnds || "",
+      meters: row.Meters || "",
+      weightYarn1: row.WeightofYarn1 || "",
+      weightYarn2: row.WeightofYarn2 || "",
+      beamUnitCounter: row.KnottingCounter || "",
+    });
+
+    toast.success(`Beam ${beamSearch} data loaded`);
+  } catch (err) {
+    toast.error(err.message || "Failed to fetch beam data");
+  } finally {
+    setLoading(false);
+  }
 }
 
-try {
-  setLoading(true);
-  const row = await fetchWarpingDataByBeam(beamSearch);
-  setHasExistingRow(true);
-  setFormData({
-    beamNumber: row.BeamNumber || "",
-    date: row.Date?.split("T")[0] || "",
-    machineNumber: row.MachineNumber?.toString() || "",
-    beamPosition: row.BeamPosition || "",
-    article: row.Article || "",
-    yarnCount1: row.Yarn1 || "",
-    yarnCount2: row.Yarn2 || "",
-    totalEnds: row.TotalEnds || "",
-    meters: row.Meters || "",
-    weightYarn1: row.WeightofYarn1 || "",
-    weightYarn2: row.WeightofYarn2 || "",
-    beamUnitCounter: row.KnottingCounter || "",
-  });
-  toast.success(`Beam ${beamSearch} data loaded`);
-} catch (err) {
-  console.error(err);
-  toast.error(err.message || "Failed to fetch beam data");
-} finally {
-  setLoading(false);
-}
-
-
-}
 
 const handleReset = (resetDate = true) => {
       setFormData({
@@ -238,13 +252,20 @@ return (
   {/* SEARCH BY BEAM NUMBER */}
   <div className="flex items-center gap-2 mb-4 w-fit mx-auto">
     <input
-      type="number"
-      placeholder="Search By Beam Number..."
-      value={beamSearch}
-      onChange={(e) => setBeamSearch(e.target.value)}
-      className="border border-slate-400 bg-white text-black rounded-md px-3 py-2 text-sm w-48 
-                 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300"
-    />
+  type="number"
+  placeholder="Search By Beam Number..."
+  value={beamSearch}
+  onChange={(e) => setBeamSearch(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleBeamSearch();
+    }
+  }}
+  className="border border-slate-400 bg-white text-black rounded-md px-3 py-2 text-sm w-48 
+             focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300"
+/>
+
     <button
       className="flex cursor-pointer items-center gap-2 bg-slate-200 text-slate-700 px-5 py-2 rounded-xl hover:bg-slate-300"
       onClick={handleBeamSearch}
@@ -396,7 +417,7 @@ return (
         </div>
 
         <div className={fieldRow}>
-          <label className={labelStyle}>Beam Unit Counter</label>
+          <label className={labelStyle}>Knotting Counter</label>
           <input
             type="number"
             value={formData.beamUnitCounter}
@@ -406,6 +427,13 @@ return (
         </div>
       </div>
     </div>
+
+     {hasExistingRow && (
+      <p className="text-xs text-green-900 text-center mt-2">
+        Beam record exists. Saving changes will update this record.
+      </p>
+
+    )}
 
     <div className="flex justify-center gap-4 mt-8">
       <Button type="button" variant="destructive" onClick={() => handleReset(false)}>

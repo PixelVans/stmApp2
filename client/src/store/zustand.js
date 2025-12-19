@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+//  Helper to get current year
+function getCurrentYear() {
+  return new Date().getFullYear();
+}
+
+
+
 function getISOWeek(date = new Date()) {
   const tempDate = new Date(date.getTime());
   tempDate.setHours(0, 0, 0, 0);
@@ -17,7 +24,7 @@ function getISOWeek(date = new Date()) {
   );
 }
 
-// ✅ Mapping winch → default liquor ratio
+//  Mapping winch → default liquor ratio
 const defaultLiqRatioMap = {
   "Soft Flow": 8,
   "Main Winch": 8,
@@ -46,11 +53,14 @@ const useDyeingStore = create(
       soaping: "",
       date: new Date(),
       selectedWeek: getISOWeek(),
+      selectedYear: getCurrentYear(),
 
       // Update selected week
       setSelectedWeek: (week) => set({ selectedWeek: week }),
+      // Update selected year
+      setSelectedYear: (year) => set({ selectedYear: year }),
 
-      // ✅ Smart setter: updates liqRatio if winch changes
+      //  Smart setter: updates liqRatio if winch changes
       setField: (field, value) => {
         if (field === "winch") {
           const newRatio = defaultLiqRatioMap[value] || "";
@@ -60,7 +70,7 @@ const useDyeingStore = create(
         }
       },
 
-      // ✅ Reset all fields (liqRatio depends on current winch)
+      //  Reset all fields (liqRatio depends on current winch)
       resetFields: () => {
         const currentWinch = get().winch; // 👈 get the currently selected winch
         const liqRatioDefault = defaultLiqRatioMap[currentWinch] || "";
@@ -72,7 +82,7 @@ const useDyeingStore = create(
           softener: "Bubanks",
           saltOption: "Industrial Salt",
           saltPosition: "",
-          liqRatio: liqRatioDefault, // ✅ match the winch’s ratio
+          liqRatio: liqRatioDefault, //  match the winch’s ratio
           lotWeight: "",
           client: "",
           article: "",
@@ -81,6 +91,7 @@ const useDyeingStore = create(
           soaping: "",
           date: new Date(),
           selectedWeek: getISOWeek(),
+          selectedYear: getCurrentYear(),
         });
       },
     }),
@@ -91,10 +102,19 @@ const useDyeingStore = create(
         if (state?.date) state.date = new Date(state.date);
 
         const currentWeek = getISOWeek();
-        if (state && state.selectedWeek !== currentWeek) {
-          state.selectedWeek = currentWeek;
+        const currentYear = getCurrentYear();
+
+        if (state) {
+          if (state.selectedWeek !== currentWeek) {
+            state.selectedWeek = currentWeek;
+          }
+
+          if (state.selectedYear !== currentYear) {
+            state.selectedYear = currentYear;
+          }
         }
       },
+
     }
   )
 );

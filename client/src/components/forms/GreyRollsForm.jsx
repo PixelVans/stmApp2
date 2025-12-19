@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { FaSearch } from "react-icons/fa";
@@ -12,6 +12,7 @@ export default function GreyRollsForm() {
 
   // NEW: Search box value
   const [searchRollNo, setSearchRollNo] = useState("");
+  const searchRollRef = useRef("");
 
   const [formData, setFormData] = useState({
     RollNo: "",
@@ -116,47 +117,53 @@ const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 r
 
   // NEW: Fetch existing row by ROLL NUMBER
   const searchByRollNumber = async () => {
-    if (!searchRollNo) return toast.error("Enter a roll number first");
+  const rollNo = searchRollRef.current;
 
-    setLoading(true);
+  if (!rollNo) {
+    toast.error("Enter a roll number first");
+    return;
+  }
 
-    try {
-      const res = await fetch(
-        `/api/grey-rolls-production/by-roll/${searchRollNo}`
-      );
+  setLoading(true);
 
-      if (!res.ok) {
-        if (res.status === 404) {
-          toast.error("Roll number not found");
-          return;
-        }
-        throw new Error("Failed to fetch by roll number");
+  try {
+    const res = await fetch(
+      `/api/grey-rolls-production/by-roll/${rollNo}`
+    );
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        toast.error("Roll number not found");
+        return;
       }
-
-      const row = await res.json();
-
-      setHasExistingRow(true);
-      setFormData({
-        RollNo: row.RollNo,
-        Date: row.Date.split("T")[0],
-        MachineNo: row.MachineNo.toString(),
-        Article: row.Article,
-        Length: row.Length,
-        Weight: row.Weight,
-        Weaver: row.Weaver,
-        Shift: row.Shift,
-        Grade: row.Grade,
-        Remarks: row.Remarks || "",
-      });
-
-      toast.success("Roll loaded!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Error searching roll number");
-    } finally {
-      setLoading(false);
+      throw new Error("Failed to fetch by roll number");
     }
-  };
+
+    const row = await res.json();
+
+    setHasExistingRow(true);
+    setFormData({
+      RollNo: row.RollNo,
+      Date: row.Date.split("T")[0],
+      MachineNo: row.MachineNo.toString(),
+      Article: row.Article,
+      Length: row.Length,
+      Weight: row.Weight,
+      Weaver: row.Weaver,
+      Shift: row.Shift,
+      Grade: row.Grade,
+      Remarks: row.Remarks || "",
+    });
+
+    toast.success("Roll loaded");
+  } catch (err) {
+    console.error(err);
+    toast.error("Error searching roll number");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // Submit form (save/update)
  const handleSubmit = async (e) => {
@@ -256,11 +263,20 @@ const inputCompact ="flex-1 border border-slate-300 bg-slate-50 text-slate-900 r
             <input
                 type="number"
                 placeholder="Search By Roll No..."
-                value={searchRollNo}
-                onChange={(e) => setSearchRollNo(e.target.value)}
-                className="  text-black  px-3 py-1.5 text-sm min-w-48 focus:outline-none focus:ring-1
-                 focus:ring-blue-400 focus:border-blue-400  focus:rounded-md"
+                onChange={(e) => {
+                  setSearchRollNo(e.target.value);
+                  searchRollRef.current = e.target.value;
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    searchByRollNumber();
+                  }
+                }}
+                className="text-black px-3 py-1.5 text-sm min-w-48 focus:outline-none focus:ring-1
+                          focus:ring-blue-400 focus:border-blue-400 focus:rounded-md"
               />
+
               
               <button className="bg-slate-200 py-1.5 flex px-2 rounded-md items-center gap-1 cursor-pointer hover:bg-gray-300 " 
               onClick={searchByRollNumber}>

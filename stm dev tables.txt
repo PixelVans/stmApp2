@@ -105,8 +105,69 @@ GO
 
 
 
+CREATE TABLE dbo.WeavingProductionData (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    ProductionID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+    MachineNo INT NOT NULL,
+    Shift CHAR(1) CHECK (Shift IN ('A','B')),  -- 'A' or 'B'
+    UnitsProduced INT,                         -- e.g. 5000
+    Notes NVARCHAR(200),
+    Beam NVARCHAR(50),
+    Counter INT,
+    Article NVARCHAR(100),
+    [Day] NVARCHAR(20),
+    WeekNo INT,
+    [Month] INT,
+    [Year] INT,
+    [Date] DATE NOT NULL
+);
 
 
 
 
 
+CREATE TABLE dbo.WarpingStock (
+    ID INT IDENTITY(1,1) PRIMARY KEY,                -- main unique key
+    StockIndex INT NULL, 
+    Type NVARCHAR(50) NULL,                            -- e.g. 'Cones', 'Cheese', 'Bag', 'Yarn'
+    Description NVARCHAR(100) NOT NULL,
+    QuantityOnHand INT NOT NULL DEFAULT 0,
+    UnitOfMeasure NVARCHAR(20) NOT NULL,      -- e.g. 'kg', 'pieces'
+    UpdatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME()
+);
+
+
+
+
+CREATE TABLE dbo.GreyRolls (
+ID INT IDENTITY(1,1) PRIMARY KEY,         -- Unique row ID
+
+RollNo INT NOT NULL,                      -- Roll Number
+[Date] DATE NOT NULL,                     -- Date of production
+
+MachineNo INT NOT NULL,                   -- e.g. 1,2,3,4
+Article NVARCHAR(100) NOT NULL,           -- e.g. towels
+
+Length DECIMAL(10,4) NOT NULL CHECK (Length > 0),   -- e.g. 2.0000 (meters), must be > 0
+Weight DECIMAL(10,4) NOT NULL CHECK (Weight > 0),   -- e.g. 4.0000 (kg), must be > 0
+
+-- Auto-calculated value: meters per kg, more precise
+MetersPerKg AS (CASE WHEN Weight <= 0 THEN NULL ELSE Length / Weight END) PERSISTED,
+Weaver NVARCHAR(100) NOT NULL,            -- e.g. Eliot
+Shift CHAR(1) NOT NULL CHECK (Shift IN ('A','B')), -- A or B
+Grade CHAR(1) NOT NULL CHECK (Grade IN ('A','B','C')),  -- Grade A/B/C
+Remarks NVARCHAR(200) NULL,               -- e.g. completed, etc.
+CreatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME()
+
+);
+
+
+
+CREATE TABLE StmAppUsers (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(50) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Role NVARCHAR(30) NOT NULL, -- admin | supervisor | operator | viewer
+    IsActive BIT NOT NULL DEFAULT 1,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);

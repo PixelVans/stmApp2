@@ -86,7 +86,7 @@ export async function saveWeavingProduction(data) {
   return res.json();
 }
 
-// Save weaving production (insert/update)
+// Save warping production (insert/update)
 export async function saveWarpingData(data) {
   const res = await fetch("/api/weaving-production/update-warping-data", {
     method: "POST",
@@ -97,12 +97,12 @@ export async function saveWarpingData(data) {
   const responseBody = await res.json();
 
   if (!res.ok) {
-    // Use backend message if available
     throw new Error(responseBody?.message || "Failed to save warping data");
   }
 
-  return responseBody;
+  return responseBody; // contains action + message
 }
+
 
 
 export async function fetchWarpingDataByDate(date) {

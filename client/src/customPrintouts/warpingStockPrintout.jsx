@@ -13,7 +13,6 @@ const formatDate = () => {
 const WarpingStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
   const [rows, setRows] = useState([]);
   const [recentWarping, setRecentWarping] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -157,41 +156,42 @@ const WarpingStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
 
           {/* Yarn 1 column */}
           <td className="border border-gray-600 px-1 py-1 text-center">
-          <div className="flex mx-auto gap-1 w-full items-center justify center">
-            <span className="font-medium  text-left">{row.Yarn1 ? row.Yarn1 : "-"}</span>
-            <span className="text-left text-xs">{row.Yarn1 ? `@ ${Number(row.WeightofYarn1).toFixed(0) || 0} kg` : ""}</span>
-          </div>
+          
+            <span className="font-medium  text-center">{row.Yarn1 ? row.Yarn1 : " "}</span>
+            <span className="text-center text-xs">{row.Yarn1 ? `@ ${Number(row.WeightofYarn1).toFixed(0) || 0} kg` : ""}</span>
+          
         </td>
 
 
           {/* Yarn 2 column */}
           <td className="border border-gray-600 px-1 py-1 text-center">
-            <div className="flex mx-auto gap-1 w-full items-center justify center">
-              <span className="font-medium text-left">{row.Yarn2 ? row.Yarn2 : "-"}</span>
-              <span className="text-left text-xs">{row.Yarn2 ? `@ ${Number(row.WeightofYarn2).toFixed(0) || 0} kg` : ""}</span>
-            </div>
+            
+              <span className="font-medium text-center">{row.Yarn2 ? row.Yarn2 : " "}</span>
+              <span className="text-center text-xs">{row.Yarn2 ? `@ ${Number(row.WeightofYarn2).toFixed(0) || 0} kg` : ""}</span>
+            
           </td>
 
 
           <td
             className={`border border-gray-600 px-1 py-1 text-center ${
-              !row.KnottingCounter || row.KnottingCounter === 0 ? "bg-yellow-400 text-white" : ""
+              !row.KnottingCounter || row.KnottingCounter === 0
+                ? "bg-yellow-400 text-white"
+                : ""
             }`}
           >
-            {row.KnottingCounter && row.KnottingCounter > 0 ? row.KnottingCounter : ""}
+            {row.KnottingCounter && row.KnottingCounter > 0
+              ? row.KnottingCounter.toLocaleString()
+              : ""}
+          </td>
+          
+          <td className="border border-gray-600 px-1 py-1 text-center">
+            {row.Meters ? row.Meters.toLocaleString() : ""}
           </td>
 
-
-
-          <td className="border border-gray-600 px-1 py-1 text-center">{row.Meters}</td>
           <td className="border border-gray-600 px-1 py-1 ">
-            <div className='flex mx-auto gap-1 w-full items-center justify center'>
-            
-              <span className="font-medium ml-1 text-left  "> {row.MachineNumber ? `${row.MachineNumber} -` : '-' }</span>
-              <span className='text-left text-xs ' > {row.BeamPosition ? row.BeamPosition  : "" }</span>
-            </div>
-             
-          </td>
+            <span className="font-medium ml-1 text-center  "> {row.MachineNumber ? `${row.MachineNumber} -` : '-' }</span>
+              <span className='text-center text-xs ' > {row.BeamPosition ? row.BeamPosition  : "" }</span>
+            </td>
 
           <td className="border border-gray-600 px-1 py-1 text-center">
             {new Date(row.Date).toLocaleDateString("en-GB")}
