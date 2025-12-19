@@ -130,8 +130,8 @@ const WarpingStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
 
         <div className="mt-20">
         <h3 className="text-sm text-blue-900 text-center mb-3">
-  Warping Output – Recent Records
-</h3>
+          Warping Output – Recent Records
+        </h3>
 
 
   <table className="w-full border-collapse text-xs">
@@ -157,7 +157,7 @@ const WarpingStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
           {/* Yarn 1 column */}
           <td className="border border-gray-600 px-1 py-1 text-center">
           
-            <span className="font-medium  text-center">{row.Yarn1 ? row.Yarn1 : " "}</span>
+            <span className="font-medium  text-center mr-1">{row.Yarn1 ? row.Yarn1 : " "}</span>
             <span className="text-center text-xs">{row.Yarn1 ? `@ ${Number(row.WeightofYarn1).toFixed(0) || 0} kg` : ""}</span>
           
         </td>
@@ -166,7 +166,7 @@ const WarpingStockPrintoutPage = forwardRef(({ refreshKey }, ref) => {
           {/* Yarn 2 column */}
           <td className="border border-gray-600 px-1 py-1 text-center">
             
-              <span className="font-medium text-center">{row.Yarn2 ? row.Yarn2 : " "}</span>
+              <span className="font-medium text-center mr-1">{row.Yarn2 ? row.Yarn2 : " "}</span>
               <span className="text-center text-xs">{row.Yarn2 ? `@ ${Number(row.WeightofYarn2).toFixed(0) || 0} kg` : ""}</span>
             
           </td>
