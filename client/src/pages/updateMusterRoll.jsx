@@ -22,13 +22,13 @@ export default function UpdateMusterRoll() {
   const AUTH_DURATION = Number(import.meta.env.VITE_AUTH_DURATION) || 1800000; // Default to 30 mins
   const PASSWORD = import.meta.env.VITE_AUTH_PASSWORD;
 
-
     
 
 // Authentication state
   const [isAuthed, setIsAuthed] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [authError, setAuthError] = useState("");
 
   const [leaveSummary, setLeaveSummary] = useState({
     LeaveDays: "",
@@ -227,9 +227,11 @@ const handleAdjustmentChange = (index, field, value) => {
   
 const handleAuthSubmit = () => {
   if (passwordInput !== PASSWORD) {
-    toast.error("Incorrect password");
+    setAuthError("Incorrect password. Please try again.");
     return;
   }
+
+  setAuthError(""); // clear error on success
 
   const expiry = Date.now() + AUTH_DURATION;
   localStorage.setItem(AUTH_KEY, expiry.toString());
@@ -237,8 +239,9 @@ const handleAuthSubmit = () => {
   setIsAuthed(true);
   setShowAuthDialog(false);
   setPasswordInput("");
-  toast.success("Access Granted (30 minutes)");
+  toast.success("Access granted. This will expire in 30 minutes.");
 };
+
 
 
 
@@ -427,17 +430,35 @@ const confirmDeleteAdjustment = async () => {
           {/* Password input */}
           <div className="mt-2">
             <input
-              type="password"
-              value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
-              placeholder="Enter access password"
-              autoFocus
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 
-                         text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
+                type="password"
+                value={passwordInput}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value);
+                  if (authError) setAuthError("");
+                }}
+
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAuthSubmit();
+                  }
+                }}
+                placeholder="Enter access password"
+                autoFocus
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 
+                          text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+
+              {authError && (
+            <p className="mt-2 text-sm text-red-600 text-center">
+              {authError}
+            </p>
+          )}
+
+
           </div>
 
-          <AlertDialogFooter className="mt-4">
+          <AlertDialogFooter className="mt-4 ">
             <AlertDialogCancel
               onClick={() => window.history.back()}
               className="text-gray-600"
@@ -447,10 +468,12 @@ const confirmDeleteAdjustment = async () => {
 
             <AlertDialogAction
               onClick={handleAuthSubmit}
-              className="bg-blue-600 hover:bg-blue-700"
+              disabled={!passwordInput}
+              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
             >
               Unlock
             </AlertDialogAction>
+
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
