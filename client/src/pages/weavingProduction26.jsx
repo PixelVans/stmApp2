@@ -179,7 +179,7 @@ const WeavingProductionTable26 = forwardRef((props, ref) => {
             </h1>
 
             {steps?.map((step, idx) => (
-              <div key={idx} className="mt-3">
+              <div key={idx} className="mt-3 mb-9">
                 {step.machine && (
                   <h2 className="font-semibold text-sm">{step.machine}</h2>
                 )}
@@ -187,17 +187,7 @@ const WeavingProductionTable26 = forwardRef((props, ref) => {
               </div>
             ))}
 
-            {summary && (
-              <div className="mt-5 flex justify-center">
-                <table className="border text-xs text-center">
-                  <tbody>
-                    <tr>
-                      <td className="border p-1">{summary.weeklyTotal}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            )}
+            
           </>
         )}
       </div>

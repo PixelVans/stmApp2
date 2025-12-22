@@ -72,11 +72,11 @@ const WeavingProductionPrintout26 = forwardRef((props, ref) => {
   
   return (
     <div ref={ref} className="p-  bg-white">
-      <h1 className="mx-auto text-center mb-2 text-lg font-medium text-gray-700">
-    Weaving production for{" "}
-    <span className="font-semibold text-gray-900">
-        Week {selectedWeek}
-    </span>
+      <h1 className="mx-auto text-center mb-2 text-lg  text-gray-800">
+        Weaving production for{" "}
+      <span className="font-semibold text-gray-800">
+          Week {selectedWeek}
+      </span>
     , {selectedYear}
     </h1>
 

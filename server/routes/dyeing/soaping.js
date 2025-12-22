@@ -17,7 +17,7 @@ router.get("/:colour", async (req, res) => {
 
     res.json(result.recordset[0]); 
   } catch (err) {
-    console.error(err);
+   // console.error(err);
     res.status(500).send("Error fetching soaping row");
   }
 });

@@ -4,7 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import StmHome from "./pages/StmHome";
 import ChemicalTable from "./pages/dyeing"; 
 import DyeingCardCustomPrint from "./pages/dyeingCardCustomPrint";
-import WeavingProductionTable from "./pages/weavingProduction";
+// import WeavingProductionTable from "./pages/weavingProduction";
 import WeavingProductionPrintout from "./customPrintouts/weavingProductionPrintout";
 import UpdateWeavingProductionPage from "./pages/updateWeavingProduction";
 import UpdateWarpingData from "./pages/updateWarpingData";
@@ -31,7 +31,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<StmHome />} />
           <Route path="/dyeing" element={<ChemicalTable />} />
-          <Route path="/weaving-production" element={<WeavingProductionTable />} />
+          {/* <Route path="/weaving-production" element={<WeavingProductionTable />} /> */}
           <Route path="/weaving-production26" element={<WeavingProductionTable26 />} />
           <Route path="/update-weaving-production" element={<UpdateWeavingProductionPage />} />
           <Route path="/update-warping-data" element={<UpdateWarpingData />} />

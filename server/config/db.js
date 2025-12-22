@@ -36,14 +36,14 @@ const connectToDB1 = async () => {
 
 const connectToDB2 = async () => {
   try {
-    console.log("Trying to connect to DB:", process.env.SPECIALISEDSYSTEMS_DATABASE);
+   // console.log("Trying to connect to DB:", process.env.SPECIALISEDSYSTEMS_DATABASE);
 
     const pool = await sql.connect(specialisedSystems);
 
-    console.log("Connected to:", process.env.SPECIALISEDSYSTEMS_DATABASE);
+   // console.log("Connected to:", process.env.SPECIALISEDSYSTEMS_DATABASE);
     return pool;
   } catch (err) {
-    console.error("Database connection failed:", err);
+   // console.error("Database connection failed:", err);
   }
 };
 

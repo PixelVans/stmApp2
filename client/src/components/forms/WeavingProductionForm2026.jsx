@@ -1,5 +1,4 @@
 
-
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -231,7 +230,7 @@ const rowsToSubmit = [
       setMachineStatus("success");
       resetShiftData(true);
     } catch (err) {
-      console.error(err);
+     // console.error(err);
       toast.error("Failed to submit form.");
       setMachineStatus("error");
     } finally {
@@ -245,12 +244,12 @@ const rowsToSubmit = [
     "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500";
 
   return (
-    <div className="  lg:relative max-w-[650px] mx-auto py-3 px-3 md:px-6 lg:px-9 shadow-md shadow-slate-300 rounded-lg">
+    <div className="  lg:relative max-w-[650px] mx-auto pb-3 px-3 md:px-6 lg:px-9 shadow-md shadow-slate-300 rounded-lg">
       <div className="absolute top-3 right-4 text-xs font-medium text-slate-500">
         {formatTodayDate()}
       </div>
 
-       <h1 className="text-lg 2xl:text-xl text-blue-900 font-semibold text-center mb-5">
+       <h1 className="text-lg 2xl:text-xl text-blue-900  text-center mb-4">
          Update Weaving Production
       </h1>
         {/* Week + Day selector */}
@@ -310,7 +309,7 @@ const rowsToSubmit = [
       )}
 
       {/* Form */}
-      <form className="space-y-1 2xl:space-y-3" onSubmit={handleSubmit}>
+      <form className="space-y-1 2xl:space-y-2" onSubmit={handleSubmit}>
         {/* Machine Dropdown */}
         <div className="items-center text-center flex gap-4 mx-auto justify-center">
           <label className="text-sm font-semibold text-slate-800 bg-blue-100 p-2 px-4 w-48 rounded-md rounded-r-full">
@@ -350,11 +349,11 @@ const rowsToSubmit = [
 
         {/* Shifts */}
         {/* Shifts */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
         {["A", "B"].map((shift) => (
           <div
             key={shift}
-            className={`space-y-2 border rounded-md p-4 sm:p-4 ${
+            className={`space-y-1 border rounded-md p-4 sm:p-4 ${
               shift === "A" ? "bg-yellow-50" : "bg-slate-300"
             } shadow-md`}
           >

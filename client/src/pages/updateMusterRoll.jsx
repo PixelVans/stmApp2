@@ -1,8 +1,9 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import React, { useEffect, useState } from "react";
-import { FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiLock } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Toaster, toast } from "sonner";
+
 
 export default function UpdateMusterRoll() {
 
@@ -15,7 +16,14 @@ export default function UpdateMusterRoll() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [confirmAdjustmentDelete, setConfirmAdjustmentDelete] = useState(null);
+  const AUTH_KEY = "stm_muster_auth_expiry";
+  const AUTH_DURATION = 30 * 60 * 1000; // 20 mins
+  const PASSWORD = "STM@2025"; // change this
 
+
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   const [leaveSummary, setLeaveSummary] = useState({
     LeaveDays: "",
@@ -197,6 +205,38 @@ const handleAdjustmentChange = (index, field, value) => {
     fetchEmployees();
   }, []);
 
+
+
+  useEffect(() => {
+  const expiry = localStorage.getItem(AUTH_KEY);
+
+  if (expiry && Date.now() < Number(expiry)) {
+    setIsAuthed(true);
+  } else {
+    localStorage.removeItem(AUTH_KEY);
+    setShowAuthDialog(true);
+  }
+}, []);
+  
+const handleAuthSubmit = () => {
+  if (passwordInput !== PASSWORD) {
+    toast.error("Incorrect password");
+    return;
+  }
+
+  const expiry = Date.now() + AUTH_DURATION;
+  localStorage.setItem(AUTH_KEY, expiry.toString());
+
+  setIsAuthed(true);
+  setShowAuthDialog(false);
+  setPasswordInput("");
+  toast.success("Access granted (30 minutes)");
+};
+
+
+
+
+
   // ==============================
   // Handlers
   // ==============================
@@ -346,6 +386,71 @@ const confirmDeleteAdjustment = async () => {
       </div>
     );
   }
+
+
+
+
+ if (!isAuthed) {
+  return (
+    <>
+      <Toaster position="top-right" richColors />
+        <AlertDialog open={showAuthDialog}>
+        <AlertDialogContent className="max-w-md ml-5">
+          <AlertDialogHeader className="flex flex-col items-center text-center gap-3">
+            {/* Icon */}
+            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-100">
+              <FiLock className="w-7 h-7 text-blue-700" />
+            </div>
+
+            <AlertDialogTitle className="text-xl font-semibold">
+              Restricted Access
+            </AlertDialogTitle>
+
+            <AlertDialogDescription className=" text-gray-800">
+              This section is protected.  
+              Enter the password to continue.
+              <br />
+              <span className="text-xs text-gray-500">
+                Access resets automatically after 30 minutes.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          {/* Password input */}
+          <div className="mt-2">
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              placeholder="Enter access password"
+              autoFocus
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 
+                         text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogCancel
+              onClick={() => window.history.back()}
+              className="text-gray-600"
+            >
+              Cancel
+            </AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={handleAuthSubmit}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Unlock
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
+
+
 
   // ==============================
   // Render
