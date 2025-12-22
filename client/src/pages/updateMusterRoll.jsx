@@ -16,11 +16,16 @@ export default function UpdateMusterRoll() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [confirmAdjustmentDelete, setConfirmAdjustmentDelete] = useState(null);
-  const AUTH_KEY = "stm_muster_auth_expiry";
-  const AUTH_DURATION = 30 * 60 * 1000; // 20 mins
-  const PASSWORD = "STM@2025"; // change this
+
+  // Authentication constants
+  const AUTH_KEY = import.meta.env.VITE_AUTH_KEY || "stm_muster_auth_expiry";
+  const AUTH_DURATION = Number(import.meta.env.VITE_AUTH_DURATION) || 1800000; // Default to 30 mins
+  const PASSWORD = import.meta.env.VITE_AUTH_PASSWORD;
 
 
+    
+
+// Authentication state
   const [isAuthed, setIsAuthed] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [showAuthDialog, setShowAuthDialog] = useState(false);
@@ -206,7 +211,9 @@ const handleAdjustmentChange = (index, field, value) => {
   }, []);
 
 
-
+// ==============================
+// Authentication effect
+// ==============================
   useEffect(() => {
   const expiry = localStorage.getItem(AUTH_KEY);
 
@@ -230,7 +237,7 @@ const handleAuthSubmit = () => {
   setIsAuthed(true);
   setShowAuthDialog(false);
   setPasswordInput("");
-  toast.success("Access granted (30 minutes)");
+  toast.success("Access Granted (30 minutes)");
 };
 
 
@@ -280,6 +287,7 @@ const handleSave = async () => {
     };
   });
 
+  
   const payload = {
     EmployeeID: selectedEmployee,
     Month: selectedMonth,
