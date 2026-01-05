@@ -30,7 +30,7 @@ const PrintingMusterRollReport = () => {
    // Utility: Kenyan holidays calculator
 const isKenyanHoliday = (date) => {
   const year = date.getFullYear();
-  const month = date.getMonth() + 1; // JS months are 0-based
+  const month = date.getMonth() + 1; 
   const day = date.getDate();
 
   // Fixed holidays
@@ -97,6 +97,7 @@ const formatTimeUTC = (timeStr) => {
 };
 
 
+
 const formatHoursToHM = (decimalHours) => {
   if (decimalHours == null) return "";
   const hours = Math.floor(decimalHours);
@@ -112,22 +113,34 @@ const formatCurrency = (amount) => {
 
 
   // Generate range from 27th of current month to 26th of next
-  const generateDateRange = (month) => {
+ const generateDateRange = (year, month) => {
   const prevMonth = month === 0 ? 11 : month - 1;
-  const year = new Date().getFullYear() - (month === 0 ? 1 : 0);
-  const startDate = new Date(year, prevMonth, 26);
-  const endDate = new Date(year, month, 25);
-    const dates = [];
-    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-      dates.push(new Date(d));
-    }
-    return dates;
-  };
+  const rangeYear = month === 0 ? year - 1 : year;
 
-  const [dateRange, setDateRange] = useState(generateDateRange(selectedMonth));
-  useEffect(() => {
-    setDateRange(generateDateRange(selectedMonth));
-  }, [selectedMonth]);
+  const startDate = new Date(Date.UTC(rangeYear, prevMonth, 26));
+  const endDate = new Date(Date.UTC(year, month, 25));
+
+  const dates = [];
+  for (
+    let d = new Date(startDate);
+    d <= endDate;
+    d.setUTCDate(d.getUTCDate() + 1)
+  ) {
+    dates.push(new Date(d));
+  }
+
+  return dates;
+};
+
+
+ const [dateRange, setDateRange] = useState(
+  generateDateRange(selectedYear, selectedMonth)
+);
+
+useEffect(() => {
+  setDateRange(generateDateRange(selectedYear, selectedMonth));
+}, [selectedMonth, selectedYear]);
+
 
   // Fetch employees
   useEffect(() => {
@@ -166,12 +179,12 @@ const res = await fetch(
     if (!res.ok) throw new Error("Failed to fetch muster roll report");
 
     const data = await res.json();
-    console.log( "fetched Report:", data)
+    //console.log( "fetched Report:", data)
     setAttendanceData(data.attendance || []);
     setSummary(data.summary || {});
     setAdjustments(data.adjustments || []);
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     setError("Failed to load muster roll report. Please try again later.");
   } finally {
     setLoading(false);
@@ -276,13 +289,14 @@ holidayDates.forEach((holiday) => {
   );
 
   if (record && record.TotalHours) {
-    // Worked → double the hours
-    totalHolidayPayable += record.TotalHours * 2;
-  } else {
-    // Did not work → default 9 hours
-    totalHolidayPayable += 9;
-  }
-});
+      // Worked → double the hours
+      totalHolidayPayable += record.TotalHours * 2;
+    } else {
+      // Did not work → default 9 hours
+      totalHolidayPayable += 9;
+    }
+  });
+
 
 
 const holidayPayable = totalHolidayPayable;
@@ -304,14 +318,14 @@ const totalHoursAdj = adjustments
 
 // Combine everything for final total payable hours
 const totalPayableHours =
-  totalRegularHours +
-  overtimePayable +
-  sundayPayable +
-  holidayPayable +
-  leaveHours +
-  sickHours +
-  maternityHours +
-  totalHoursAdj;
+          totalRegularHours +
+          overtimePayable +
+          sundayPayable +
+          holidayPayable +
+          leaveHours +
+          sickHours +
+          maternityHours +
+          totalHoursAdj;
 
 
 
@@ -323,10 +337,10 @@ const totalPayableHours =
     ? `${selectedEmp.FirstName} ${selectedEmp.LastName}`
     : "—";
   const employeeId = selectedEmp ? selectedEmp.EmployeeID : "—";
- const monthLabel = new Date(selectedYear, selectedMonth).toLocaleString("en-US", {
-  month: "long",
-  year: "numeric",
-});
+      const monthLabel = new Date(selectedYear, selectedMonth).toLocaleString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
 
 
  if (loading) {
@@ -438,7 +452,7 @@ const totalPayableHours =
               </div>
                {/* Year Selector */}
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-gray-700">Year:</label>
+                <label className="text-sm font-medium text-gray-700"> Year: </label>
                 <select
                   className="border border-gray-300 bg-white px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
                   value={selectedYear}
@@ -521,14 +535,24 @@ const totalPayableHours =
            <tbody>
             {dateRange.map((date, index) => {
               const record =
-                attendanceData.find(
-                  (r) =>
-                    new Date(r.AttendanceDate).toDateString() === date.toDateString()
-                ) || {};
+                attendanceData.find((r) => {
+                  if (!r.AttendanceDate) return false;
 
-              const dayName = date
-                .toLocaleDateString("en-US", { weekday: "short" })
-                .slice(0, 3);
+                  const db = new Date(r.AttendanceDate);
+                  return (
+                    db.getUTCFullYear() === date.getUTCFullYear() &&
+                    db.getUTCMonth() === date.getUTCMonth() &&
+                    db.getUTCDate() === date.getUTCDate()
+                  );
+                }) || {};
+
+
+              const dayName = new Date(
+                date.getUTCFullYear(),
+                date.getUTCMonth(),
+                date.getUTCDate()
+              ).toLocaleDateString("en-US", { weekday: "short" });
+
 
               return (
                 <React.Fragment key={index}>
