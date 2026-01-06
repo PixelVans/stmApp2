@@ -8,6 +8,7 @@ function getCurrentYear() {
 
 
 
+
 function getISOWeek(date = new Date()) {
   const tempDate = new Date(date.getTime());
   tempDate.setHours(0, 0, 0, 0);

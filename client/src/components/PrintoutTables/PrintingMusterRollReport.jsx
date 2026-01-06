@@ -290,7 +290,7 @@ holidayDates.forEach((holiday) => {
 
   if (record && record.TotalHours) {
       // Worked → double the hours
-      totalHolidayPayable += record.TotalHours * 2;
+      totalHolidayPayable += (record.TotalHours * 2) + 9;
     } else {
       // Did not work → default 9 hours
       totalHolidayPayable += 9;

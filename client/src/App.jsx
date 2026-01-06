@@ -23,7 +23,7 @@ import WeavingProductionTable26 from "./pages/weavingProduction26";
 function App() {
   return (
     <Router>
-      {/* global toaster */}
+      {/* Global toaster */}
       <Toaster richColors position="top-right" />
 
       <Routes>
@@ -31,7 +31,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<StmHome />} />
           <Route path="/dyeing" element={<ChemicalTable />} />
-          {/* <Route path="/weaving-production" element={<WeavingProductionTable />} /> */}
+        {/* <Route path="/weaving-production" element={<WeavingProductionTable />} /> */}
           <Route path="/weaving-production26" element={<WeavingProductionTable26 />} />
           <Route path="/update-weaving-production" element={<UpdateWeavingProductionPage />} />
           <Route path="/update-warping-data" element={<UpdateWarpingData />} />

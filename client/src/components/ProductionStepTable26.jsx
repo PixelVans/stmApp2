@@ -3,7 +3,8 @@ import useDyeingStore from "../store/zustand";
 
 export default function ProductionStepTable26({ rows }) {
   const NBSP = "\u00A0";
-  const { selectedWeek } = useDyeingStore();
+  
+  const { selectedWeek, selectedYear } = useDyeingStore();
 
   const getOrdinal = (n) => {
     const s = ["th", "st", "nd", "rd"];
@@ -25,8 +26,9 @@ export default function ProductionStepTable26({ rows }) {
     return monday;
   }
 
-  const year = new Date().getFullYear();
-  const monday = getMondayOfISOWeek(selectedWeek, year);
+ 
+  const monday = getMondayOfISOWeek(selectedWeek, selectedYear);
+
 
   // headers
   const headers = days.map((label, i) => {

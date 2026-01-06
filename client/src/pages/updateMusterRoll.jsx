@@ -19,56 +19,56 @@ export default function UpdateMusterRoll() {
 
   // Authentication constants
   const AUTH_KEY = import.meta.env.VITE_AUTH_KEY || "stm_muster_auth_expiry";
-  const AUTH_DURATION = Number(import.meta.env.VITE_AUTH_DURATION) || 1800000; // Default to 30 mins
+  const AUTH_DURATION = Number(import.meta.env.VITE_AUTH_DURATION) || 7200000; // Default to 2hrs
   const PASSWORD = import.meta.env.VITE_AUTH_PASSWORD;
 
     
 
-// Authentication state
+  // Authentication state
   const [isAuthed, setIsAuthed] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authError, setAuthError] = useState("");
 
   const [leaveSummary, setLeaveSummary] = useState({
-    LeaveDays: "",
-    SickDays: "",
-    MaternityDays: "",
-    NightshiftAllowance: "",
-    ProductDeductions: "",
-    LeaveAllowance: "",
-  });
+        LeaveDays: "",
+        SickDays: "",
+        MaternityDays: "",
+        NightshiftAllowance: "",
+        ProductDeductions: "",
+        LeaveAllowance: "",
+      });
 
 const [adjustments, setAdjustments] = useState([]);
 const addAdjustment = () => {
-  setAdjustments((prev) => [...prev, { type: "", value: "", note: "" }]);
-};
+      setAdjustments((prev) => [...prev, { type: "", value: "", note: "" }]);
+    };
 
 const removeAdjustment = (index) => {
-  setAdjustments((prev) => prev.filter((_, i) => i !== index));
-};
+      setAdjustments((prev) => prev.filter((_, i) => i !== index));
+    };
 
 const handleAdjustmentChange = (index, field, value) => {
-  setAdjustments((prev) => {
-    const updated = [...prev];
-    updated[index][field] = value;
-    return updated;
-  });
+      setAdjustments((prev) => {
+        const updated = [...prev];
+        updated[index][field] = value;
+        return updated;
+      });
 };
   // Helper: consistent YYYY-MM-DD
   const localDateKey = (date) => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
   };
 
   // Generate date range for previous month (27th → 26th)
   const generateDateRange = (month, year) => {
-    const prevMonth = month === 0 ? 11 : month - 1;
-    const actualYear = month === 0 ? year - 1 : year;
-    const startDate = new Date(actualYear, prevMonth, 26);
-    const endDate = new Date(year, month, 25);
+      const prevMonth = month === 0 ? 11 : month - 1;
+      const actualYear = month === 0 ? year - 1 : year;
+      const startDate = new Date(actualYear, prevMonth, 26);
+      const endDate = new Date(year, month, 25);
 
     const dates = [];
     for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
@@ -163,7 +163,7 @@ const handleAdjustmentChange = (index, field, value) => {
         }))
       );
 
-      console.log("Loaded adjustments:", data.adjustments);
+      //console.log("Loaded adjustments:", data.adjustments);
 
     } else {
       setAdjustments([]);
@@ -173,7 +173,7 @@ const handleAdjustmentChange = (index, field, value) => {
         setIsFetching(false);
         toast.success("Loaded existing muster roll data");
       } catch (err) {
-        console.error(err);
+        //console.error(err);
         setIsFetching(false);
         toast.error("Failed to load existing muster roll data");
         setAttendanceData([]);
@@ -200,7 +200,7 @@ const handleAdjustmentChange = (index, field, value) => {
         const data = await res.json();
         setEmployees(data);
       } catch (err) {
-        console.error(err);
+        //console.error(err);
         toast.error("Failed to load employees.");
       } finally {
         setIsFetching(false);
@@ -239,7 +239,7 @@ const handleAuthSubmit = () => {
   setIsAuthed(true);
   setShowAuthDialog(false);
   setPasswordInput("");
-  toast.success("Access granted. This will expire in 30 minutes.");
+  toast.success("Access granted. This will expire in 2 hours.");
 };
 
 
@@ -292,28 +292,28 @@ const handleSave = async () => {
 
   
   const payload = {
-    EmployeeID: selectedEmployee,
-    Month: selectedMonth,
-    Year: selectedYear,
-    AttendanceRecords: preparedAttendance,
-    LeaveDays: Number(leaveSummary.LeaveDays) || 0,
-    SickDays: Number(leaveSummary.SickDays) || 0,
-    MaternityDays: Number(leaveSummary.MaternityDays) || 0,
-    NightshiftAllowance: Number(leaveSummary.NightshiftAllowance) || 0,
-    ProductDeductions: Number(leaveSummary.ProductDeductions) || 0,
-    LeaveAllowance: Number(leaveSummary.LeaveAllowance) || 0,
-  };
+        EmployeeID: selectedEmployee,
+        Month: selectedMonth,
+        Year: selectedYear,
+        AttendanceRecords: preparedAttendance,
+        LeaveDays: Number(leaveSummary.LeaveDays) || 0,
+        SickDays: Number(leaveSummary.SickDays) || 0,
+        MaternityDays: Number(leaveSummary.MaternityDays) || 0,
+        NightshiftAllowance: Number(leaveSummary.NightshiftAllowance) || 0,
+        ProductDeductions: Number(leaveSummary.ProductDeductions) || 0,
+        LeaveAllowance: Number(leaveSummary.LeaveAllowance) || 0,
+      };
 
   //  Include Adjustments (Hours or Amount)
   payload.Adjustments = adjustments
-    .filter(adj => adj.type && adj.value && adj.note.trim() !== "")
-    .map(adj => ({
-      AdjustmentType: adj.type,
-      AdjustmentValue: Number(adj.value),
-      Note: adj.note.trim(),
-    }));
+          .filter(adj => adj.type && adj.value && adj.note.trim() !== "")
+          .map(adj => ({
+            AdjustmentType: adj.type,
+            AdjustmentValue: Number(adj.value),
+            Note: adj.note.trim(),
+          }));
 
-  console.log("🟢 Sending attendance payload:", payload);
+  //console.log("Sending attendance payload:", payload);
 
   try {
     const res = await fetch("/api/attendance/update", {
@@ -327,7 +327,7 @@ const handleSave = async () => {
     const result = await res.json();
     toast.success(`${result.message}`);
   } catch (err) {
-    console.error("Error saving attendance:", err);
+    //console.error("Error saving attendance:", err);
     toast.error("Failed to save attendance. Please try again.");
   } finally {
     setIsSaving(false);
@@ -355,7 +355,7 @@ const confirmDeleteAdjustment = async () => {
       toast.success("Adjustment deleted");
     }
   } catch (err) {
-    console.error(err);
+   // console.error(err);
     toast.error("Failed to delete adjustment");
   }
 
@@ -422,7 +422,7 @@ const confirmDeleteAdjustment = async () => {
               Enter the password to continue.
               <br />
               <span className="text-xs text-gray-500">
-                Access resets automatically after 30 minutes.
+                Access resets automatically after 2 hours.
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -480,6 +480,10 @@ const confirmDeleteAdjustment = async () => {
     </>
   );
 }
+
+
+
+
 
 
 
@@ -575,9 +579,9 @@ const confirmDeleteAdjustment = async () => {
       <div className="flex flex-1 mt-[150px] xl:mt-[120px] max-w-6xl mx-auto w-full gap-6 px-6">
         {/* Attendance Table */}
         <div className="flex-1 bg-white rounded-xl shadow-lg border border-gray-200 overflow-y-auto 
-            lg:max-h-[calc(350px)]
-            xl:max-h-[calc(440px)]
-            2xl:max-h-[calc(550px)]">
+              lg:max-h-[calc(350px)]
+              xl:max-h-[calc(440px)]
+              2xl:max-h-[calc(550px)]">
           <table className="w-full text-sm">
             <thead className="bg-blue-100 text-gray-700 uppercase sticky top-0 z-10">
               <tr>
