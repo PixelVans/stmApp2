@@ -15,7 +15,7 @@ const ChemicalTable = forwardRef((props, ref) => {
   const [isFetching, setIsFetching] = useState(false);
   const [seconds, setSeconds] = useState(0);
 
-  //  Timer (optional, like your weaving page)
+
   useEffect(() => {
     let timer;
     if (isFetching) {
@@ -25,7 +25,7 @@ const ChemicalTable = forwardRef((props, ref) => {
     return () => clearInterval(timer);
   }, [isFetching]);
 
-  // 🔍 Detect "fetching" anywhere in the component
+  // Detect "fetching" anywhere in the component
   useEffect(() => {
     const el = document.body;
     if (!el) return;
@@ -50,7 +50,7 @@ const ChemicalTable = forwardRef((props, ref) => {
     return () => observer.disconnect();
   }, []);
 
-  // 🌐 Full-page loading overlay (like Weaving)
+  //  Full-page loading overlay 
   if (isFetching) {
     return (
       <div className="flex flex-col mt-[-220px] items-center justify-center h-screen bg-white">

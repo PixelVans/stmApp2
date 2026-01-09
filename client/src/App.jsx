@@ -18,6 +18,9 @@ import WarpingPage from "./pages/warping";
 import ProductionPage from "./pages/production";
 import WarpingStockPrintoutPage from "./customPrintouts/warpingStockPrintout";
 import WeavingProductionTable26 from "./pages/weavingProduction26";
+import DashboardPage from "./pages/dashboard";
+import GreyRollsTable from "./pages/greyRollsPage";
+import StmInventoryPage from "./pages/stmInventoryPage";
 
 
 function App() {
@@ -41,6 +44,9 @@ function App() {
           <Route path="/muster-roll-reports" element={<PrintingMusterRollReport />} />
           <Route path="/warping" element={<WarpingPage />} />
           <Route path="/production" element={<ProductionPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/grey-rolls" element={<GreyRollsTable />} />
+          <Route path="/stm-stocks" element={<StmInventoryPage />} />
         </Route>
 
         {/* Standalone routes without layout */}

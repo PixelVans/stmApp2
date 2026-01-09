@@ -1,6 +1,6 @@
 
 import { FaCogs } from "react-icons/fa";
-import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3, FiBox, FiClipboard, FiLayers,  } from "react-icons/fi";
+import {  FiDroplet, FiLogOut, FiX, FiHome, FiTrendingUp, FiEdit3, FiBox, FiClipboard, FiLayers, FiGrid,  } from "react-icons/fi";
 
 // or any icon you find that matches a spool/thread concept
 
@@ -8,34 +8,55 @@ import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
 const navItems = [
-  { name: "Home", icon: <FiHome size={18} className="text-white" />, href: "/" },
-  { name: "Dyeing", icon: <FiDroplet size={18} className="text-yellow-300" />, href: "/dyeing" },
-  // { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving-production" },
-  { name: "Production Data", icon: <FiTrendingUp size={18} className="text-green-400" />, href: "/weaving-production26" },
+  { 
+    name: "Home", 
+    icon: <FiHome size={18} className="text-white" />, 
+    href: "/" 
+  },
 
- { 
+  { 
+    name: "Dashboard", 
+    icon: <FiGrid size={18} className="text-blue-400" />, 
+    href: "/dashboard" 
+  },
+
+  { 
+    name: "Dyeing", 
+    icon: <FiDroplet size={18} className="text-yellow-300" />, 
+    href: "/dyeing" 
+  },
+
+  { 
+    name: "Production Data", 
+    icon: <FiTrendingUp size={18} className="text-green-400" />, 
+    href: "/weaving-production26" 
+  },
+
+  { 
     name: "Dyeing Stock", 
     icon: <FiBox size={18} className="text-green-400" />, 
     href: "/update-stock" 
   },
- 
- {
-  name: "Warping",
-  icon: <FiLayers size={18} className="text-purple-400" />,
-  href: "/warping"
-},
- {
-  name: "Weaving",
-  icon: <FaCogs size={18} className="text-slate-300" />,
-  href: "/production"
-},
- { 
+
+  {
+    name: "Warping",
+    icon: <FiLayers size={18} className="text-purple-400" />,
+    href: "/warping"
+  },
+
+  {
+    name: "Weaving",
+    icon: <FaCogs size={18} className="text-slate-300" />,
+    href: "/production"
+  },
+
+  { 
     name: "Muster Roll", 
     icon: <FiClipboard size={18} className="text-orange-300" />, 
     href: "/update-muster-roll" 
   },
-
 ];
+
 
 
   return (
